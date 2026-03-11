@@ -239,11 +239,13 @@ async function onRegister(e) {
   const email = document.getElementById("registerEmail").value.trim();
   const password = document.getElementById("registerPassword").value;
   const fullName = document.getElementById("registerName").value.trim();
-  const { error } = await state.client.auth.signUp({
+  const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { full_name: fullName || email.split("@")[0] } }
-  });
+    options: {
+    emailRedirectTo: 'https://TUUSUARIO.github.io/TU-REPO/'
+  }
+});
   if (error) return throwFriendly(error, "No pude crear la cuenta.");
   flash("Cuenta creada. Si Supabase te pide verificar email, hazlo y vuelve a entrar.");
   switchAuthTab("login");
