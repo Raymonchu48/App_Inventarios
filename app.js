@@ -374,8 +374,17 @@ async function onBootstrapAdmin() {
   if (isAdmin()) switchView("admin");
   flash("Ahora eres admin inicial del sistema.");
 }
-
+els.navAdmin.classList.toggle("hidden", !isAdmin());
+document.querySelectorAll(".nav-btn").forEach(btn => {
+  if (btn.dataset.view === "configuracion") {
+    btn.classList.toggle("hidden", !isAdmin());
+  }
+});
 function switchView(view) {
+ if ((view === "configuracion" || view === "admin") && !isAdmin()) {
+  flash("No tienes permisos para acceder a esa sección.", true);
+  return;
+} 
   const titles = {
     dashboard: ["Dashboard", "Resumen ejecutivo del inventario."],
     productos: ["Productos", "Alta, edición y consulta con permisos por rol."],
@@ -555,7 +564,7 @@ function renderUsersList() {
     row.className = "user-row";
     row.innerHTML = `
       <div class="user-main">
-        <strong class="truncate">${escapeHtml(profile.full_name || profile.email || 'Usuario')}</strong>
+        <strong class="truncate">${escapeHtml(profile.full_name || profile.email || 'Usuario')}</strong>F
         <div class="muted small truncate">${escapeHtml(profile.email || '')}</div>
       </div>
       <select data-role-id="${profile.id}">
