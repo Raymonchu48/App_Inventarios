@@ -274,7 +274,7 @@ async function onRegister(e) {
       password,
       options: {
         data: { full_name: fullName || email.split("@")[0] },
-        emailRedirectTo: redirectBase,
+        emailRedirectTo:"https://raymonchu48.github.io/App_Inventarios/" ,
       }
     });
 
