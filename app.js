@@ -187,19 +187,61 @@ function setConnectionState(kind, badgeText, text) {
   els.connectionText.textContent = text;
 }
 
-async function onSaveConfig(e) {
+async function onSaveProduct(e) {
   e.preventDefault();
-  const url = els.supabaseUrl.value.trim();
-  const key = els.supabaseKey.value.trim();
-  if (!url || !key) return flash("Completa URL y anon key.", true);
-  saveConfig(url, key);
-  loadSavedConfig();
-  try {
-    await initSupabase(url, key);
-    flash("Conexión guardada.");
-  } catch (error) {
-    throwFriendly(error, "No se pudo guardar la conexión.");
+
+  if (!canEdit() || !isActiveUser()) {
+    return flash("No tienes permisos para editar productos.", true);
   }
+
+  const payload = {
+    stock_code: els.pStockCode.value.trim() || null,
+    descripcion: els.pDescripcion.value.trim(),
+    presentacion: els.pPresentacion.value.trim() || null,
+    st_date: els.pStDate.value.trim() || null,
+    unit: els.pUnit.value.trim() || null,
+    cantidad: Number(els.pCantidad.value || 0),
+    min_stock: Number(els.pMinStock.value || 0),
+    pagina: els.pPagina.value ? Number(els.pPagina.value) : null,
+    categoria_id: els.pCategoria.value || null,
+    cantidad_original: els.pCantidadOriginal.value.trim() || null,
+    detalle_cantidad: els.pDetalleCantidad.value.trim() || null,
+  };
+
+  if (!payload.descripcion) {
+    return flash("La descripción es obligatoria.", true);
+  }
+
+  console.log("Payload producto:", payload);
+
+  let result;
+
+  if (els.productId.value) {
+    result = await state.client
+      .from("productos")
+      .update(payload)
+      .eq("id", els.productId.value)
+      .select()
+      .single();
+  } else {
+    result = await state.client
+      .from("productos")
+      .insert([payload])
+      .select()
+      .single();
+  }
+
+  const { data, error } = result;
+
+  if (error) {
+    console.error("Error guardando producto:", error);
+    return flash(`No pude guardar el producto: ${error.message}`, true);
+  }
+
+  console.log("Producto guardado:", data);
+  els.productDialog.close();
+  flash("Producto guardado.");
+  await refreshAll();
 }
 
 async function onTestConnection() {
