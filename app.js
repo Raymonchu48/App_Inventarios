@@ -145,14 +145,34 @@ function renderSessionState() {
   els.userEmail.textContent = state.user?.email || "Sin sesión";
   els.roleBadge.textContent = state.profile?.role || "viewer";
   els.roleBadge.className = `badge ${roleToBadge(state.profile?.role)}`;
+
   const active = state.profile?.is_active !== false;
   els.activeBadge.textContent = active ? "activo" : "bloqueado";
   els.activeBadge.className = `badge ${active ? 'success' : 'danger'}`;
+
   els.cfgPreviewSession.textContent = state.user ? "Activa" : "Sin sesión";
   els.cfgPreviewRole.textContent = state.profile?.role || "viewer";
   els.cfgPreviewUrl.textContent = readConfig().url || "—";
-  els.navAdmin.classList.toggle("hidden", !isAdmin());
-  setConnectionState(state.user ? "success" : "neutral", state.user ? "Sesión activa" : "Sin sesión", state.user ? `Rol actual: ${state.profile?.role || 'viewer'}` : "Accede para trabajar.");
+
+  if (els.navAdmin) {
+    els.navAdmin.classList.toggle("hidden", !isAdmin());
+  }
+
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+    if (btn.dataset.view === "configuracion") {
+      btn.classList.toggle("hidden", !isAdmin());
+    }
+    if (btn.dataset.view === "admin") {
+      btn.classList.toggle("hidden", !isAdmin());
+    }
+  });
+
+  setConnectionState(
+    state.user ? "success" : "neutral",
+    state.user ? "Sesión activa" : "Sin sesión",
+    state.user ? `Rol actual: ${state.profile?.role || 'viewer'}` : "Accede para trabajar."
+  );
+
   applyPermissionsUI();
 }
 
