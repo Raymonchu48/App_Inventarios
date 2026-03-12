@@ -33,7 +33,10 @@ function captureEls() {
     "productDialog", "productForm", "productDialogTitle", "btnCloseDialog", "productId", "pStockCode", "pDescripcion",
     "pPresentacion", "pStDate", "pUnit", "pCantidad", "pMinStock", "pPagina", "pCategoria", "pCantidadOriginal",
     "pDetalleCantidad", "kpiProductos", "kpiStock", "kpiBajoMinimo", "kpiSinStock", "cfgPreviewUrl", "cfgPreviewSession",
-    "cfgPreviewRole", "navAdmin", "usersList"
+    "cfgPreviewRole", "navAdmin", "usersList",
+
+    // Menajes
+    "menajesSearchInput", "menajesCategoryFilter", "btnNewMenaje", "menajesTable"
   ].forEach(id => {
     els[id] = document.getElementById(id);
   });
@@ -64,7 +67,12 @@ function bindUI() {
     el?.addEventListener("input", renderProducts);
   });
 
+  [els.menajesSearchInput, els.menajesCategoryFilter].forEach(el => {
+    el?.addEventListener("input", renderMenajes);
+  });
+
   els.btnNewProduct?.addEventListener("click", openNewProductDialog);
+  els.btnNewMenaje?.addEventListener("click", openNewMenajeDialog);
 
   els.btnCloseDialog?.addEventListener("click", () => {
     if (els.productDialog?.open) els.productDialog.close();
@@ -114,6 +122,7 @@ function safeJSON(s) {
 
 async function initSupabaseFromConfig() {
   const { url, key } = readConfig();
+
   if (!url || !key) {
     showAuth("Falta configurar Supabase.");
     return;
@@ -230,6 +239,7 @@ function applyPermissionsUI() {
   const active = isActiveUser();
 
   if (els.btnNewProduct) els.btnNewProduct.disabled = !canWrite || !active;
+  if (els.btnNewMenaje) els.btnNewMenaje.disabled = !canWrite || !active;
   if (els.btnSeed) els.btnSeed.disabled = !isAdmin() || !active;
 
   if (els.movementForm) {
@@ -437,6 +447,7 @@ function switchView(view) {
   const titles = {
     dashboard: ["Dashboard", "Resumen ejecutivo del inventario."],
     productos: ["Productos", "Alta, edición y consulta con permisos por rol."],
+    menajes: ["Menajes", "Inventario específico de menaje, vajilla, cristalería y material de servicio."],
     movimientos: ["Movimientos", "Entradas, salidas y ajustes con trazabilidad."],
     admin: ["Administración", "Usuarios, roles y activación de accesos."],
     configuracion: ["Configuración", "Estado de conexión, sesión y despliegue."]
@@ -468,8 +479,10 @@ async function refreshAll() {
 
   populateCategoryFilters();
   populateProductSelects();
+  populateMenajesFilters();
   renderDashboard();
   renderProducts();
+  renderMenajes();
   renderMovementHistory();
 
   if (isAdmin()) renderUsersList();
@@ -600,6 +613,42 @@ function populateProductSelects() {
   if (current) els.movementProduct.value = current;
 }
 
+function isMenajeCategoryName(nombre) {
+  const set = [
+    "menajes",
+    "vajilla",
+    "cubertería",
+    "cristalería",
+    "mantelería",
+    "buffet y servicio"
+  ];
+  return set.includes((nombre || "").trim().toLowerCase());
+}
+
+function getMenajeCategories() {
+  return state.categorias.filter(c => isMenajeCategoryName(c.nombre));
+}
+
+function getMenajeCategoryIds() {
+  return new Set(getMenajeCategories().map(c => c.id));
+}
+
+function populateMenajesFilters() {
+  if (!els.menajesCategoryFilter) return;
+
+  const current = els.menajesCategoryFilter.value;
+  els.menajesCategoryFilter.innerHTML = `<option value="">Todas las categorías de menaje</option>`;
+
+  getMenajeCategories().forEach(c => {
+    els.menajesCategoryFilter.insertAdjacentHTML(
+      "beforeend",
+      `<option value="${c.id}">${escapeHtml(c.nombre)}</option>`
+    );
+  });
+
+  els.menajesCategoryFilter.value = current;
+}
+
 function getFilteredProducts() {
   const q = els.searchInput?.value.trim().toLowerCase() || "";
   const cat = els.categoryFilter?.value || "";
@@ -617,6 +666,20 @@ function getFilteredProducts() {
       (stockMode === "ok" && qty > min);
 
     return matchText && matchCat && matchStock;
+  });
+}
+
+function getFilteredMenajes() {
+  const q = els.menajesSearchInput?.value.trim().toLowerCase() || "";
+  const cat = els.menajesCategoryFilter?.value || "";
+  const menajeIds = getMenajeCategoryIds();
+
+  return state.productos.filter(p => {
+    const isMenaje = menajeIds.has(p.categoria_id);
+    const matchText = !q || [p.stock_code, p.descripcion, p.presentacion]
+      .some(v => (v || "").toLowerCase().includes(q));
+    const matchCat = !cat || p.categoria_id === cat;
+    return isMenaje && matchText && matchCat;
   });
 }
 
@@ -661,6 +724,51 @@ function renderProducts() {
   });
 
   els.productsTable.querySelectorAll("[data-action='delete']").forEach(btn => {
+    btn.addEventListener("click", () => deleteProduct(btn.dataset.id));
+  });
+}
+
+function renderMenajes() {
+  if (!els.menajesTable) return;
+
+  const rows = getFilteredMenajes();
+  els.menajesTable.innerHTML = "";
+
+  if (!rows.length) {
+    els.menajesTable.innerHTML = `<tr><td colspan="8"><div class="empty-state">No hay menajes para ese filtro.</div></td></tr>`;
+    return;
+  }
+
+  rows.forEach(p => {
+    const qty = Number(p.cantidad || 0);
+    const min = Number(p.min_stock || 0);
+    const statusClass = qty <= 0 ? "danger" : qty <= min ? "warn" : "ok";
+    const canWrite = canEdit() && isActiveUser();
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${escapeHtml(p.stock_code || "")}</td>
+      <td><strong>${escapeHtml(p.descripcion)}</strong><br><small class="muted">${escapeHtml(p.presentacion || "")}</small></td>
+      <td>${escapeHtml(p.categorias?.nombre || "Sin categoría")}</td>
+      <td>${escapeHtml(p.unit || "")}</td>
+      <td><span class="tag ${statusClass}">${formatNum(qty)}</span></td>
+      <td>${formatNum(min)}</td>
+      <td>${p.pagina ?? ""}</td>
+      <td>
+        <div class="actions">
+          <button class="btn-mini" data-menaje-action="edit" data-id="${p.id}" ${canWrite ? "" : "disabled"}>Editar</button>
+          <button class="btn-mini danger" data-menaje-action="delete" data-id="${p.id}" ${isAdmin() && isActiveUser() ? "" : "disabled"}>Borrar</button>
+        </div>
+      </td>
+    `;
+    els.menajesTable.appendChild(tr);
+  });
+
+  els.menajesTable.querySelectorAll("[data-menaje-action='edit']").forEach(btn => {
+    btn.addEventListener("click", () => openEditProductDialog(btn.dataset.id));
+  });
+
+  els.menajesTable.querySelectorAll("[data-menaje-action='delete']").forEach(btn => {
     btn.addEventListener("click", () => deleteProduct(btn.dataset.id));
   });
 }
@@ -738,9 +846,27 @@ async function saveProfilePermissions(id) {
 
 function openNewProductDialog() {
   if (!canEdit()) return flash("Tu rol no puede crear productos.", true);
+
   els.productForm?.reset();
   if (els.productId) els.productId.value = "";
   if (els.productDialogTitle) els.productDialogTitle.textContent = "Nuevo producto";
+  if (els.pCategoria) els.pCategoria.value = "";
+
+  els.productDialog?.showModal();
+}
+
+function openNewMenajeDialog() {
+  if (!canEdit()) return flash("Tu rol no puede crear menajes.", true);
+
+  els.productForm?.reset();
+  if (els.productId) els.productId.value = "";
+  if (els.productDialogTitle) els.productDialogTitle.textContent = "Nuevo menaje";
+
+  const menajeCat = getMenajeCategories()[0];
+  if (els.pCategoria && menajeCat) {
+    els.pCategoria.value = menajeCat.id;
+  }
+
   els.productDialog?.showModal();
 }
 
