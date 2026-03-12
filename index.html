@@ -74,6 +74,7 @@
       <nav class="nav">
         <button class="nav-btn active" data-view="dashboard">General</button>
         <button class="nav-btn" data-view="productos">Productos</button>
+        <button class="nav-btn" data-view="menajes">Menajes</button>
         <button class="nav-btn" data-view="movimientos">Movimientos</button>
         <button id="navAdmin" class="nav-btn hidden" data-view="admin">Administración</button>
         <button class="nav-btn" data-view="configuracion">Configuración</button>
@@ -153,6 +154,41 @@
           </table>
         </div>
       </section>
+      
+      <section id="view-menajes" class="view">
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Menajes</h3>
+      <p>Inventario de vajilla, cristalería, cubertería, mantelería y material de servicio.</p>
+    </div>
+
+    <div class="toolbar">
+      <input id="menajesSearchInput" type="text" placeholder="Buscar menaje por código, descripción o presentación">
+      <select id="menajesCategoryFilter">
+        <option value="">Todas las categorías de menaje</option>
+      </select>
+      <button id="btnNewMenaje" class="btn primary">Nuevo menaje</button>
+    </div>
+
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Unidad</th>
+            <th>Stock</th>
+            <th>Mínimo</th>
+            <th>Página</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="menajesTable"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
 
       <section id="view-movimientos" class="view">
         <div class="grid-2">
