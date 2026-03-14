@@ -36,7 +36,6 @@ function captureEls() {
     "cfgPreviewRole", "navAdmin", "usersList",
     "btnImportMenajes",
 
-
     // Menajes
     "menajesSearchInput", "menajesCategoryFilter", "btnNewMenaje", "menajesTable"
   ].forEach(id => {
@@ -65,7 +64,6 @@ function bindUI() {
   els.btnRefresh?.addEventListener("click", refreshAll);
   els.btnSeed?.addEventListener("click", importInitialData);
   els.btnImportMenajes?.addEventListener("click", importMenajesData);
-
 
   [els.searchInput, els.categoryFilter, els.stockFilter].forEach(el => {
     el?.addEventListener("input", renderProducts);
@@ -245,6 +243,7 @@ function applyPermissionsUI() {
   if (els.btnNewProduct) els.btnNewProduct.disabled = !canWrite || !active;
   if (els.btnNewMenaje) els.btnNewMenaje.disabled = !canWrite || !active;
   if (els.btnSeed) els.btnSeed.disabled = !isAdmin() || !active;
+  if (els.btnImportMenajes) els.btnImportMenajes.disabled = !isAdmin() || !active;
 
   if (els.movementForm) {
     els.movementForm.querySelectorAll("input,select,textarea,button").forEach(el => {
@@ -674,14 +673,12 @@ function getFilteredProducts() {
   });
 }
 
-
 function getFilteredMenajes() {
   const q = els.menajesSearchInput?.value.trim().toLowerCase() || "";
   const cat = els.menajesCategoryFilter?.value || "";
-  const menajeIds = getMenajeCategoryIds();
 
   return state.productos.filter(p => {
-    const isMenaje = menajeIds.has(p.categoria_id);
+    const isMenaje = p.familia === "menaje";
     const matchText = !q || [p.stock_code, p.descripcion, p.presentacion]
       .some(v => (v || "").toLowerCase().includes(q));
     const matchCat = !cat || p.categoria_id === cat;
@@ -862,7 +859,6 @@ function openNewProductDialog() {
   els.productDialog?.showModal();
 }
 
-
 function openNewMenajeDialog() {
   if (!canEdit()) return flash("Tu rol no puede crear menajes.", true);
 
@@ -875,10 +871,6 @@ function openNewMenajeDialog() {
   if (els.pCategoria && menajeCat) {
     els.pCategoria.value = menajeCat.id;
   }
-
-  els.productDialog?.showModal();
-}
-
 
   els.productDialog?.showModal();
 }
@@ -901,7 +893,6 @@ function openEditProductDialog(id) {
   if (els.pCantidadOriginal) els.pCantidadOriginal.value = p.cantidad_original || "";
   if (els.pDetalleCantidad) els.pDetalleCantidad.value = p.detalle_cantidad || "";
   if (els.productDialog) els.productDialog.dataset.familia = p.familia || "bebidas";
-
 
   els.productDialog?.showModal();
 }
@@ -926,7 +917,6 @@ async function onSaveProduct(e) {
     cantidad_original: els.pCantidadOriginal?.value.trim() || null,
     detalle_cantidad: els.pDetalleCantidad?.value.trim() || null,
     familia: els.productDialog?.dataset.familia || "bebidas",
-
   };
 
   if (!payload.descripcion) {
@@ -1027,7 +1017,7 @@ async function onSaveMovement(e) {
 
 async function importInitialData() {
   if (!isAdmin() || !isActiveUser()) return flash("Solo admin puede importar la carga inicial.", true);
-  if (!confirm("Esto insertará o actualizará categorías y productos del Excel convertido. ¿Continuar?")) return;
+  if (!confirm("Esto importará o actualizará la carga inicial de bebidas desde data.json. ¿Continuar?")) return;
 
   try {
     const raw = await fetch("data.json").then(r => r.json());
@@ -1047,20 +1037,19 @@ async function importInitialData() {
     const catMap = Object.fromEntries(state.categorias.map(c => [c.nombre, c.id]));
 
     const productos = raw.map(r => ({
-  stock_code: cleanVal(r.stock_code),
-  descripcion: cleanVal(r.descripcion) || "Sin descripción",
-  presentacion: cleanVal(r.presentacion),
-  st_date: cleanVal(r.st_date),
-  unit: cleanVal(r.unit) || "ud",
-  cantidad: Number(r.cantidad || 0),
-  cantidad_original: cleanVal(r.cantidad_original),
-  detalle_cantidad: cleanVal(r.detalle_cantidad),
-  pagina: r.pagina ? Number(r.pagina) : null,
-  min_stock: Number(r.min_stock || 0),
-  categoria_id: catMap[(r.categoria || "Menajes").trim()] || null,
-  familia: "menaje"
-}));
-
+      stock_code: cleanVal(r.stock_code),
+      descripcion: cleanVal(r.descripcion) || "Sin descripción",
+      presentacion: cleanVal(r.presentacion),
+      st_date: cleanVal(r.st_date),
+      unit: cleanVal(r.unit),
+      cantidad: Number(r.cantidad || 0),
+      cantidad_original: cleanVal(r.cantidad_original),
+      detalle_cantidad: cleanVal(r.detalle_cantidad),
+      pagina: r.pagina ? Number(r.pagina) : null,
+      min_stock: Number(r.min_stock || 0),
+      categoria_id: catMap[(r.categoria || "Otros").trim()] || null,
+      familia: "bebidas"
+    }));
 
     const chunkSize = 200;
 
@@ -1073,10 +1062,70 @@ async function importInitialData() {
       if (error) throw error;
     }
 
-    flash("Importación inicial completada.");
+    flash("Importación inicial de bebidas completada.");
     await refreshAll();
   } catch (error) {
-    throwFriendly(error, "Falló la importación inicial.");
+    throwFriendly(error, "Falló la importación inicial de bebidas.");
+  }
+}
+
+async function importMenajesData() {
+  if (!isAdmin() || !isActiveUser()) {
+    return flash("Solo admin puede importar menajes.", true);
+  }
+
+  if (!confirm("Esto importará el inventario de menajes desde data_menajes.json. ¿Continuar?")) {
+    return;
+  }
+
+  try {
+    const raw = await fetch("data_menajes.json").then(r => r.json());
+
+    const names = [...new Set(raw.map(x => (x.categoria || "Menajes").trim()).filter(Boolean))];
+
+    if (names.length) {
+      const { error: catError } = await state.client
+        .from("categorias")
+        .upsert(names.map(nombre => ({ nombre })), { onConflict: "nombre" });
+
+      if (catError) throw catError;
+    }
+
+    await loadCategorias();
+
+    const catMap = Object.fromEntries(state.categorias.map(c => [c.nombre, c.id]));
+
+    const productos = raw.map(r => ({
+      stock_code: cleanVal(r.stock_code),
+      descripcion: cleanVal(r.descripcion) || "Sin descripción",
+      presentacion: cleanVal(r.presentacion),
+      st_date: cleanVal(r.st_date),
+      unit: cleanVal(r.unit) || "ud",
+      cantidad: Number(r.cantidad || 0),
+      cantidad_original: cleanVal(r.cantidad_original),
+      detalle_cantidad: cleanVal(r.detalle_cantidad),
+      pagina: r.pagina ? Number(r.pagina) : null,
+      min_stock: Number(r.min_stock || 0),
+      categoria_id: catMap[(r.categoria || "Menajes").trim()] || null,
+      familia: "menaje"
+    }));
+
+    const chunkSize = 200;
+
+    for (let i = 0; i < productos.length; i += chunkSize) {
+      const chunk = productos.slice(i, i + chunkSize);
+
+      const { error } = await state.client
+        .from("productos")
+        .insert(chunk);
+
+      if (error) throw error;
+    }
+
+    flash("Importación de menajes completada.");
+    await refreshAll();
+  } catch (error) {
+    throwFriendly(error, "Falló la importación de menajes.");
   }
 }
 
@@ -1140,62 +1189,4 @@ function flash(msg, isError = false) {
 function throwFriendly(error, fallback) {
   console.error(error);
   flash(`${fallback}${error?.message ? " · " + error.message : ""}`, true);
-}
-async function importMenajesData() {
-  if (!isAdmin() || !isActiveUser()) {
-    return flash("Solo admin puede importar menajes.", true);
-  }
-
-  if (!confirm("Esto importará el inventario de menajes desde data_menajes.json. ¿Continuar?")) {
-    return;
-  }
-
-  try {
-    const raw = await fetch("data_menajes.json").then(r => r.json());
-
-    const names = [...new Set(raw.map(x => (x.categoria || "Menajes").trim()).filter(Boolean))];
-
-    if (names.length) {
-      const { error: catError } = await state.client
-        .from("categorias")
-        .upsert(names.map(nombre => ({ nombre })), { onConflict: "nombre" });
-
-      if (catError) throw catError;
-    }
-
-    await loadCategorias();
-
-    const catMap = Object.fromEntries(state.categorias.map(c => [c.nombre, c.id]));
-
-    const productos = raw.map(r => ({
-      stock_code: cleanVal(r.stock_code),
-      descripcion: cleanVal(r.descripcion) || "Sin descripción",
-      presentacion: cleanVal(r.presentacion),
-      st_date: cleanVal(r.st_date),
-      unit: cleanVal(r.unit) || "ud",
-      cantidad: Number(r.cantidad || 0),
-      cantidad_original: cleanVal(r.cantidad_original),
-      detalle_cantidad: cleanVal(r.detalle_cantidad),
-      pagina: r.pagina ? Number(r.pagina) : null,
-      min_stock: Number(r.min_stock || 0),
-      categoria_id: catMap[(r.categoria || "Menajes").trim()] || null
-    }));
-
-    const chunkSize = 200;
-
-    for (let i = 0; i < productos.length; i += chunkSize) {
-      const chunk = productos.slice(i, i + chunkSize);
-
-      const { error } = await state.client
-        .from("productos")
-        .insert(chunk);
-
-      if (error) throw error;
-    }
-
-    flash("Importación de menajes completada.");
-    await refreshAll();
-  } catch (error) {
-    throwFriendly(error, "Falló la importación de menajes.");
-  }
 }
