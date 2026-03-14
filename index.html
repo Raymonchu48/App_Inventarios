@@ -1,300 +1,460 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inventario Banquetes</title>
-  <meta name="description" content="Inventario con Supabase Auth, roles y políticas" />
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
+  <script defer src="app.js"></script>
 </head>
 <body>
-  <div id="authShell" class="auth-shell">
-    <section class="auth-card glass">
-      <div class="hero-mark">IP</div>
-      <h1>Inventario Banquetes</h1>
-      <p class="muted">Inventario Especial de Banqetes para Bebidas y Menaje</p>
-      <div id="authStatus" class="alert info">Accede a tu cuenta </div>
-
-      <div class="tabs">
-        <button class="tab-btn active" data-auth-tab="login">Entrar</button>
-        <button class="tab-btn" data-auth-tab="register">Crear cuenta</button>
+  <!-- AUTH -->
+  <main id="authShell" class="auth-shell">
+    <section class="auth-card">
+      <div class="brand-row">
+        <div class="brand-logo">IP</div>
+        <div>
+          <h1>Inventario Banquetes</h1>
+          <p>Inventario Especial de Banquetes para Bebidas y Menaje</p>
+        </div>
       </div>
 
-      <form id="loginForm" class="auth-form auth-tab active">
-        <label>Email<input id="loginEmail" type="email" required autocomplete="email" /></label>
-        <label>Contraseña<input id="loginPassword" type="password" required autocomplete="current-password" /></label>
-        <button class="btn primary" type="submit">Acceder</button>
+      <div id="authStatus" class="alert info">Accede a tu cuenta</div>
+
+      <div class="auth-tabs-nav">
+        <button type="button" class="tab-btn active" data-auth-tab="login">Entrar</button>
+        <button type="button" class="tab-btn" data-auth-tab="register">Crear cuenta</button>
+      </div>
+
+      <!-- Login -->
+      <form id="loginForm" class="auth-tab active">
+        <div class="field">
+          <label for="loginEmail">Email</label>
+          <input id="loginEmail" type="email" autocomplete="email" />
+        </div>
+
+        <div class="field">
+          <label for="loginPassword">Contraseña</label>
+          <input id="loginPassword" type="password" autocomplete="current-password" />
+        </div>
+
+        <button type="submit" class="btn primary full">Acceder</button>
       </form>
 
-      <form id="registerForm" class="auth-form auth-tab">
-        <label>Nombre completo<input id="registerName" type="text" placeholder="Ej. Ramón Curbalán" /></label>
-        <label>Email<input id="registerEmail" type="email" required autocomplete="email" /></label>
-        <label>Contraseña<input id="registerPassword" type="password" required autocomplete="new-password" /></label>
-        <button class="btn primary" type="submit">Crear usuario</button>
+      <!-- Register -->
+      <form id="registerForm" class="auth-tab">
+        <div class="field">
+          <label for="registerName">Nombre completo</label>
+          <input id="registerName" type="text" />
+        </div>
+
+        <div class="field">
+          <label for="registerEmail">Email</label>
+          <input id="registerEmail" type="email" autocomplete="email" />
+        </div>
+
+        <div class="field">
+          <label for="registerPassword">Contraseña</label>
+          <input id="registerPassword" type="password" autocomplete="new-password" />
+        </div>
+
+        <button type="submit" class="btn primary full">Crear usuario</button>
       </form>
 
       <details class="setup-box">
         <summary>Configuración de Supabase</summary>
-        <form id="configForm" class="auth-form compact">
-          <label>Supabase URL<input id="supabaseUrl" type="url" placeholder="https://xxxx.supabase.co" required /></label>
-          <label>Supabase anon key<textarea id="supabaseKey" rows="4" placeholder="Pega aquí tu anon public key" required></textarea></label>
-          <div class="inline-actions">
-            <button class="btn primary" type="submit">Guardar conexión</button>
-            <button id="btnTestConnection" class="btn ghost" type="button">Probar</button>
-            <button id="btnClearConfig" class="btn ghost" type="button">Limpiar</button>
+
+        <form id="configForm" class="setup-form">
+          <div class="field">
+            <label for="supabaseUrl">Supabase URL</label>
+            <input id="supabaseUrl" type="text" />
+          </div>
+
+          <div class="field">
+            <label for="supabaseKey">Supabase anon key</label>
+            <textarea id="supabaseKey" rows="4"></textarea>
+          </div>
+
+          <div class="actions-row">
+            <button type="submit" class="btn primary">Guardar conexión</button>
+            <button type="button" id="btnTestConnection" class="btn ghost">Probar</button>
+            <button type="button" id="btnClearConfig" class="btn ghost">Limpiar</button>
           </div>
         </form>
       </details>
     </section>
-  </div>
+  </main>
 
-  <div id="appShell" class="shell hidden">
+  <!-- APP -->
+  <main id="appShell" class="app-shell hidden">
     <aside class="sidebar">
-      <div class="brand">
-        <div class="logo">R.V</div>
+      <div class="sidebar-brand">
+        <div class="brand-logo">IP</div>
         <div>
-          <h1>Inventario Banquetes pro</h1>
-          <Creado para el equipo de Banquetes</p>
+          <h2>Inventario Pro</h2>
+          <small>v2 · Auth + Roles</small>
         </div>
       </div>
 
-      <div class="user-card glass">
-        <div>
-          <strong id="userName">Usuario</strong>
-          <div id="userEmail" class="muted small">correo@dominio.com</div>
-        </div>
-        <div class="stack-gap">
-          <span id="roleBadge" class="badge neutral">viewer</span>
-          <span id="activeBadge" class="badge success">activo</span>
-        </div>
-      </div>
+      <section class="user-card">
+        <strong id="userName">Invitado</strong>
+        <div id="userEmail" class="muted">Sin sesión</div>
+        <div id="roleBadge" class="badge neutral">viewer</div>
+        <div id="activeBadge" class="badge success">activo</div>
+      </section>
 
-      <nav class="nav">
-        <button class="nav-btn active" data-view="dashboard">General</button>
-        <button class="nav-btn" data-view="bebidas">Bebidas</button>
+      <nav class="side-nav">
+        <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+        <button class="nav-btn" data-view="productos">Bebidas</button>
         <button class="nav-btn" data-view="menajes">Menajes</button>
         <button class="nav-btn" data-view="movimientos">Movimientos</button>
-        <button id="navAdmin" class="nav-btn hidden" data-view="admin">Administración</button>
+        <button id="navAdmin" class="nav-btn" data-view="admin">Administración</button>
         <button class="nav-btn" data-view="configuracion">Configuración</button>
       </nav>
 
-      <div class="status-card glass">
-        <div id="connectionBadge" class="badge neutral">Sin validar</div>
-        <p id="connectionText" class="small">Comprueba conexión, sesión y permisos.</p>
-      </div>
+      <section class="status-card">
+        <div id="connectionBadge" class="badge neutral">Sin sesión</div>
+        <p id="connectionText" class="muted">Accede para trabajar.</p>
+      </section>
 
-      <div class="sidebar-actions">
-        <button id="btnBootstrapAdmin" class="btn primary hidden">Convertirme en admin inicial</button>
-        <button id="btnLogout" class="btn ghost">Cerrar sesión</button>
+      <div class="side-actions">
+        <button id="btnLogout" class="btn ghost full">Cerrar sesión</button>
       </div>
     </aside>
 
-    <main class="main">
-      <header class="topbar">
+    <section class="workspace">
+      <header class="workspace-header">
         <div>
-          <h2 id="viewTitle">Dashboard</h2>
-          <p id="viewSubtitle" class="muted">Inventario para el control del departamento de Banquetes.</p>
+          <h1 id="viewTitle">Dashboard</h1>
+          <p id="viewSubtitle">Resumen ejecutivo del inventario.</p>
         </div>
-        <div class="top-actions">
-          <button id="btnRefresh" class="btn ghost">Actualizar</button>
-          <button id="btnSeed" class="btn primary">Importar Excel inicial</button>
-          <button id="btnImportMenajes" class="btn primary">Importar menajes</button>
 
+        <div class="header-actions">
+          <button id="btnRefresh" class="btn ghost">Actualizar</button>
+          <button id="btnSeed" class="btn primary requires-admin">Importar Bebidas</button>
+          <button id="btnImportMenajes" class="btn primary requires-admin">Importar Menajes</button>
         </div>
       </header>
 
+      <!-- DASHBOARD -->
       <section id="view-dashboard" class="view active">
-        <div class="kpi-grid">
-          <article class="card kpi"><span>Total productos</span><strong id="kpiProductos">0</strong></article>
-          <article class="card kpi"><span>Stock total</span><strong id="kpiStock">0</strong></article>
-          <article class="card kpi"><span>Bajo mínimo</span><strong id="kpiBajoMinimo">0</strong></article>
-          <article class="card kpi"><span>Sin stock</span><strong id="kpiSinStock">0</strong></article>
+        <div class="grid-kpis">
+          <article class="kpi-card">
+            <span class="kpi-label">Total productos</span>
+            <strong id="kpiProductos">0</strong>
+          </article>
+          <article class="kpi-card">
+            <span class="kpi-label">Stock total</span>
+            <strong id="kpiStock">0</strong>
+          </article>
+          <article class="kpi-card">
+            <span class="kpi-label">Bajo mínimo</span>
+            <strong id="kpiBajoMinimo">0</strong>
+          </article>
+          <article class="kpi-card">
+            <span class="kpi-label">Sin stock</span>
+            <strong id="kpiSinStock">0</strong>
+          </article>
         </div>
 
-        <div class="grid-2">
-          <article class="card">
-            <div class="card-header"><h3>Productos críticos</h3></div>
-            <div id="criticalList" class="list"></div>
-          </article>
-          <article class="card">
-            <div class="card-header"><h3>Últimos movimientos</h3></div>
-            <div id="recentMoves" class="list"></div>
-          </article>
+        <div class="grid-two">
+          <section class="panel">
+            <div class="panel-head">
+              <h3>Productos críticos</h3>
+            </div>
+            <div id="criticalList" class="stack-list"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h3>Movimientos recientes</h3>
+            </div>
+            <div id="recentMoves" class="stack-list"></div>
+          </section>
         </div>
       </section>
 
+      <!-- BEBIDAS -->
       <section id="view-productos" class="view">
-        <div class="card filters">
-          <input id="searchInput" type="search" placeholder="Buscar por código, descripción o presentación" />
-          <select id="categoryFilter"><option value="">Todas las categorías</option></select>
-          <select id="stockFilter">
-            <option value="">Todo el stock</option>
-            <option value="low">Bajo mínimo</option>
-            <option value="out">Sin stock</option>
-            <option value="ok">Stock correcto</option>
-          </select>
-          <button id="btnNewProduct" class="btn primary">Nuevo producto</button>
-        </div>
+        <div class="panel">
+          <div class="toolbar">
+            <input id="searchInput" type="text" placeholder="Buscar bebida por código, descripción o presentación" />
+            <select id="categoryFilter">
+              <option value="">Todas las categorías</option>
+            </select>
+            <select id="stockFilter">
+              <option value="">Todo el stock</option>
+              <option value="low">Bajo mínimo</option>
+              <option value="out">Sin stock</option>
+              <option value="ok">Stock correcto</option>
+            </select>
+            <button id="btnNewProduct" class="btn primary">Nueva bebida</button>
+          </div>
 
-        <div class="card table-card">
-          <table>
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Descripción</th>
-                <th>Categoría</th>
-                <th>Unidad</th>
-                <th>Stock</th>
-                <th>Mínimo</th>
-                <th>Página</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="productsTable"></tbody>
-          </table>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Descripción</th>
+                  <th>Categoría</th>
+                  <th>Unidad</th>
+                  <th>Stock</th>
+                  <th>Mínimo</th>
+                  <th>Página</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="productsTable"></tbody>
+            </table>
+          </div>
         </div>
       </section>
-      
+
+      <!-- MENAJES -->
       <section id="view-menajes" class="view">
-  <div class="panel">
-    <div class="panel-head">
-      <h3>Menajes</h3>
-      <p>Inventario de vajilla, cristalería, cubertería, mantelería y material de servicio.</p>
-    </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Menajes</h3>
+            <p>Inventario de vajilla, cristalería, cubertería, mantelería y material de servicio.</p>
+          </div>
 
-    <div class="toolbar">
-      <input id="menajesSearchInput" type="text" placeholder="Buscar menaje por código, descripción o presentación">
-      <select id="menajesCategoryFilter">
-        <option value="">Todas las categorías de menaje</option>
-      </select>
-      <button id="btnNewMenaje" class="btn primary">Nuevo menaje</button>
-    </div>
+          <div class="toolbar">
+            <input id="menajesSearchInput" type="text" placeholder="Buscar menaje por código, descripción o presentación" />
+            <select id="menajesCategoryFilter">
+              <option value="">Todas las categorías de menaje</option>
+            </select>
+            <button id="btnNewMenaje" class="btn primary">Nuevo menaje</button>
+          </div>
 
-    <div class="table-wrap">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Código</th>
-            <th>Descripción</th>
-            <th>Categoría</th>
-            <th>Unidad</th>
-            <th>Stock</th>
-            <th>Mínimo</th>
-            <th>Página</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="menajesTable"></tbody>
-      </table>
-    </div>
-  </div>
-</section>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Descripción</th>
+                  <th>Categoría</th>
+                  <th>Unidad</th>
+                  <th>Stock</th>
+                  <th>Mínimo</th>
+                  <th>Página</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="menajesTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
+      <!-- MOVIMIENTOS -->
       <section id="view-movimientos" class="view">
-        <div class="grid-2">
-          <article class="card">
-            <div class="card-header"><h3>Registrar movimiento</h3></div>
-            <form id="movementForm" class="form">
-              <label>Producto<select id="movementProduct" required></select></label>
-              <label>Tipo
-                <select id="movementType" required>
+        <div class="grid-two">
+          <section class="panel">
+            <div class="panel-head">
+              <h3>Registrar movimiento</h3>
+            </div>
+
+            <form id="movementForm" class="form-grid">
+              <div class="field full">
+                <label for="movementProduct">Producto</label>
+                <select id="movementProduct"></select>
+              </div>
+
+              <div class="field">
+                <label for="movementType">Tipo</label>
+                <select id="movementType">
                   <option value="entrada">Entrada</option>
                   <option value="salida">Salida</option>
                   <option value="ajuste">Ajuste</option>
                 </select>
-              </label>
-              <label>Cantidad<input id="movementQty" type="number" step="0.01" min="0.01" required /></label>
-              <label class="full">Nota<textarea id="movementNote" rows="3" placeholder="Ej. recepción de proveedor, rotura o ajuste tras conteo"></textarea></label>
-              <button class="btn primary" type="submit">Guardar movimiento</button>
+              </div>
+
+              <div class="field">
+                <label for="movementQty">Cantidad</label>
+                <input id="movementQty" type="number" min="0" step="0.01" />
+              </div>
+
+              <div class="field full">
+                <label for="movementNote">Nota</label>
+                <textarea id="movementNote" rows="4" placeholder="Ej. recepción de proveedor, rotura o ajuste tras conteo"></textarea>
+              </div>
+
+              <button type="submit" class="btn primary full">Guardar movimiento</button>
             </form>
-          </article>
-          <article class="card">
-            <div class="card-header"><h3>Historial</h3></div>
-            <div id="movementHistory" class="list"></div>
-          </article>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h3>Historial</h3>
+            </div>
+            <div id="movementHistory" class="stack-list"></div>
+          </section>
         </div>
       </section>
 
+      <!-- ADMIN -->
       <section id="view-admin" class="view">
-        <div class="grid-2 admin-grid">
-          <article class="card">
-            <div class="card-header"><h3>Usuarios y permisos</h3></div>
-            <div id="usersList" class="list"></div>
-          </article>
-          <article class="card">
-            <div class="card-header"><h3>Resumen de seguridad</h3></div>
-            <ul class="steps">
-              <li>Solo <strong>admin</strong> puede cambiar roles y borrar productos.</li>
-              <li><strong>editor</strong> puede crear y actualizar productos y registrar movimientos.</li>
-              <li><strong>viewer</strong> tiene acceso solo de lectura.</li>
-              <li>Los permisos se aplican en interfaz y en RLS dentro de Supabase.</li>
-            </ul>
-            <div class="alert info">Si eres el primer usuario del sistema, pulsa “Convertirme en admin inicial”. Después desaparece.</div>
-          </article>
+        <div class="grid-two">
+          <section class="panel">
+            <div class="panel-head">
+              <h3>Usuarios</h3>
+              <p>Gestión de roles y activación de accesos.</p>
+            </div>
+
+            <div class="actions-row">
+              <button id="btnBootstrapAdmin" class="btn primary">Asignarme admin inicial</button>
+            </div>
+
+            <div id="usersList" class="stack-list"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h3>Notas</h3>
+            </div>
+            <div class="stack-list">
+              <div class="item">
+                <strong>Roles disponibles</strong>
+                <small>viewer = solo lectura · editor = edición · admin = control total</small>
+              </div>
+              <div class="item">
+                <strong>Usuarios inactivos</strong>
+                <small>Un usuario bloqueado no puede editar aunque tenga rol alto.</small>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
 
+      <!-- CONFIG -->
       <section id="view-configuracion" class="view">
-        <div class="grid-2">
-          <article class="card">
-            <div class="card-header"><h3>Conexión Supabase</h3></div>
-            <div class="stack-gap">
-              <div><strong>URL:</strong> <span id="cfgPreviewUrl">—</span></div>
-              <div><strong>Estado sesión:</strong> <span id="cfgPreviewSession">—</span></div>
-              <div><strong>Rol actual:</strong> <span id="cfgPreviewRole">—</span></div>
+        <div class="grid-two">
+          <section class="panel">
+            <div class="panel-head">
+              <h3>Conexión</h3>
             </div>
-            <div class="inline-actions mt-16">
-              <button id="btnOpenSetup" class="btn ghost" type="button">Editar conexión</button>
-              <button id="btnTestConnection2" class="btn primary" type="button">Probar conexión</button>
+
+            <form id="configForm" class="form-grid">
+              <div class="field full">
+                <label for="supabaseUrl">Supabase URL</label>
+                <input id="supabaseUrl" type="text" />
+              </div>
+
+              <div class="field full">
+                <label for="supabaseKey">Supabase anon key</label>
+                <textarea id="supabaseKey" rows="4"></textarea>
+              </div>
+
+              <div class="actions-row full">
+                <button type="submit" class="btn primary">Guardar conexión</button>
+                <button type="button" id="btnTestConnection2" class="btn ghost">Probar</button>
+                <button type="button" id="btnOpenSetup" class="btn ghost">Editar conexión</button>
+                <button type="button" id="btnClearConfig" class="btn ghost">Limpiar</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h3>Estado</h3>
             </div>
-          </article>
-          <article class="card">
-            <div class="card-header"><h3>Guía rápida</h3></div>
-            <ol class="steps">
-              <li>Ejecuta <code>schema.sql</code> y luego <code>seed.sql</code> en Supabase.</li>
-              <li>Crea tu usuario desde la pantalla de acceso.</li>
-              <li>Si eres el primero, conviértete en admin inicial.</li>
-              <li>Desde Administración asigna lectores o editores.</li>
-              <li>Sube la carpeta a GitHub Pages y empieza a usarla.</li>
-            </ol>
-          </article>
+
+            <div class="stack-list">
+              <div class="item">
+                <strong>URL activa</strong>
+                <small id="cfgPreviewUrl">—</small>
+              </div>
+              <div class="item">
+                <strong>Sesión</strong>
+                <small id="cfgPreviewSession">Sin sesión</small>
+              </div>
+              <div class="item">
+                <strong>Rol</strong>
+                <small id="cfgPreviewRole">viewer</small>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
-    </main>
-  </div>
+    </section>
+  </main>
 
-  <dialog id="productDialog">
-    <form id="productForm" class="dialog-card">
-      <div class="dialog-header">
+  <!-- MODAL PRODUCTO -->
+  <dialog id="productDialog" class="product-dialog">
+    <form id="productForm" method="dialog" class="dialog-card" onsubmit="return false;">
+      <div class="dialog-head">
         <h3 id="productDialogTitle">Nuevo producto</h3>
-        <button type="button" id="btnCloseDialog" class="icon-btn">✕</button>
+        <button type="button" id="btnCloseDialog" class="btn-icon">✕</button>
       </div>
-      <input type="hidden" id="productId" />
-      <div class="form-grid">
-        <label>Código<input id="pStockCode" type="text" /></label>
-        <label>Descripción<input id="pDescripcion" type="text" required /></label>
-        <label>Presentación<input id="pPresentacion" type="text" /></label>
-        <label>Fecha stock<input id="pStDate" type="text" placeholder="31-08-25" /></label>
-        <label>Unidad<input id="pUnit" type="text" /></label>
-        <label>Cantidad<input id="pCantidad" type="number" step="0.01" min="0" required /></label>
-        <label>Mínimo<input id="pMinStock" type="number" step="0.01" min="0" required /></label>
-        <label>Página<input id="pPagina" type="number" step="1" min="0" /></label>
-        <label>Categoría<select id="pCategoria"></select></label>
-        <label>Cantidad original<input id="pCantidadOriginal" type="text" /></label>
-        <label class="full">Detalle cantidad<input id="pDetalleCantidad" type="text" /></label>
+
+      <input id="productId" type="hidden" />
+
+      <div class="form-grid two-cols">
+        <div class="field">
+          <label for="pStockCode">Código</label>
+          <input id="pStockCode" type="text" />
+        </div>
+
+        <div class="field">
+          <label for="pDescripcion">Descripción</label>
+          <input id="pDescripcion" type="text" />
+        </div>
+
+        <div class="field">
+          <label for="pPresentacion">Presentación</label>
+          <input id="pPresentacion" type="text" />
+        </div>
+
+        <div class="field">
+          <label for="pStDate">Fecha stock</label>
+          <input id="pStDate" type="text" />
+        </div>
+
+        <div class="field">
+          <label for="pUnit">Unidad</label>
+          <input id="pUnit" type="text" />
+        </div>
+
+        <div class="field">
+          <label for="pCantidad">Cantidad</label>
+          <input id="pCantidad" type="number" min="0" step="0.01" />
+        </div>
+
+        <div class="field">
+          <label for="pMinStock">Mínimo</label>
+          <input id="pMinStock" type="number" min="0" step="0.01" />
+        </div>
+
+        <div class="field">
+          <label for="pPagina">Página</label>
+          <input id="pPagina" type="number" min="0" step="1" />
+        </div>
+
+        <div class="field">
+          <label for="pCategoria">Categoría</label>
+          <select id="pCategoria">
+            <option value="">Sin categoría</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="pCantidadOriginal">Cantidad original</label>
+          <input id="pCantidadOriginal" type="text" />
+        </div>
+
+        <div class="field full">
+          <label for="pDetalleCantidad">Detalle cantidad</label>
+          <textarea id="pDetalleCantidad" rows="3"></textarea>
+        </div>
       </div>
-      <div class="inline-actions">
-        <button class="btn primary" type="submit">Guardar producto</button>
+
+      <div class="actions-row">
+        <button type="submit" class="btn primary full">Guardar producto</button>
       </div>
     </form>
   </dialog>
-
-  <template id="emptyStateTpl">
-    <div class="empty-state">No hay datos para mostrar.</div>
-  </template>
-
-  <script src="app.js"></script>
 </body>
 </html>
