@@ -1173,7 +1173,7 @@ async function importMenajesData() {
 
       const { error } = await state.client
         .from("productos")
-        .upsert(chunk, { onConflict: "descripcion,presentacion,categoria_id" });
+        .insert(chunk);
 
       if (error) throw error;
     }
