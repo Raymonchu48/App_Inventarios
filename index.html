@@ -28,7 +28,7 @@
         <button type="button" class="tab-btn" data-auth-tab="register">Crear cuenta</button>
       </div>
 
-      <!-- Login -->
+      <!-- LOGIN -->
       <form id="loginForm" class="auth-tab active">
         <div class="field">
           <label for="loginEmail">Email</label>
@@ -43,7 +43,7 @@
         <button type="submit" class="btn primary full">Acceder</button>
       </form>
 
-      <!-- Register -->
+      <!-- REGISTER -->
       <form id="registerForm" class="auth-tab">
         <div class="field">
           <label for="registerName">Nombre completo</label>
@@ -63,27 +63,9 @@
         <button type="submit" class="btn primary full">Crear usuario</button>
       </form>
 
-      <details class="setup-box">
-        <summary>Configuración de Supabase</summary>
-
-        <form id="configForm" class="setup-form">
-          <div class="field">
-            <label for="supabaseUrl">Supabase URL</label>
-            <input id="supabaseUrl" type="text" />
-          </div>
-
-          <div class="field">
-            <label for="supabaseKey">Supabase anon key</label>
-            <textarea id="supabaseKey" rows="4"></textarea>
-          </div>
-
-          <div class="actions-row">
-            <button type="submit" class="btn primary">Guardar conexión</button>
-            <button type="button" id="btnTestConnection" class="btn ghost">Probar</button>
-            <button type="button" id="btnClearConfig" class="btn ghost">Limpiar</button>
-          </div>
-        </form>
-      </details>
+      <div class="auth-note muted">
+        La configuración técnica de Supabase está disponible dentro del panel, en la sección Configuración.
+      </div>
     </section>
   </main>
 
@@ -384,7 +366,7 @@
 
   <!-- MODAL PRODUCTO -->
   <dialog id="productDialog" class="product-dialog">
-    <form id="productForm" method="dialog" class="dialog-card" onsubmit="return false;">
+    <form id="productForm" class="dialog-card">
       <div class="dialog-head">
         <h3 id="productDialogTitle">Nuevo producto</h3>
         <button type="button" id="btnCloseDialog" class="btn-icon">✕</button>
