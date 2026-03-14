@@ -468,7 +468,21 @@ function switchView(view) {
     els.viewTitle.textContent = titles[view][0];
     els.viewSubtitle.textContent = titles[view][1];
   }
+
+  if (view === "productos") {
+    if (els.searchInput) els.searchInput.value = "";
+    if (els.categoryFilter) els.categoryFilter.value = "";
+    if (els.stockFilter) els.stockFilter.value = "";
+    renderProducts();
+  }
+
+  if (view === "menajes") {
+    if (els.menajesSearchInput) els.menajesSearchInput.value = "";
+    if (els.menajesCategoryFilter) els.menajesCategoryFilter.value = "";
+    renderMenajes();
+  }
 }
+
 
 async function refreshAll() {
   if (!ensureReady()) return;
@@ -595,26 +609,26 @@ function populateCategoryFilters() {
   els.categoryFilter.innerHTML = `<option value="">Todas las categorías</option>`;
   els.pCategoria.innerHTML = `<option value="">Sin categoría</option>`;
 
+  const beverageCategories = state.categorias.filter(c => !isMenajeCategoryName(c.nombre));
+
+  beverageCategories.forEach(c => {
+    els.categoryFilter.insertAdjacentHTML(
+      "beforeend",
+      `<option value="${c.id}">${escapeHtml(c.nombre)}</option>`
+    );
+  });
+
   state.categorias.forEach(c => {
-    els.categoryFilter.insertAdjacentHTML("beforeend", `<option value="${c.id}">${escapeHtml(c.nombre)}</option>`);
-    els.pCategoria.insertAdjacentHTML("beforeend", `<option value="${c.id}">${escapeHtml(c.nombre)}</option>`);
+    els.pCategoria.insertAdjacentHTML(
+      "beforeend",
+      `<option value="${c.id}">${escapeHtml(c.nombre)}</option>`
+    );
   });
 
-  els.categoryFilter.value = current;
+  const validCurrent = beverageCategories.some(c => c.id === current);
+  els.categoryFilter.value = validCurrent ? current : "";
 }
 
-function populateProductSelects() {
-  if (!els.movementProduct) return;
-
-  const current = els.movementProduct.value;
-  els.movementProduct.innerHTML = `<option value="">Selecciona un producto</option>`;
-
-  state.productos.forEach(p => {
-    els.movementProduct.insertAdjacentHTML("beforeend", `<option value="${p.id}">${escapeHtml(p.descripcion)} · ${formatNum(p.cantidad)}</option>`);
-  });
-
-  if (current) els.movementProduct.value = current;
-}
 
 function isMenajeCategoryName(nombre) {
   const set = [
