@@ -483,7 +483,6 @@ function switchView(view) {
   }
 }
 
-
 async function refreshAll() {
   if (!ensureReady()) return;
 
@@ -602,6 +601,22 @@ function renderRecentMoves() {
   });
 }
 
+function isMenajeCategoryName(nombre) {
+  const set = [
+    "menajes",
+    "vajilla",
+    "cubertería",
+    "cristalería",
+    "mantelería",
+    "buffet y servicio"
+  ];
+  return set.includes((nombre || "").trim().toLowerCase());
+}
+
+function getMenajeCategories() {
+  return state.categorias.filter(c => isMenajeCategoryName(c.nombre));
+}
+
 function populateCategoryFilters() {
   if (!els.categoryFilter || !els.pCategoria) return;
 
@@ -629,25 +644,17 @@ function populateCategoryFilters() {
   els.categoryFilter.value = validCurrent ? current : "";
 }
 
+function populateProductSelects() {
+  if (!els.movementProduct) return;
 
-function isMenajeCategoryName(nombre) {
-  const set = [
-    "menajes",
-    "vajilla",
-    "cubertería",
-    "cristalería",
-    "mantelería",
-    "buffet y servicio"
-  ];
-  return set.includes((nombre || "").trim().toLowerCase());
-}
+  const current = els.movementProduct.value;
+  els.movementProduct.innerHTML = `<option value="">Selecciona un producto</option>`;
 
-function getMenajeCategories() {
-  return state.categorias.filter(c => isMenajeCategoryName(c.nombre));
-}
+  state.productos.forEach(p => {
+    els.movementProduct.insertAdjacentHTML("beforeend", `<option value="${p.id}">${escapeHtml(p.descripcion)} · ${formatNum(p.cantidad)}</option>`);
+  });
 
-function getMenajeCategoryIds() {
-  return new Set(getMenajeCategories().map(c => c.id));
+  if (current) els.movementProduct.value = current;
 }
 
 function populateMenajesFilters() {
@@ -663,7 +670,8 @@ function populateMenajesFilters() {
     );
   });
 
-  els.menajesCategoryFilter.value = current;
+  const validCurrent = getMenajeCategories().some(c => c.id === current);
+  els.menajesCategoryFilter.value = validCurrent ? current : "";
 }
 
 function getFilteredProducts() {
