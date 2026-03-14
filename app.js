@@ -1122,3 +1122,61 @@ function throwFriendly(error, fallback) {
   console.error(error);
   flash(`${fallback}${error?.message ? " · " + error.message : ""}`, true);
 }
+async function importMenajesData() {
+  if (!isAdmin() || !isActiveUser()) {
+    return flash("Solo admin puede importar menajes.", true);
+  }
+
+  if (!confirm("Esto importará el inventario de menajes desde data_menajes.json. ¿Continuar?")) {
+    return;
+  }
+
+  try {
+    const raw = await fetch("data_menajes.json").then(r => r.json());
+
+    const names = [...new Set(raw.map(x => (x.categoria || "Menajes").trim()).filter(Boolean))];
+
+    if (names.length) {
+      const { error: catError } = await state.client
+        .from("categorias")
+        .upsert(names.map(nombre => ({ nombre })), { onConflict: "nombre" });
+
+      if (catError) throw catError;
+    }
+
+    await loadCategorias();
+
+    const catMap = Object.fromEntries(state.categorias.map(c => [c.nombre, c.id]));
+
+    const productos = raw.map(r => ({
+      stock_code: cleanVal(r.stock_code),
+      descripcion: cleanVal(r.descripcion) || "Sin descripción",
+      presentacion: cleanVal(r.presentacion),
+      st_date: cleanVal(r.st_date),
+      unit: cleanVal(r.unit) || "ud",
+      cantidad: Number(r.cantidad || 0),
+      cantidad_original: cleanVal(r.cantidad_original),
+      detalle_cantidad: cleanVal(r.detalle_cantidad),
+      pagina: r.pagina ? Number(r.pagina) : null,
+      min_stock: Number(r.min_stock || 0),
+      categoria_id: catMap[(r.categoria || "Menajes").trim()] || null
+    }));
+
+    const chunkSize = 200;
+
+    for (let i = 0; i < productos.length; i += chunkSize) {
+      const chunk = productos.slice(i, i + chunkSize);
+
+      const { error } = await state.client
+        .from("productos")
+        .upsert(chunk, { onConflict: "descripcion,presentacion,categoria_id" });
+
+      if (error) throw error;
+    }
+
+    flash("Importación de menajes completada.");
+    await refreshAll();
+  } catch (error) {
+    throwFriendly(error, "Falló la importación de menajes.");
+  }
+}
