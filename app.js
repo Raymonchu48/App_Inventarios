@@ -450,7 +450,7 @@ function switchView(view) {
 
   const titles = {
     dashboard: ["Dashboard", "Resumen ejecutivo del inventario."],
-    productos: ["Productos", "Alta, edición y consulta con permisos por rol."],
+    productos: ["Bebidas", "Inventario específico de bebidas."],
     menajes: ["Menajes", "Inventario específico de menaje, vajilla, cristalería y material de servicio."],
     movimientos: ["Movimientos", "Entradas, salidas y ajustes con trazabilidad."],
     admin: ["Administración", "Usuarios, roles y activación de accesos."],
@@ -659,6 +659,7 @@ function getFilteredProducts() {
   const stockMode = els.stockFilter?.value || "";
 
   return state.productos.filter(p => {
+    const isBebida = (p.familia || "bebidas") === "bebidas";
     const matchText = !q || [p.stock_code, p.descripcion, p.presentacion].some(v => (v || "").toLowerCase().includes(q));
     const matchCat = !cat || p.categoria_id === cat;
     const qty = Number(p.cantidad || 0);
@@ -669,9 +670,10 @@ function getFilteredProducts() {
       (stockMode === "out" && qty <= 0) ||
       (stockMode === "ok" && qty > min);
 
-    return matchText && matchCat && matchStock;
+    return isBebida && matchText && matchCat && matchStock;
   });
 }
+
 
 function getFilteredMenajes() {
   const q = els.menajesSearchInput?.value.trim().toLowerCase() || "";
@@ -853,11 +855,13 @@ function openNewProductDialog() {
 
   els.productForm?.reset();
   if (els.productId) els.productId.value = "";
-  if (els.productDialogTitle) els.productDialogTitle.textContent = "Nuevo producto";
+  if (els.productDialogTitle) els.productDialogTitle.textContent = "Nueva bebida";
   if (els.pCategoria) els.pCategoria.value = "";
+  if (els.productDialog) els.productDialog.dataset.familia = "bebidas";
 
   els.productDialog?.showModal();
 }
+
 
 function openNewMenajeDialog() {
   if (!canEdit()) return flash("Tu rol no puede crear menajes.", true);
@@ -865,11 +869,16 @@ function openNewMenajeDialog() {
   els.productForm?.reset();
   if (els.productId) els.productId.value = "";
   if (els.productDialogTitle) els.productDialogTitle.textContent = "Nuevo menaje";
+  if (els.productDialog) els.productDialog.dataset.familia = "menaje";
 
   const menajeCat = getMenajeCategories()[0];
   if (els.pCategoria && menajeCat) {
     els.pCategoria.value = menajeCat.id;
   }
+
+  els.productDialog?.showModal();
+}
+
 
   els.productDialog?.showModal();
 }
@@ -891,6 +900,8 @@ function openEditProductDialog(id) {
   if (els.pCategoria) els.pCategoria.value = p.categoria_id || "";
   if (els.pCantidadOriginal) els.pCantidadOriginal.value = p.cantidad_original || "";
   if (els.pDetalleCantidad) els.pDetalleCantidad.value = p.detalle_cantidad || "";
+  if (els.productDialog) els.productDialog.dataset.familia = p.familia || "bebidas";
+
 
   els.productDialog?.showModal();
 }
@@ -914,6 +925,8 @@ async function onSaveProduct(e) {
     categoria_id: els.pCategoria?.value || null,
     cantidad_original: els.pCantidadOriginal?.value.trim() || null,
     detalle_cantidad: els.pDetalleCantidad?.value.trim() || null,
+    familia: els.productDialog?.dataset.familia || "bebidas",
+
   };
 
   if (!payload.descripcion) {
@@ -1034,18 +1047,20 @@ async function importInitialData() {
     const catMap = Object.fromEntries(state.categorias.map(c => [c.nombre, c.id]));
 
     const productos = raw.map(r => ({
-      stock_code: cleanVal(r.stock_code),
-      descripcion: cleanVal(r.descripcion) || "Sin descripción",
-      presentacion: cleanVal(r.presentacion),
-      st_date: cleanVal(r.st_date),
-      unit: cleanVal(r.unit),
-      cantidad: Number(r.cantidad || 0),
-      cantidad_original: cleanVal(r.cantidad_original),
-      detalle_cantidad: cleanVal(r.detalle_cantidad),
-      pagina: r.pagina ? Number(r.pagina) : null,
-      min_stock: Number(r.min_stock || 0),
-      categoria_id: catMap[(r.categoria || "Otros").trim()] || null
-    }));
+  stock_code: cleanVal(r.stock_code),
+  descripcion: cleanVal(r.descripcion) || "Sin descripción",
+  presentacion: cleanVal(r.presentacion),
+  st_date: cleanVal(r.st_date),
+  unit: cleanVal(r.unit) || "ud",
+  cantidad: Number(r.cantidad || 0),
+  cantidad_original: cleanVal(r.cantidad_original),
+  detalle_cantidad: cleanVal(r.detalle_cantidad),
+  pagina: r.pagina ? Number(r.pagina) : null,
+  min_stock: Number(r.min_stock || 0),
+  categoria_id: catMap[(r.categoria || "Menajes").trim()] || null,
+  familia: "menaje"
+}));
+
 
     const chunkSize = 200;
 
