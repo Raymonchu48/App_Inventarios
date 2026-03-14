@@ -34,6 +34,8 @@ function captureEls() {
     "pPresentacion", "pStDate", "pUnit", "pCantidad", "pMinStock", "pPagina", "pCategoria", "pCantidadOriginal",
     "pDetalleCantidad", "kpiProductos", "kpiStock", "kpiBajoMinimo", "kpiSinStock", "cfgPreviewUrl", "cfgPreviewSession",
     "cfgPreviewRole", "navAdmin", "usersList",
+    "btnImportMenajes",
+
 
     // Menajes
     "menajesSearchInput", "menajesCategoryFilter", "btnNewMenaje", "menajesTable"
@@ -62,6 +64,8 @@ function bindUI() {
   els.btnBootstrapAdmin?.addEventListener("click", onBootstrapAdmin);
   els.btnRefresh?.addEventListener("click", refreshAll);
   els.btnSeed?.addEventListener("click", importInitialData);
+  els.btnImportMenajes?.addEventListener("click", importMenajesData);
+
 
   [els.searchInput, els.categoryFilter, els.stockFilter].forEach(el => {
     el?.addEventListener("input", renderProducts);
