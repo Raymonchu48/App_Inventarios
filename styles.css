@@ -818,3 +818,90 @@ textarea{
     align-items:stretch;
   }
 }
+@media (max-width: 640px){
+  .enterprise-table thead{
+    display:none;
+  }
+
+  .enterprise-table,
+  .enterprise-table tbody,
+  .enterprise-table tr,
+  .enterprise-table td{
+    display:block;
+    width:100%;
+  }
+
+  .enterprise-table{
+    min-width:100%;
+  }
+
+  .enterprise-table tr{
+    margin-bottom:14px;
+  }
+
+  .enterprise-table td{
+    border:0;
+    padding:0;
+    background:transparent !important;
+  }
+
+  .mobile-product-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:16px;
+    box-shadow:var(--shadow-xs);
+  }
+
+  .mobile-product-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:12px;
+  }
+
+  .mobile-product-body{
+    margin-bottom:14px;
+  }
+
+  .mobile-product-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-bottom:14px;
+  }
+
+  .mobile-product-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  .mobile-label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:4px;
+  }
+
+  .mobile-code{
+    font-weight:700;
+    color:var(--navy);
+  }
+
+  .mobile-title{
+    font-size:16px;
+    font-weight:700;
+    color:var(--navy);
+    line-height:1.25;
+  }
+
+  .mobile-sub{
+    color:var(--muted);
+    margin-top:4px;
+    line-height:1.35;
+  }
+}
