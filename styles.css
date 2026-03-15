@@ -853,3 +853,30 @@ textarea{
   display:block;
   object-fit:contain;
 }
+.hero-banner-card{
+  width:100%;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:22px;
+  box-shadow:var(--shadow-sm);
+  overflow:hidden;
+  margin-bottom:18px;
+}
+
+.hero-banner-image{
+  display:block;
+  width:100%;
+  height:auto;
+  object-fit:cover;
+}
+
+.config-actions-bar{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:18px;
+  padding:14px;
+  background:linear-gradient(180deg,#fbfdff,#f7fafc);
+  border:1px solid var(--line);
+  border-radius:16px;
+}
