@@ -604,7 +604,19 @@ async function loadProfiles() {
 }
 
 function isMenajeCategoryName(nombre) {
-  const set = ["menajes", "vajilla", "cubertería", "cristalería", "mantelería", "buffet y servicio"];
+  const set = [
+    "menajes",
+    "vajilla",
+    "cubertería",
+    "cuberteria",
+    "cristalería",
+    "cristaleria",
+    "mantelería",
+    "manteleria",
+    "buffet",
+    "buffet y servicio"
+  ];
+
   return set.includes((nombre || "").trim().toLowerCase());
 }
 
