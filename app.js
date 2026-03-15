@@ -144,8 +144,8 @@ function readConfig() {
   const fromStorage = safeJSON(localStorage.getItem(STORAGE_KEY)) || {};
   const fromWindow = window.APP_CONFIG || {};
 
-  console.log("CONFIG STORAGE:", safeJSON(localStorage.getItem(STORAGE_KEY)));
-  console.log("CONFIG WINDOW:", window.APP_CONFIG);
+  console.log("CONFIG STORAGE:", fromStorage);
+  console.log("CONFIG WINDOW:", fromWindow);
 
   return {
     url: (fromStorage.url || fromWindow.SUPABASE_URL || "").trim(),
