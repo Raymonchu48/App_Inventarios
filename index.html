@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Inventario Banquetes</title>
+  <title>Inventario Pro Enterprise</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
@@ -16,8 +16,8 @@
       <div class="auth-brand">
         <div class="auth-logo">IP</div>
         <div>
-          <h1>Inventario Banquetes/h1>
-          <p>Control de bebidas, menajes y trazabilidad operativa.</p>
+          <h1>Inventario Pro</h1>
+          <p>Plataforma de control para bebidas, menajes y trazabilidad operativa.</p>
         </div>
       </div>
 
@@ -26,6 +26,7 @@
       <div class="auth-tabs-nav">
         <button type="button" class="tab-btn active" data-auth-tab="login">Entrar</button>
         <button type="button" class="tab-btn" data-auth-tab="register">Crear cuenta</button>
+        <button type="button" class="tab-btn" data-auth-tab="setup">Configurar</button>
       </div>
 
       <form id="loginForm" class="auth-tab active">
@@ -61,9 +62,23 @@
         <button type="submit" class="btn primary full">Crear usuario</button>
       </form>
 
-      <div class="auth-footer-note">
-        La configuración técnica de Supabase se gestiona desde el panel interno en la sección Configuración.
-      </div>
+      <form id="configAuthForm" class="auth-tab">
+        <div class="field">
+          <label for="authSupabaseUrl">Supabase URL</label>
+          <input id="authSupabaseUrl" type="text" placeholder="https://tu-proyecto.supabase.co" />
+        </div>
+
+        <div class="field">
+          <label for="authSupabaseKey">Supabase anon key</label>
+          <textarea id="authSupabaseKey" rows="4" placeholder="Pega aquí la anon key"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn primary">Guardar conexión</button>
+          <button type="button" id="btnAuthTestConnection" class="btn ghost">Probar</button>
+          <button type="button" id="btnAuthClearConfig" class="btn ghost">Limpiar</button>
+        </div>
+      </form>
     </section>
   </main>
 
@@ -71,16 +86,16 @@
   <main id="appShell" class="app-shell hidden">
     <aside class="sidebar">
       <div class="sidebar-header">
-        <div class="sidebar-logo">R.V</div>
+        <div class="sidebar-logo">IP</div>
         <div class="sidebar-brand-text">
-          <h2>Inventario Banquetes/h2>
-          <small>Menaje/Bebidas</small>
+          <h2>Inventario Pro</h2>
+          <small>Enterprise Suite</small>
         </div>
       </div>
 
       <section class="sidebar-user-card">
         <div class="sidebar-user-top">
-          <div class="avatar-circle">R</div>
+          <div class="avatar-circle">U</div>
           <div class="sidebar-user-meta">
             <strong id="userName">Invitado</strong>
             <span id="userEmail">Sin sesión</span>
@@ -93,30 +108,12 @@
       </section>
 
       <nav class="side-nav">
-        <button class="nav-btn active" data-view="dashboard">
-          <span class="nav-icon">⌂</span>
-          <span>Inicio</span>
-        </button>
-        <button class="nav-btn" data-view="productos">
-          <span class="nav-icon"></span>
-          <span>Bebidas</span>
-        </button>
-        <button class="nav-btn" data-view="menajes">
-          <span class="nav-icon"></span>
-          <span>Menajes</span>
-        </button>
-        <button class="nav-btn" data-view="movimientos">
-          <span class="nav-icon">↻</span>
-          <span>Movimientos</span>
-        </button>
-        <button id="navAdmin" class="nav-btn" data-view="admin">
-          <span class="nav-icon"></span>
-          <span>Administración</span>
-        </button>
-        <button class="nav-btn" data-view="configuracion">
-          <span class="nav-icon"></span>
-          <span>Configuración</span>
-        </button>
+        <button class="nav-btn active" data-view="dashboard"><span class="nav-icon">⌂</span><span>Inicio</span></button>
+        <button class="nav-btn" data-view="productos"><span class="nav-icon">🍷</span><span>Bebidas</span></button>
+        <button class="nav-btn" data-view="menajes"><span class="nav-icon">🍽</span><span>Menajes</span></button>
+        <button class="nav-btn" data-view="movimientos"><span class="nav-icon">↻</span><span>Movimientos</span></button>
+        <button id="navAdmin" class="nav-btn" data-view="admin"><span class="nav-icon">👥</span><span>Administración</span></button>
+        <button class="nav-btn" data-view="configuracion"><span class="nav-icon">⚙</span><span>Configuración</span></button>
       </nav>
 
       <section class="sidebar-status-card">
@@ -134,7 +131,7 @@
         <div class="topbar-left">
           <div class="search-shell">
             <span class="search-icon">⌕</span>
-            <input type="text" placeholder="Buscar módulo, producto, categoría o código" disabled />
+            <input type="text" placeholder="Buscar producto, código o categoría" disabled />
           </div>
         </div>
 
@@ -219,7 +216,7 @@
             </div>
           </div>
 
-          <div class="toolbar">
+          <div class="toolbar products-toolbar">
             <input id="searchInput" type="text" placeholder="Buscar bebida por código, descripción o presentación" />
             <select id="categoryFilter">
               <option value="">Todas las categorías</option>
@@ -265,7 +262,7 @@
             </div>
           </div>
 
-          <div class="toolbar">
+          <div class="toolbar menajes-toolbar">
             <input id="menajesSearchInput" type="text" placeholder="Buscar menaje por código, descripción o presentación" />
             <select id="menajesCategoryFilter">
               <option value="">Todas las categorías de menaje</option>
@@ -325,7 +322,7 @@
 
               <div class="field full">
                 <label for="movementNote">Nota</label>
-                <textarea id="movementNote" rows="4" placeholder="Ej. recepción de proveedor, rotura, salida interna o ajuste tras conteo"></textarea>
+                <textarea id="movementNote" rows="4" placeholder="Ej. recepción de proveedor, salida interna o ajuste tras conteo"></textarea>
               </div>
 
               <button type="submit" class="btn primary full">Guardar movimiento</button>
@@ -412,7 +409,7 @@
               <div class="form-actions full">
                 <button type="submit" class="btn primary">Guardar conexión</button>
                 <button type="button" id="btnTestConnection2" class="btn ghost">Probar</button>
-                <button type="button" id="btnOpenSetup" class="btn ghost">Editar conexión</button>
+                <button type="button" id="btnOpenSetup" class="btn ghost">Ir a login/config</button>
                 <button type="button" id="btnClearConfig" class="btn ghost">Limpiar</button>
               </div>
             </form>
@@ -433,11 +430,11 @@
               </div>
               <div class="item">
                 <strong>Sesión</strong>
-                <small id="cfgPreviewSession">Sin sesión</small>
+                <small id="cfgPreviewSessionConfig">Sin sesión</small>
               </div>
               <div class="item">
                 <strong>Rol actual</strong>
-                <small id="cfgPreviewRole">viewer</small>
+                <small id="cfgPreviewRoleConfig">viewer</small>
               </div>
             </div>
           </section>
