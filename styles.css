@@ -346,6 +346,37 @@ textarea{
 .side-nav{
   display:grid;
   gap:8px;
+  margin-top:6px;
+}
+
+.nav-btn{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  background:transparent;
+  color:#fff;
+  text-align:left;
+  padding:13px 14px;
+  border-radius:14px;
+  border:1px solid transparent;
+  font-weight:700;
+  letter-spacing:.01em;
+}
+
+.nav-btn span:last-child{
+  line-height:1;
+}
+
+.nav-btn:hover{
+  background:rgba(255,255,255,.07);
+  border-color:rgba(255,255,255,.06);
+}
+
+.nav-btn.active{
+  background:#fff;
+  color:var(--navy);
+  box-shadow:var(--shadow-sm);
 }
 
 .nav-btn{
@@ -374,7 +405,31 @@ textarea{
 
 .nav-icon{
   width:20px;
-  text-align:center;
+  height:20px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 20px;
+}
+
+.nav-icon svg{
+  width:20px;
+  height:20px;
+  display:block;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.9;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  opacity:.96;
+}
+
+.nav-btn:hover .nav-icon svg{
+  transform:translateY(-.5px);
+}
+
+.nav-btn.active .nav-icon svg{
+  stroke-width:2;
 }
 
 .sidebar-status-text{
