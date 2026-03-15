@@ -1,11 +1,12 @@
-const CACHE_NAME = "inventario-pro-v4";
+const CACHE_NAME = "inventario-pro-v5";
 
 const APP_SHELL = [
   "./",
-  "./index.html?v=4",
-  "./styles.css?v=4",
-  "./app.js?v=4",
-  "./manifest.json",
+  "./index.html?v=5",
+  "./styles.css?v=5",
+  "./app.js?v=5",
+  "./config.js?v=5",
+  "./manifest.json?v=5",
   "./logo-banquetes.png",
   "./Banner-Banquetes.png",
   "./icon-192.png",
@@ -37,7 +38,7 @@ self.addEventListener("fetch", event => {
 
   event.respondWith(
     caches.match(event.request).then(cached => {
-      return cached || fetch(event.request).catch(() => caches.match("./index.html?v=4"));
+      return cached || fetch(event.request).catch(() => caches.match("./index.html?v=5"));
     })
   );
 });
