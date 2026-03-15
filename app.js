@@ -12,6 +12,7 @@ const state = {
 };
 
 const els = {};
+let deferredInstallPrompt = null;
 
 window.addEventListener("DOMContentLoaded", init);
 
@@ -19,6 +20,8 @@ async function init() {
   captureEls();
   bindUI();
   loadSavedConfigToForms();
+  registerServiceWorker();
+  setupInstallPrompt();
   await initSupabaseFromConfig();
 }
 
@@ -30,6 +33,7 @@ function captureEls() {
     "btnAuthTestConnection","btnAuthClearConfig",
     "btnTestConnection2","btnClearConfig","btnOpenSetup",
     "btnLogout","btnBootstrapAdmin","btnRefresh","btnSeed","btnImportMenajes",
+    "btnSidebarToggle","sidebar","sidebarOverlay","btnInstallApp",
     "userName","userEmail","roleBadge","activeBadge","connectionBadge","connectionText",
     "viewTitle","viewSubtitle","cfgPreviewUrl","cfgPreviewSession","cfgPreviewRole",
     "cfgPreviewSessionConfig","cfgPreviewRoleConfig",
@@ -48,7 +52,10 @@ function captureEls() {
 
 function bindUI() {
   document.querySelectorAll(".nav-btn").forEach(btn => {
-    btn.addEventListener("click", () => switchView(btn.dataset.view));
+    btn.addEventListener("click", () => {
+      switchView(btn.dataset.view);
+      closeSidebarMobile();
+    });
   });
 
   document.querySelectorAll("[data-auth-tab]").forEach(btn => {
@@ -78,6 +85,10 @@ function bindUI() {
   els.btnSeed?.addEventListener("click", importInitialData);
   els.btnImportMenajes?.addEventListener("click", importMenajesData);
 
+  els.btnSidebarToggle?.addEventListener("click", toggleSidebarMobile);
+  els.sidebarOverlay?.addEventListener("click", closeSidebarMobile);
+  els.btnInstallApp?.addEventListener("click", installApp);
+
   [els.searchInput, els.categoryFilter, els.stockFilter].forEach(el => {
     el?.addEventListener("input", renderProducts);
     el?.addEventListener("change", renderProducts);
@@ -97,6 +108,18 @@ function bindUI() {
 
   els.productForm?.addEventListener("submit", onSaveProduct);
   els.movementForm?.addEventListener("submit", onSaveMovement);
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 980) closeSidebarMobile();
+  });
+}
+
+function toggleSidebarMobile() {
+  els.appShell?.classList.toggle("sidebar-open");
+}
+
+function closeSidebarMobile() {
+  els.appShell?.classList.remove("sidebar-open");
 }
 
 function switchAuthTab(tab) {
@@ -361,11 +384,11 @@ async function testConnection(url, key) {
 
 function clearConfig() {
   localStorage.removeItem(STORAGE_KEY);
-  loadSavedConfigToForms();
   if (els.authSupabaseUrl) els.authSupabaseUrl.value = "";
   if (els.authSupabaseKey) els.authSupabaseKey.value = "";
   if (els.supabaseUrl) els.supabaseUrl.value = "";
   if (els.supabaseKey) els.supabaseKey.value = "";
+  loadSavedConfigToForms();
   flash("Configuración borrada.");
 }
 
@@ -1124,4 +1147,34 @@ function flash(msg, isError = false) {
 function throwFriendly(error, fallback) {
   console.error(error);
   flash(`${fallback}${error?.message ? " · " + error.message : ""}`, true);
+}
+
+/* PWA */
+function registerServiceWorker() {
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./service-worker.js").catch(console.error);
+    });
+  }
+}
+
+function setupInstallPrompt() {
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    els.btnInstallApp?.classList.remove("hidden");
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+    els.btnInstallApp?.classList.add("hidden");
+  });
+}
+
+async function installApp() {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  els.btnInstallApp?.classList.add("hidden");
 }
