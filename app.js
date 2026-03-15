@@ -2,7 +2,7 @@ const STORAGE_KEY = "inventario.supabase.config.v2";
 
 const state = {
   client: null,
-  session: null,function radConfig
+  session: null,
   user: null,
   profile: null,
   categorias: [],
