@@ -2,7 +2,7 @@ const STORAGE_KEY = "inventario.supabase.config.v2";
 
 const state = {
   client: null,
-  session: null,
+  session: null,function radConfig
   user: null,
   profile: null,
   categorias: [],
@@ -143,6 +143,10 @@ function saveConfig(url, key) {
 function readConfig() {
   const fromStorage = safeJSON(localStorage.getItem(STORAGE_KEY)) || {};
   const fromWindow = window.APP_CONFIG || {};
+
+  console.log("CONFIG STORAGE:", safeJSON(localStorage.getItem(STORAGE_KEY)));
+  console.log("CONFIG WINDOW:", window.APP_CONFIG);
+
   return {
     url: (fromStorage.url || fromWindow.SUPABASE_URL || "").trim(),
     key: (fromStorage.key || fromWindow.SUPABASE_ANON_KEY || "").trim(),
