@@ -4,7 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inventario Banquetes</title>
+
+  <meta name="theme-color" content="#18233a" />
+  <meta name="description" content="Control de bebidas, menajes y movimientos para banquetes ." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Inventario Banquetes" />
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+
   <link rel="stylesheet" href="styles.css" />
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script defer src="app.js"></script>
@@ -14,10 +26,10 @@
   <main id="authShell" class="auth-shell">
     <section class="auth-card">
       <div class="auth-brand">
-        <div class="auth-logo">R.V</div>
+        <img src="logo-banquetes.png" alt="Inventarios de Banquetes" class="auth-logo-image" />
         <div>
-          <h1>Inventario Menajes y Bebidas</h1>
-          <p>Control para bebidas, menajes y trazabilidad operativa.</p>
+          <h1>Inventario Banquetes</h1>
+          <p>Plataforma profesional para control de bebidas, menajes y trazabilidad operativa.</p>
         </div>
       </div>
 
@@ -84,10 +96,12 @@
 
   <!-- APP -->
   <main id="appShell" class="app-shell hidden">
-    <aside class="sidebar">
-     <div class="sidebar-header sidebar-header-logo">
-  <img src="logo-banquetes.png" alt="Inventarios de Banquetes" class="sidebar-main-logo">
-</div>
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header sidebar-header-logo">
+        <img src="logo-banquetes.png" alt="Inventarios de Banquetes" class="sidebar-main-logo" />
+      </div>
 
       <section class="sidebar-user-card">
         <div class="sidebar-user-top">
@@ -103,79 +117,49 @@
         </div>
       </section>
 
-    <nav class="side-nav">
-  <button class="nav-btn active" data-view="dashboard">
-    <span class="nav-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24">
-        <path d="M4 10.5 12 4l8 6.5"></path>
-        <path d="M6 9.5V20h12V9.5"></path>
-      </svg>
-    </span>
-    <span>Inicio</span>
-  </button>
+      <nav class="side-nav">
+        <button class="nav-btn active" data-view="dashboard">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5"></path><path d="M6 9.5V20h12V9.5"></path></svg>
+          </span>
+          <span>Inicio</span>
+        </button>
 
-  <button class="nav-btn" data-view="productos">
-    <span class="nav-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24">
-        <path d="M9 3h6"></path>
-        <path d="M10 3v4"></path>
-        <path d="M14 3v4"></path>
-        <path d="M8 7h8l1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L8 7Z"></path>
-        <path d="M10 12h4"></path>
-      </svg>
-    </span>
-    <span>Bebidas</span>
-  </button>
+        <button class="nav-btn" data-view="productos">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M9 3h6"></path><path d="M10 3v4"></path><path d="M14 3v4"></path><path d="M8 7h8l1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L8 7Z"></path><path d="M10 12h4"></path></svg>
+          </span>
+          <span>Bebidas</span>
+        </button>
 
-  <button class="nav-btn" data-view="menajes">
-    <span class="nav-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24">
-        <path d="M6 3v8"></path>
-        <path d="M9 3v8"></path>
-        <path d="M6 7h3"></path>
-        <path d="M7.5 11v10"></path>
-        <path d="M16 3v7"></path>
-        <path d="M18 3v7"></path>
-        <path d="M17 10v11"></path>
-      </svg>
-    </span>
-    <span>Menajes</span>
-  </button>
+        <button class="nav-btn" data-view="menajes">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M6 3v8"></path><path d="M9 3v8"></path><path d="M6 7h3"></path><path d="M7.5 11v10"></path><path d="M16 3v7"></path><path d="M18 3v7"></path><path d="M17 10v11"></path></svg>
+          </span>
+          <span>Menajes</span>
+        </button>
 
-  <button class="nav-btn" data-view="movimientos">
-    <span class="nav-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24">
-        <path d="M20 7h-6V1"></path>
-        <path d="M4 17a8 8 0 0 0 13.66 2.34L20 17"></path>
-        <path d="M4 7l2.34-2.34A8 8 0 0 1 20 10"></path>
-        <path d="M4 23v-6h6"></path>
-      </svg>
-    </span>
-    <span>Movimientos</span>
-  </button>
+        <button class="nav-btn" data-view="movimientos">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M20 7h-6V1"></path><path d="M4 17a8 8 0 0 0 13.66 2.34L20 17"></path><path d="M4 7l2.34-2.34A8 8 0 0 1 20 10"></path><path d="M4 23v-6h6"></path></svg>
+          </span>
+          <span>Movimientos</span>
+        </button>
 
-  <button id="navAdmin" class="nav-btn" data-view="admin">
-    <span class="nav-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24">
-        <path d="M16 21v-1.5a4.5 4.5 0 0 0-4.5-4.5h-3A4.5 4.5 0 0 0 4 19.5V21"></path>
-        <circle cx="10" cy="7" r="3.5"></circle>
-        <path d="M20 21v-1a3.5 3.5 0 0 0-2.8-3.43"></path>
-        <path d="M15.5 4.1a3.5 3.5 0 0 1 0 5.8"></path>
-      </svg>
-    </span>
-    <span>Administración</span>
-  </button>
+        <button id="navAdmin" class="nav-btn" data-view="admin">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M16 21v-1.5a4.5 4.5 0 0 0-4.5-4.5h-3A4.5 4.5 0 0 0 4 19.5V21"></path><circle cx="10" cy="7" r="3.5"></circle><path d="M20 21v-1a3.5 3.5 0 0 0-2.8-3.43"></path><path d="M15.5 4.1a3.5 3.5 0 0 1 0 5.8"></path></svg>
+          </span>
+          <span>Administración</span>
+        </button>
 
-  <button class="nav-btn" data-view="configuracion">
-    <span class="nav-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="3"></circle>
-        <path d="M19.5 12a7.5 7.5 0 0 0-.08-1l2.02-1.58-2-3.46-2.48.8a8.16 8.16 0 0 0-1.74-1l-.38-2.57h-4l-.38 2.57a8.16 8.16 0 0 0-1.74 1l-2.48-.8-2 3.46L4.58 11a8.64 8.64 0 0 0 0 2l-2.02 1.58 2 3.46 2.48-.8c.53.42 1.11.76 1.74 1l.38 2.57h4l.38-2.57c.63-.24 1.21-.58 1.74-1l2.48.8 2-3.46L19.42 13c.05-.33.08-.66.08-1Z"></path>
-      </svg>
-    </span>
-    <span>Configuración</span>
-  </button>
-</nav>
+        <button class="nav-btn" data-view="configuracion">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.5 12a7.5 7.5 0 0 0-.08-1l2.02-1.58-2-3.46-2.48.8a8.16 8.16 0 0 0-1.74-1l-.38-2.57h-4l-.38 2.57a8.16 8.16 0 0 0-1.74 1l-2.48-.8-2 3.46L4.58 11a8.64 8.64 0 0 0 0 2l-2.02 1.58 2 3.46 2.48-.8c.53.42 1.11.76 1.74 1l.38 2.57h4l.38-2.57c.63-.24 1.21-.58 1.74-1l2.48.8 2-3.46L19.42 13c.05-.33.08-.66.08-1Z"></path></svg>
+          </span>
+          <span>Configuración</span>
+        </button>
+      </nav>
 
       <section class="sidebar-status-card">
         <div id="connectionBadge" class="badge neutral">Sin sesión</div>
@@ -183,21 +167,22 @@
       </section>
 
       <div class="sidebar-footer">
+        <button id="btnInstallApp" class="btn ghost full hidden">Instalar app</button>
         <button id="btnLogout" class="btn ghost full">Cerrar sesión</button>
       </div>
     </aside>
 
     <section class="workspace">
-     <header class="topbar">
-  <div class="topbar-left">
-    <div class="search-shell">
-      <span class="search-icon">⌕</span>
-      <input type="text" placeholder="Buscar producto, código o categoría" disabled />
-    </div>
-  </div>
-</header>
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="btnSidebarToggle" class="btn-icon mobile-only" type="button" aria-label="Abrir menú">☰</button>
 
-       
+          <div class="search-shell">
+            <span class="search-icon">⌕</span>
+            <input type="text" placeholder="Buscar producto, código o categoría" disabled />
+          </div>
+        </div>
+      </header>
 
       <section class="workspace-headline">
         <div>
@@ -219,8 +204,9 @@
       <!-- DASHBOARD -->
       <section id="view-dashboard" class="view active">
         <div class="hero-banner-card">
-  <img src="Banner-Banquetes.png" alt="Banner Banquete Fácil" class="hero-banner-image">
-</div>
+          <img src="Banner-Banquetes.png" alt="Banner Banquete Fácil" class="hero-banner-image">
+        </div>
+
         <div class="kpi-grid">
           <article class="kpi-card">
             <span class="kpi-label">Total productos</span>
@@ -449,12 +435,16 @@
         <div class="dashboard-grid">
           <section class="panel">
             <div class="panel-head">
-              <div class="config-actions-bar requires-admin">
-  
               <div>
                 <h3>Conexión del sistema</h3>
                 <p>Gestión de URL y clave pública de Supabase.</p>
               </div>
+            </div>
+
+            <div class="config-actions-bar requires-admin">
+              <button id="btnRefresh" class="btn ghost">Actualizar</button>
+              <button id="btnSeed" class="btn primary">Importar Bebidas</button>
+              <button id="btnImportMenajes" class="btn primary">Importar Menajes</button>
             </div>
 
             <form id="configForm" class="form-grid">
