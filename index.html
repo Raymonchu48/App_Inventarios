@@ -107,14 +107,79 @@
         </div>
       </section>
 
-      <nav class="side-nav">
-        <button class="nav-btn active" data-view="dashboard"><span class="nav-icon">⌂</span><span>Inicio</span></button>
-        <button class="nav-btn" data-view="productos"><span class="nav-icon">🍷</span><span>Bebidas</span></button>
-        <button class="nav-btn" data-view="menajes"><span class="nav-icon">🍽</span><span>Menajes</span></button>
-        <button class="nav-btn" data-view="movimientos"><span class="nav-icon">↻</span><span>Movimientos</span></button>
-        <button id="navAdmin" class="nav-btn" data-view="admin"><span class="nav-icon">👥</span><span>Administración</span></button>
-        <button class="nav-btn" data-view="configuracion"><span class="nav-icon">⚙</span><span>Configuración</span></button>
-      </nav>
+    <nav class="side-nav">
+  <button class="nav-btn active" data-view="dashboard">
+    <span class="nav-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M4 10.5 12 4l8 6.5"></path>
+        <path d="M6 9.5V20h12V9.5"></path>
+      </svg>
+    </span>
+    <span>Inicio</span>
+  </button>
+
+  <button class="nav-btn" data-view="productos">
+    <span class="nav-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M9 3h6"></path>
+        <path d="M10 3v4"></path>
+        <path d="M14 3v4"></path>
+        <path d="M8 7h8l1 12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L8 7Z"></path>
+        <path d="M10 12h4"></path>
+      </svg>
+    </span>
+    <span>Bebidas</span>
+  </button>
+
+  <button class="nav-btn" data-view="menajes">
+    <span class="nav-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M6 3v8"></path>
+        <path d="M9 3v8"></path>
+        <path d="M6 7h3"></path>
+        <path d="M7.5 11v10"></path>
+        <path d="M16 3v7"></path>
+        <path d="M18 3v7"></path>
+        <path d="M17 10v11"></path>
+      </svg>
+    </span>
+    <span>Menajes</span>
+  </button>
+
+  <button class="nav-btn" data-view="movimientos">
+    <span class="nav-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M20 7h-6V1"></path>
+        <path d="M4 17a8 8 0 0 0 13.66 2.34L20 17"></path>
+        <path d="M4 7l2.34-2.34A8 8 0 0 1 20 10"></path>
+        <path d="M4 23v-6h6"></path>
+      </svg>
+    </span>
+    <span>Movimientos</span>
+  </button>
+
+  <button id="navAdmin" class="nav-btn" data-view="admin">
+    <span class="nav-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M16 21v-1.5a4.5 4.5 0 0 0-4.5-4.5h-3A4.5 4.5 0 0 0 4 19.5V21"></path>
+        <circle cx="10" cy="7" r="3.5"></circle>
+        <path d="M20 21v-1a3.5 3.5 0 0 0-2.8-3.43"></path>
+        <path d="M15.5 4.1a3.5 3.5 0 0 1 0 5.8"></path>
+      </svg>
+    </span>
+    <span>Administración</span>
+  </button>
+
+  <button class="nav-btn" data-view="configuracion">
+    <span class="nav-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.5 12a7.5 7.5 0 0 0-.08-1l2.02-1.58-2-3.46-2.48.8a8.16 8.16 0 0 0-1.74-1l-.38-2.57h-4l-.38 2.57a8.16 8.16 0 0 0-1.74 1l-2.48-.8-2 3.46L4.58 11a8.64 8.64 0 0 0 0 2l-2.02 1.58 2 3.46 2.48-.8c.53.42 1.11.76 1.74 1l.38 2.57h4l.38-2.57c.63-.24 1.21-.58 1.74-1l2.48.8 2-3.46L19.42 13c.05-.33.08-.66.08-1Z"></path>
+      </svg>
+    </span>
+    <span>Configuración</span>
+  </button>
+</nav>
 
       <section class="sidebar-status-card">
         <div id="connectionBadge" class="badge neutral">Sin sesión</div>
