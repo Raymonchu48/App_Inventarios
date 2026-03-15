@@ -13,11 +13,11 @@
   <!-- AUTH -->
   <main id="authShell" class="auth-shell">
     <section class="auth-card">
-      <div class="brand-row">
-        <div class="brand-logo">IP</div>
+      <div class="auth-brand">
+        <div class="auth-logo">IP</div>
         <div>
-          <h1>Inventario Banquetes</h1>
-          <p>Inventario Especial de Banquetes para Bebidas y Menaje</p>
+          <h1>Inventario Banquetes/h1>
+          <p>Control de bebidas, menajes y trazabilidad operativa.</p>
         </div>
       </div>
 
@@ -28,43 +28,41 @@
         <button type="button" class="tab-btn" data-auth-tab="register">Crear cuenta</button>
       </div>
 
-      <!-- LOGIN -->
       <form id="loginForm" class="auth-tab active">
         <div class="field">
           <label for="loginEmail">Email</label>
-          <input id="loginEmail" type="email" autocomplete="email" />
+          <input id="loginEmail" type="email" autocomplete="email" placeholder="usuario@empresa.com" />
         </div>
 
         <div class="field">
           <label for="loginPassword">Contraseña</label>
-          <input id="loginPassword" type="password" autocomplete="current-password" />
+          <input id="loginPassword" type="password" autocomplete="current-password" placeholder="••••••••" />
         </div>
 
         <button type="submit" class="btn primary full">Acceder</button>
       </form>
 
-      <!-- REGISTER -->
       <form id="registerForm" class="auth-tab">
         <div class="field">
           <label for="registerName">Nombre completo</label>
-          <input id="registerName" type="text" />
+          <input id="registerName" type="text" placeholder="Nombre y apellidos" />
         </div>
 
         <div class="field">
           <label for="registerEmail">Email</label>
-          <input id="registerEmail" type="email" autocomplete="email" />
+          <input id="registerEmail" type="email" autocomplete="email" placeholder="usuario@empresa.com" />
         </div>
 
         <div class="field">
           <label for="registerPassword">Contraseña</label>
-          <input id="registerPassword" type="password" autocomplete="new-password" />
+          <input id="registerPassword" type="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres" />
         </div>
 
         <button type="submit" class="btn primary full">Crear usuario</button>
       </form>
 
-      <div class="auth-note muted">
-        La configuración técnica de Supabase está disponible dentro del panel, en la sección Configuración.
+      <div class="auth-footer-note">
+        La configuración técnica de Supabase se gestiona desde el panel interno en la sección Configuración.
       </div>
     </section>
   </main>
@@ -72,57 +70,101 @@
   <!-- APP -->
   <main id="appShell" class="app-shell hidden">
     <aside class="sidebar">
-      <div class="sidebar-brand">
-        <div class="brand-logo">R:B</div>
-        <div>
-          <h2>Inventario Banquetes</h2>
-          <small>Bebidas y menajes</small>
+      <div class="sidebar-header">
+        <div class="sidebar-logo">IP</div>
+        <div class="sidebar-brand-text">
+          <h2>Inventario Pro</h2>
+          <small>Enterprise Suite</small>
         </div>
       </div>
 
-      <section class="user-card">
-        <strong id="userName">Invitado</strong>
-        <div id="userEmail" class="muted">Sin sesión</div>
-        <div id="roleBadge" class="badge neutral">viewer</div>
-        <div id="activeBadge" class="badge success">activo</div>
+      <section class="sidebar-user-card">
+        <div class="sidebar-user-top">
+          <div class="avatar-circle">R</div>
+          <div class="sidebar-user-meta">
+            <strong id="userName">Invitado</strong>
+            <span id="userEmail">Sin sesión</span>
+          </div>
+        </div>
+        <div class="sidebar-user-badges">
+          <span id="roleBadge" class="badge neutral">viewer</span>
+          <span id="activeBadge" class="badge success">activo</span>
+        </div>
       </section>
 
       <nav class="side-nav">
-        <button class="nav-btn active" data-view="dashboard">General</button>
-        <button class="nav-btn" data-view="productos">Bebidas</button>
-        <button class="nav-btn" data-view="menajes">Menajes</button>
-        <button class="nav-btn" data-view="movimientos">Movimientos</button>
-        <button id="navAdmin" class="nav-btn" data-view="admin">Administración</button>
-        <button class="nav-btn" data-view="configuracion">Configuración</button>
+        <button class="nav-btn active" data-view="dashboard">
+          <span class="nav-icon">⌂</span>
+          <span>Inicio</span>
+        </button>
+        <button class="nav-btn" data-view="productos">
+          <span class="nav-icon"></span>
+          <span>Bebidas</span>
+        </button>
+        <button class="nav-btn" data-view="menajes">
+          <span class="nav-icon"></span>
+          <span>Menajes</span>
+        </button>
+        <button class="nav-btn" data-view="movimientos">
+          <span class="nav-icon">↻</span>
+          <span>Movimientos</span>
+        </button>
+        <button id="navAdmin" class="nav-btn" data-view="admin">
+          <span class="nav-icon"></span>
+          <span>Administración</span>
+        </button>
+        <button class="nav-btn" data-view="configuracion">
+          <span class="nav-icon"></span>
+          <span>Configuración</span>
+        </button>
       </nav>
 
-      <section class="status-card">
+      <section class="sidebar-status-card">
         <div id="connectionBadge" class="badge neutral">Sin sesión</div>
-        <p id="connectionText" class="muted">Accede para trabajar.</p>
+        <p id="connectionText" class="sidebar-status-text">Accede para trabajar.</p>
       </section>
 
-      <div class="side-actions">
+      <div class="sidebar-footer">
         <button id="btnLogout" class="btn ghost full">Cerrar sesión</button>
       </div>
     </aside>
 
     <section class="workspace">
-      <header class="workspace-header">
-        <div>
-          <h1 id="viewTitle">General</h1>
-          <p id="viewSubtitle">Resumen ejecutivo del inventario.</p>
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="search-shell">
+            <span class="search-icon">⌕</span>
+            <input type="text" placeholder="Buscar módulo, producto, categoría o código" disabled />
+          </div>
         </div>
 
-        <div class="header-actions">
+        <div class="topbar-right">
           <button id="btnRefresh" class="btn ghost">Actualizar</button>
           <button id="btnSeed" class="btn primary requires-admin">Importar Bebidas</button>
           <button id="btnImportMenajes" class="btn primary requires-admin">Importar Menajes</button>
         </div>
       </header>
 
+      <section class="workspace-headline">
+        <div>
+          <h1 id="viewTitle">Dashboard</h1>
+          <p id="viewSubtitle">Resumen ejecutivo del inventario.</p>
+        </div>
+        <div class="workspace-headline-meta">
+          <div class="meta-chip">
+            <span class="meta-label">Sesión</span>
+            <span id="cfgPreviewSession">Sin sesión</span>
+          </div>
+          <div class="meta-chip">
+            <span class="meta-label">Rol</span>
+            <span id="cfgPreviewRole">viewer</span>
+          </div>
+        </div>
+      </section>
+
       <!-- DASHBOARD -->
       <section id="view-dashboard" class="view active">
-        <div class="grid-kpis">
+        <div class="kpi-grid">
           <article class="kpi-card">
             <span class="kpi-label">Total productos</span>
             <strong id="kpiProductos">0</strong>
@@ -141,17 +183,23 @@
           </article>
         </div>
 
-        <div class="grid-two">
+        <div class="dashboard-grid">
           <section class="panel">
             <div class="panel-head">
-              <h3>Productos críticos</h3>
+              <div>
+                <h3>Alertas críticas</h3>
+                <p>Productos por debajo del umbral operativo.</p>
+              </div>
             </div>
             <div id="criticalList" class="stack-list"></div>
           </section>
 
           <section class="panel">
             <div class="panel-head">
-              <h3>Movimientos recientes</h3>
+              <div>
+                <h3>Actividad reciente</h3>
+                <p>Últimos movimientos registrados en el sistema.</p>
+              </div>
             </div>
             <div id="recentMoves" class="stack-list"></div>
           </section>
@@ -160,7 +208,17 @@
 
       <!-- BEBIDAS -->
       <section id="view-productos" class="view">
-        <div class="panel">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>Bebidas</h3>
+              <p>Gestión centralizada de stock, edición y control por categoría.</p>
+            </div>
+            <div class="panel-actions">
+              <button id="btnNewProduct" class="btn primary">Nueva bebida</button>
+            </div>
+          </div>
+
           <div class="toolbar">
             <input id="searchInput" type="text" placeholder="Buscar bebida por código, descripción o presentación" />
             <select id="categoryFilter">
@@ -172,11 +230,10 @@
               <option value="out">Sin stock</option>
               <option value="ok">Stock correcto</option>
             </select>
-            <button id="btnNewProduct" class="btn primary">Nueva bebida</button>
           </div>
 
           <div class="table-wrap">
-            <table class="table">
+            <table class="table enterprise-table">
               <thead>
                 <tr>
                   <th>Código</th>
@@ -192,15 +249,20 @@
               <tbody id="productsTable"></tbody>
             </table>
           </div>
-        </div>
+        </section>
       </section>
 
       <!-- MENAJES -->
       <section id="view-menajes" class="view">
-        <div class="panel">
+        <section class="panel">
           <div class="panel-head">
-            <h3>Menajes</h3>
-            <p>Inventario de vajilla, cristalería, cubertería, mantelería y material de servicio.</p>
+            <div>
+              <h3>Menajes</h3>
+              <p>Inventario de vajilla, cristalería, cubertería, mantelería y material de servicio.</p>
+            </div>
+            <div class="panel-actions">
+              <button id="btnNewMenaje" class="btn primary">Nuevo menaje</button>
+            </div>
           </div>
 
           <div class="toolbar">
@@ -208,11 +270,10 @@
             <select id="menajesCategoryFilter">
               <option value="">Todas las categorías de menaje</option>
             </select>
-            <button id="btnNewMenaje" class="btn primary">Nuevo menaje</button>
           </div>
 
           <div class="table-wrap">
-            <table class="table">
+            <table class="table enterprise-table">
               <thead>
                 <tr>
                   <th>Código</th>
@@ -228,15 +289,18 @@
               <tbody id="menajesTable"></tbody>
             </table>
           </div>
-        </div>
+        </section>
       </section>
 
       <!-- MOVIMIENTOS -->
       <section id="view-movimientos" class="view">
-        <div class="grid-two">
+        <div class="dashboard-grid">
           <section class="panel">
             <div class="panel-head">
-              <h3>Registrar movimiento</h3>
+              <div>
+                <h3>Registrar movimiento</h3>
+                <p>Entradas, salidas y ajustes con trazabilidad operativa.</p>
+              </div>
             </div>
 
             <form id="movementForm" class="form-grid">
@@ -261,7 +325,7 @@
 
               <div class="field full">
                 <label for="movementNote">Nota</label>
-                <textarea id="movementNote" rows="4" placeholder="Ej. recepción de proveedor, rotura o ajuste tras conteo"></textarea>
+                <textarea id="movementNote" rows="4" placeholder="Ej. recepción de proveedor, rotura, salida interna o ajuste tras conteo"></textarea>
               </div>
 
               <button type="submit" class="btn primary full">Guardar movimiento</button>
@@ -270,7 +334,10 @@
 
           <section class="panel">
             <div class="panel-head">
-              <h3>Historial</h3>
+              <div>
+                <h3>Historial</h3>
+                <p>Secuencia de movimientos registrados.</p>
+              </div>
             </div>
             <div id="movementHistory" class="stack-list"></div>
           </section>
@@ -279,15 +346,16 @@
 
       <!-- ADMIN -->
       <section id="view-admin" class="view">
-        <div class="grid-two">
+        <div class="dashboard-grid">
           <section class="panel">
             <div class="panel-head">
-              <h3>Usuarios</h3>
-              <p>Gestión de roles y activación de accesos.</p>
-            </div>
-
-            <div class="actions-row">
-              <button id="btnBootstrapAdmin" class="btn primary">Asignarme admin inicial</button>
+              <div>
+                <h3>Usuarios y permisos</h3>
+                <p>Gestión de roles, activación y gobierno de acceso.</p>
+              </div>
+              <div class="panel-actions">
+                <button id="btnBootstrapAdmin" class="btn primary">Asignarme admin inicial</button>
+              </div>
             </div>
 
             <div id="usersList" class="stack-list"></div>
@@ -295,16 +363,24 @@
 
           <section class="panel">
             <div class="panel-head">
-              <h3>Notas</h3>
+              <div>
+                <h3>Modelo de control</h3>
+                <p>Resumen funcional del esquema de permisos.</p>
+              </div>
             </div>
+
             <div class="stack-list">
               <div class="item">
-                <strong>Roles disponibles</strong>
-                <small>viewer = solo lectura · editor = edición · admin = control total</small>
+                <strong>Viewer</strong>
+                <small>Acceso de solo lectura para consulta operativa.</small>
               </div>
               <div class="item">
-                <strong>Usuarios inactivos</strong>
-                <small>Un usuario bloqueado no puede editar aunque tenga rol alto.</small>
+                <strong>Editor</strong>
+                <small>Capacidad de edición de inventario y registro de movimientos.</small>
+              </div>
+              <div class="item">
+                <strong>Admin</strong>
+                <small>Control total de estructura, usuarios, cargas y supervisión del sistema.</small>
               </div>
             </div>
           </section>
@@ -313,10 +389,13 @@
 
       <!-- CONFIG -->
       <section id="view-configuracion" class="view">
-        <div class="grid-two">
+        <div class="dashboard-grid">
           <section class="panel">
             <div class="panel-head">
-              <h3>Conexión</h3>
+              <div>
+                <h3>Conexión del sistema</h3>
+                <p>Gestión de URL y clave pública de Supabase.</p>
+              </div>
             </div>
 
             <form id="configForm" class="form-grid">
@@ -330,7 +409,7 @@
                 <textarea id="supabaseKey" rows="4"></textarea>
               </div>
 
-              <div class="actions-row full">
+              <div class="form-actions full">
                 <button type="submit" class="btn primary">Guardar conexión</button>
                 <button type="button" id="btnTestConnection2" class="btn ghost">Probar</button>
                 <button type="button" id="btnOpenSetup" class="btn ghost">Editar conexión</button>
@@ -341,7 +420,10 @@
 
           <section class="panel">
             <div class="panel-head">
-              <h3>Estado</h3>
+              <div>
+                <h3>Estado operativo</h3>
+                <p>Resumen de sesión y entorno activo.</p>
+              </div>
             </div>
 
             <div class="stack-list">
@@ -354,7 +436,7 @@
                 <small id="cfgPreviewSession">Sin sesión</small>
               </div>
               <div class="item">
-                <strong>Rol</strong>
+                <strong>Rol actual</strong>
                 <small id="cfgPreviewRole">viewer</small>
               </div>
             </div>
@@ -433,7 +515,7 @@
         </div>
       </div>
 
-      <div class="actions-row">
+      <div class="form-actions">
         <button type="submit" class="btn primary full">Guardar producto</button>
       </div>
     </form>
