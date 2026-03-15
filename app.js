@@ -102,9 +102,17 @@ function bindUI() {
   els.btnNewProduct?.addEventListener("click", openNewProductDialog);
   els.btnNewMenaje?.addEventListener("click", openNewMenajeDialog);
 
-  els.btnCloseDialog?.addEventListener("click", () => {
-    if (els.productDialog?.open) els.productDialog.close();
-  });
+ els.btnCloseDialog?.addEventListener("click", () => {
+  try {
+    if (els.productDialog?.open && els.productDialog?.close) {
+      els.productDialog.close();
+    } else {
+      els.productDialog?.removeAttribute("open");
+    }
+  } catch (error) {
+    console.error("Error cerrando modal:", error);
+  }
+});
 
   els.productForm?.addEventListener("submit", onSaveProduct);
   els.movementForm?.addEventListener("submit", onSaveMovement);
@@ -1052,11 +1060,16 @@ function openNewMenajeDialog() {
 }
 
 function openEditProductDialog(id) {
-  const p = state.productos.find(x => x.id === id);
-  if (!p) return;
+  console.log("EDITAR PRODUCTO ID:", id);
+
+  const p = state.productos.find(x => String(x.id) === String(id));
+  if (!p) {
+    console.error("No encontré el producto con id:", id, state.productos);
+    return flash("No pude localizar el artículo para editar.", true);
+  }
 
   if (els.productDialogTitle) els.productDialogTitle.textContent = "Editar producto";
-  if (els.productId) els.productId.value = p.id;
+  if (els.productId) els.productId.value = p.id || "";
   if (els.pStockCode) els.pStockCode.value = p.stock_code || "";
   if (els.pDescripcion) els.pDescripcion.value = p.descripcion || "";
   if (els.pPresentacion) els.pPresentacion.value = p.presentacion || "";
@@ -1070,11 +1083,21 @@ function openEditProductDialog(id) {
   if (els.pDetalleCantidad) els.pDetalleCantidad.value = p.detalle_cantidad || "";
   if (els.productDialog) els.productDialog.dataset.familia = p.familia || "bebidas";
 
-  els.productDialog?.showModal();
+  try {
+    if (els.productDialog?.showModal) {
+      els.productDialog.showModal();
+    } else {
+      els.productDialog?.setAttribute("open", "open");
+    }
+  } catch (error) {
+    console.error("Error abriendo modal:", error);
+    flash("No pude abrir la ventana de edición.", true);
+  }
 }
 
 async function onSaveProduct(e) {
   e.preventDefault();
+  console.log("INTENTO GUARDAR PRODUCTO");
 
   if (!canEdit() || !isActiveUser()) {
     return flash("No tienes permisos para editar productos.", true);
@@ -1095,30 +1118,51 @@ async function onSaveProduct(e) {
     familia: els.productDialog?.dataset.familia || "bebidas",
   };
 
-  if (!payload.descripcion) return flash("La descripción es obligatoria.", true);
+  console.log("PAYLOAD PRODUCTO:", payload);
 
-  let result;
-  if (els.productId?.value) {
-    result = await state.client
-      .from("productos")
-      .update(payload)
-      .eq("id", els.productId.value)
-      .select()
-      .single();
-  } else {
-    result = await state.client
-      .from("productos")
-      .insert([payload])
-      .select()
-      .single();
+  if (!payload.descripcion) {
+    return flash("La descripción es obligatoria.", true);
   }
 
-  const { error } = result;
-  if (error) return throwFriendly(error, "No pude guardar el producto.");
+  let result;
 
-  if (els.productDialog?.open) els.productDialog.close();
-  flash("Producto guardado.");
-  await refreshAll();
+  try {
+    if (els.productId?.value) {
+      result = await state.client
+        .from("productos")
+        .update(payload)
+        .eq("id", els.productId.value)
+        .select()
+        .single();
+    } else {
+      result = await state.client
+        .from("productos")
+        .insert([payload])
+        .select()
+        .single();
+    }
+
+    const { data, error } = result;
+    console.log("RESPUESTA GUARDAR PRODUCTO:", data, error);
+
+    if (error) {
+      return throwFriendly(error, "No pude guardar el producto.");
+    }
+
+    if (els.productDialog?.open) {
+      try {
+        els.productDialog.close();
+      } catch {
+        els.productDialog.removeAttribute("open");
+      }
+    }
+
+    flash("Producto guardado.");
+    await refreshAll();
+  } catch (error) {
+    console.error("EXCEPCIÓN GUARDAR PRODUCTO:", error);
+    throwFriendly(error, "Error inesperado al guardar el producto.");
+  }
 }
 
 async function deleteProduct(id) {
@@ -1134,93 +1178,79 @@ async function deleteProduct(id) {
 
 async function onSaveMovement(e) {
   e.preventDefault();
+  console.log("INTENTO GUARDAR MOVIMIENTO");
 
   if (!canEdit() || !isActiveUser()) {
     return flash("Tu rol no puede registrar movimientos.", true);
   }
 
-  const producto = state.productos.find(p => p.id === els.movementProduct?.value);
-  if (!producto) return flash("Selecciona un producto.", true);
+  const productoId = els.movementProduct?.value;
+  const producto = state.productos.find(p => String(p.id) === String(productoId));
+
+  console.log("PRODUCTO SELECCIONADO:", productoId, producto);
+
+  if (!producto) {
+    return flash("Selecciona un producto.", true);
+  }
 
   const tipo = els.movementType?.value;
   const qty = Number(els.movementQty?.value || 0);
   const nota = els.movementNote?.value.trim() || null;
   const anterior = Number(producto.cantidad || 0);
 
+  if (!qty || qty <= 0) {
+    return flash("Introduce una cantidad mayor que 0.", true);
+  }
+
   let nuevo = anterior;
   if (tipo === "entrada") nuevo = anterior + qty;
   if (tipo === "salida") nuevo = anterior - qty;
   if (tipo === "ajuste") nuevo = qty;
 
-  if (nuevo < 0) return flash("El stock no puede quedar negativo.", true);
+  if (nuevo < 0) {
+    return flash("El stock no puede quedar negativo.", true);
+  }
 
-  const { error: updateError } = await state.client.from("productos").update({ cantidad: nuevo }).eq("id", producto.id);
-  if (updateError) return throwFriendly(updateError, "No pude actualizar el stock.");
-
-  const { error: moveError } = await state.client.from("movimientos").insert([{
-    producto_id: producto.id,
-    tipo,
-    cantidad: qty,
-    stock_anterior: anterior,
-    stock_nuevo: nuevo,
-    nota,
-    created_by: state.user.id
-  }]);
-
-  if (moveError) return throwFriendly(moveError, "No pude guardar el movimiento.");
-
-  els.movementForm?.reset();
-  flash("Movimiento guardado.");
-  await refreshAll();
-}
-
-async function importInitialData() {
-  if (!isAdmin() || !isActiveUser()) return flash("Solo admin puede importar la carga inicial.", true);
-  if (!confirm("Esto importará o actualizará la carga inicial de bebidas desde data.json. ¿Continuar?")) return;
+  console.log("MOVIMIENTO:", { tipo, qty, anterior, nuevo, nota });
 
   try {
-    const raw = await fetch("data.json").then(r => r.json());
+    const { error: updateError } = await state.client
+      .from("productos")
+      .update({ cantidad: nuevo })
+      .eq("id", producto.id);
 
-    const names = [...new Set(raw.map(x => (x.categoria || "Otros").trim()).filter(Boolean))];
-    if (names.length) {
-      const { error } = await state.client
-        .from("categorias")
-        .upsert(names.map(nombre => ({ nombre })), { onConflict: "nombre" });
-      if (error) throw error;
+    console.log("UPDATE PRODUCTO ERROR:", updateError);
+
+    if (updateError) {
+      return throwFriendly(updateError, "No pude actualizar el stock.");
     }
 
-    await loadCategorias();
-    const catMap = Object.fromEntries(state.categorias.map(c => [c.nombre, c.id]));
+    const { error: moveError } = await state.client
+      .from("movimientos")
+      .insert([{
+        producto_id: producto.id,
+        tipo,
+        cantidad: qty,
+        stock_anterior: anterior,
+        stock_nuevo: nuevo,
+        nota,
+        created_by: state.user.id
+      }]);
 
-    const productos = raw.map(r => ({
-      stock_code: cleanVal(r.stock_code),
-      descripcion: cleanVal(r.descripcion) || "Sin descripción",
-      presentacion: cleanVal(r.presentacion),
-      st_date: cleanVal(r.st_date),
-      unit: cleanVal(r.unit),
-      cantidad: Number(r.cantidad || 0),
-      cantidad_original: cleanVal(r.cantidad_original),
-      detalle_cantidad: cleanVal(r.detalle_cantidad),
-      pagina: r.pagina ? Number(r.pagina) : null,
-      min_stock: Number(r.min_stock || 0),
-      categoria_id: catMap[(r.categoria || "Otros").trim()] || null,
-      familia: "bebidas"
-    }));
+    console.log("INSERT MOVIMIENTO ERROR:", moveError);
 
-    const chunkSize = 200;
-    for (let i = 0; i < productos.length; i += chunkSize) {
-      const chunk = productos.slice(i, i + chunkSize);
-      const { error } = await state.client.from("productos").upsert(chunk, { onConflict: "stock_code" });
-      if (error) throw error;
+    if (moveError) {
+      return throwFriendly(moveError, "No pude guardar el movimiento.");
     }
 
-    flash("Importación inicial de bebidas completada.");
+    els.movementForm?.reset();
+    flash("Movimiento guardado.");
     await refreshAll();
   } catch (error) {
-    throwFriendly(error, "Falló la importación inicial de bebidas.");
+    console.error("EXCEPCIÓN MOVIMIENTO:", error);
+    throwFriendly(error, "Error inesperado al guardar el movimiento.");
   }
 }
-
 async function importMenajesData() {
   if (!isAdmin() || !isActiveUser()) return flash("Solo admin puede importar menajes.", true);
   if (!confirm("Esto importará el inventario de menajes desde data_menajes.json. ¿Continuar?")) return;
