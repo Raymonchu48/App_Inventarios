@@ -1,4 +1,4 @@
-const CACHE_NAME = "inventario-pro-v2";
+const CACHE_NAME = "inventario-pro-v3";
 
 const APP_SHELL = [
   "./",
@@ -24,9 +24,7 @@ self.addEventListener("activate", event => {
     caches.keys().then(keys =>
       Promise.all(
         keys.map(key => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
+          if (key !== CACHE_NAME) return caches.delete(key);
         })
       )
     )
