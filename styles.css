@@ -841,16 +841,15 @@ textarea{
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:10px 6px 14px;
+  padding:8px 4px 10px;
   border-bottom:1px solid rgba(255,255,255,.08);
-  margin-bottom:4px;
+  margin-bottom:6px;
 }
 
 .sidebar-main-logo{
   width:100%;
-  max-width:220px;
+  max-width:190px;
   height:auto;
   display:block;
   object-fit:contain;
-  filter:drop-shadow(0 6px 14px rgba(0,0,0,.18));
 }
