@@ -1162,14 +1162,32 @@ async function onSaveProduct(e) {
 }
 
 async function deleteProduct(id) {
-  if (!isAdmin() || !isActiveUser()) return flash("Solo admin puede borrar productos.", true);
+  console.log("INTENTO BORRAR PRODUCTO:", id);
+
+  if (!isAdmin() || !isActiveUser()) {
+    return flash("Solo admin puede borrar productos.", true);
+  }
+
   if (!confirm("¿Seguro que quieres borrar este producto?")) return;
 
-  const { error } = await state.client.from("productos").delete().eq("id", id);
-  if (error) return throwFriendly(error, "No pude borrar el producto.");
+  try {
+    const { error } = await state.client
+      .from("productos")
+      .delete()
+      .eq("id", id);
 
-  flash("Producto borrado.");
-  await refreshAll();
+    console.log("ERROR BORRAR PRODUCTO:", error);
+
+    if (error) {
+      return throwFriendly(error, "No pude borrar el producto.");
+    }
+
+    flash("Producto borrado.");
+    await refreshAll();
+  } catch (error) {
+    console.error("EXCEPCIÓN BORRAR PRODUCTO:", error);
+    throwFriendly(error, "Error inesperado al borrar el producto.");
+  }
 }
 
 async function onSaveMovement(e) {
@@ -1247,7 +1265,6 @@ async function onSaveMovement(e) {
     throwFriendly(error, "Error inesperado al guardar el movimiento.");
   }
 }
-
 async function importInitialData() {
   if (!isAdmin() || !isActiveUser()) return flash("Solo admin puede importar la carga inicial.", true);
   if (!confirm("Esto importará o actualizará la carga inicial de bebidas desde data.json. ¿Continuar?")) return;
