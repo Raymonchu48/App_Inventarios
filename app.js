@@ -102,17 +102,17 @@ function bindUI() {
   els.btnNewProduct?.addEventListener("click", openNewProductDialog);
   els.btnNewMenaje?.addEventListener("click", openNewMenajeDialog);
 
- els.btnCloseDialog?.addEventListener("click", () => {
-  try {
-    if (els.productDialog?.open && els.productDialog?.close) {
-      els.productDialog.close();
-    } else {
-      els.productDialog?.removeAttribute("open");
+  els.btnCloseDialog?.addEventListener("click", () => {
+    try {
+      if (els.productDialog?.open && els.productDialog?.close) {
+        els.productDialog.close();
+      } else {
+        els.productDialog?.removeAttribute("open");
+      }
+    } catch (error) {
+      console.error("Error cerrando modal:", error);
     }
-  } catch (error) {
-    console.error("Error cerrando modal:", error);
-  }
-});
+  });
 
   els.productForm?.addEventListener("submit", onSaveProduct);
   els.movementForm?.addEventListener("submit", onSaveMovement);
@@ -120,105 +120,9 @@ function bindUI() {
   window.addEventListener("resize", () => {
     if (window.innerWidth > 980) closeSidebarMobile();
     renderProducts();
-    renderMenajes()
-    function renderMenajes() {
-  if (!els.menajesTable) return;
-
-  const rows = getFilteredMenajes();
-  els.menajesTable.innerHTML = "";
-
-  if (!rows.length) {
-    els.menajesTable.innerHTML = `<tr><td colspan="8"><div class="empty-state">No hay menajes para ese filtro.</div></td></tr>`;
-    return;
-  }
-
-  const isMobile = window.innerWidth <= 640;
-
-  rows.forEach(p => {
-    const qty = Number(p.cantidad || 0);
-    const min = Number(p.min_stock || 0);
-    const statusClass = qty <= 0 ? "danger" : qty <= min ? "warn" : "ok";
-    const canWrite = canEdit() && isActiveUser();
-
-    const tr = document.createElement("tr");
-
-    if (isMobile) {
-      tr.className = "mobile-product-row";
-      tr.innerHTML = `
-        <td colspan="8">
-          <div class="mobile-product-card">
-            <div class="mobile-product-top">
-              <div>
-                <div class="mobile-label">Código</div>
-                <div class="mobile-code">${escapeHtml(p.stock_code || "")}</div>
-              </div>
-              <div>
-                <span class="tag ${statusClass}">${formatNum(qty)}</span>
-              </div>
-            </div>
-
-            <div class="mobile-product-body">
-              <div class="mobile-label">Descripción</div>
-              <div class="mobile-title">${escapeHtml(p.descripcion)}</div>
-              <div class="mobile-sub">${escapeHtml(p.presentacion || "")}</div>
-            </div>
-
-            <div class="mobile-product-grid">
-              <div>
-                <div class="mobile-label">Categoría</div>
-                <div>${escapeHtml(p.categorias?.nombre || "Sin categoría")}</div>
-              </div>
-              <div>
-                <div class="mobile-label">Unidad</div>
-                <div>${escapeHtml(p.unit || "")}</div>
-              </div>
-              <div>
-                <div class="mobile-label">Stock</div>
-                <div>${formatNum(qty)}</div>
-              </div>
-              <div>
-                <div class="mobile-label">Mínimo</div>
-                <div>${formatNum(min)}</div>
-              </div>
-            </div>
-
-            <div class="mobile-product-actions">
-              <button class="btn-mini" data-menaje-action="edit" data-id="${p.id}" ${canWrite ? "" : "disabled"}>Editar</button>
-              <button class="btn-mini danger" data-menaje-action="delete" data-id="${p.id}" ${isAdmin() && isActiveUser() ? "" : "disabled"}>Borrar</button>
-            </div>
-          </div>
-        </td>
-      `;
-    } else {
-      tr.innerHTML = `
-        <td>${escapeHtml(p.stock_code || "")}</td>
-        <td><strong>${escapeHtml(p.descripcion)}</strong><br><small class="muted">${escapeHtml(p.presentacion || "")}</small></td>
-        <td>${escapeHtml(p.categorias?.nombre || "Sin categoría")}</td>
-        <td>${escapeHtml(p.unit || "")}</td>
-        <td><span class="tag ${statusClass}">${formatNum(qty)}</span></td>
-        <td>${formatNum(min)}</td>
-        <td>${p.pagina ?? ""}</td>
-        <td>
-          <div class="form-actions">
-            <button class="btn-mini" data-menaje-action="edit" data-id="${p.id}" ${canWrite ? "" : "disabled"}>Editar</button>
-            <button class="btn-mini danger" data-menaje-action="delete" data-id="${p.id}" ${isAdmin() && isActiveUser() ? "" : "disabled"}>Borrar</button>
-          </div>
-        </td>
-      `;
-    }
-
-    els.menajesTable.appendChild(tr);
-  });
-
-  els.menajesTable.querySelectorAll("[data-menaje-action='edit']").forEach(btn => {
-    btn.addEventListener("click", () => openEditProductDialog(btn.dataset.id));
-  });
-
-  els.menajesTable.querySelectorAll("[data-menaje-action='delete']").forEach(btn => {
-    btn.addEventListener("click", () => deleteProduct(btn.dataset.id));
+    renderMenajes();
   });
 }
-  
 
 function toggleSidebarMobile() {
   els.appShell?.classList.toggle("sidebar-open");
@@ -1347,6 +1251,54 @@ async function onSaveMovement(e) {
     throwFriendly(error, "Error inesperado al guardar el movimiento.");
   }
 }
+
+async function importInitialData() {
+  if (!isAdmin() || !isActiveUser()) return flash("Solo admin puede importar la carga inicial.", true);
+  if (!confirm("Esto importará o actualizará la carga inicial de bebidas desde data.json. ¿Continuar?")) return;
+
+  try {
+    const raw = await fetch("data.json").then(r => r.json());
+
+    const names = [...new Set(raw.map(x => (x.categoria || "Otros").trim()).filter(Boolean))];
+    if (names.length) {
+      const { error } = await state.client
+        .from("categorias")
+        .upsert(names.map(nombre => ({ nombre })), { onConflict: "nombre" });
+      if (error) throw error;
+    }
+
+    await loadCategorias();
+    const catMap = Object.fromEntries(state.categorias.map(c => [c.nombre, c.id]));
+
+    const productos = raw.map(r => ({
+      stock_code: cleanVal(r.stock_code),
+      descripcion: cleanVal(r.descripcion) || "Sin descripción",
+      presentacion: cleanVal(r.presentacion),
+      st_date: cleanVal(r.st_date),
+      unit: cleanVal(r.unit),
+      cantidad: Number(r.cantidad || 0),
+      cantidad_original: cleanVal(r.cantidad_original),
+      detalle_cantidad: cleanVal(r.detalle_cantidad),
+      pagina: r.pagina ? Number(r.pagina) : null,
+      min_stock: Number(r.min_stock || 0),
+      categoria_id: catMap[(r.categoria || "Otros").trim()] || null,
+      familia: "bebidas"
+    }));
+
+    const chunkSize = 200;
+    for (let i = 0; i < productos.length; i += chunkSize) {
+      const chunk = productos.slice(i, i + chunkSize);
+      const { error } = await state.client.from("productos").upsert(chunk, { onConflict: "stock_code" });
+      if (error) throw error;
+    }
+
+    flash("Importación inicial de bebidas completada.");
+    await refreshAll();
+  } catch (error) {
+    throwFriendly(error, "Falló la importación inicial de bebidas.");
+  }
+}
+
 async function importMenajesData() {
   if (!isAdmin() || !isActiveUser()) return flash("Solo admin puede importar menajes.", true);
   if (!confirm("Esto importará el inventario de menajes desde data_menajes.json. ¿Continuar?")) return;
@@ -1425,11 +1377,11 @@ function formatDate(v) {
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>'"]/g, ch => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    "'":"&#39;",
-    "\"":"&quot;"
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    "\"": "&quot;"
   }[ch]));
 }
 
@@ -1456,7 +1408,6 @@ function throwFriendly(error, fallback) {
   flash(`${fallback}${error?.message ? " · " + error.message : ""}`, true);
 }
 
-/* PWA */
 function registerServiceWorker() {
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
