@@ -120,9 +120,105 @@ function bindUI() {
   window.addEventListener("resize", () => {
     if (window.innerWidth > 980) closeSidebarMobile();
     renderProducts();
-    renderMenajes();
+    renderMenajes()
+    function renderMenajes() {
+  if (!els.menajesTable) return;
+
+  const rows = getFilteredMenajes();
+  els.menajesTable.innerHTML = "";
+
+  if (!rows.length) {
+    els.menajesTable.innerHTML = `<tr><td colspan="8"><div class="empty-state">No hay menajes para ese filtro.</div></td></tr>`;
+    return;
+  }
+
+  const isMobile = window.innerWidth <= 640;
+
+  rows.forEach(p => {
+    const qty = Number(p.cantidad || 0);
+    const min = Number(p.min_stock || 0);
+    const statusClass = qty <= 0 ? "danger" : qty <= min ? "warn" : "ok";
+    const canWrite = canEdit() && isActiveUser();
+
+    const tr = document.createElement("tr");
+
+    if (isMobile) {
+      tr.className = "mobile-product-row";
+      tr.innerHTML = `
+        <td colspan="8">
+          <div class="mobile-product-card">
+            <div class="mobile-product-top">
+              <div>
+                <div class="mobile-label">Código</div>
+                <div class="mobile-code">${escapeHtml(p.stock_code || "")}</div>
+              </div>
+              <div>
+                <span class="tag ${statusClass}">${formatNum(qty)}</span>
+              </div>
+            </div>
+
+            <div class="mobile-product-body">
+              <div class="mobile-label">Descripción</div>
+              <div class="mobile-title">${escapeHtml(p.descripcion)}</div>
+              <div class="mobile-sub">${escapeHtml(p.presentacion || "")}</div>
+            </div>
+
+            <div class="mobile-product-grid">
+              <div>
+                <div class="mobile-label">Categoría</div>
+                <div>${escapeHtml(p.categorias?.nombre || "Sin categoría")}</div>
+              </div>
+              <div>
+                <div class="mobile-label">Unidad</div>
+                <div>${escapeHtml(p.unit || "")}</div>
+              </div>
+              <div>
+                <div class="mobile-label">Stock</div>
+                <div>${formatNum(qty)}</div>
+              </div>
+              <div>
+                <div class="mobile-label">Mínimo</div>
+                <div>${formatNum(min)}</div>
+              </div>
+            </div>
+
+            <div class="mobile-product-actions">
+              <button class="btn-mini" data-menaje-action="edit" data-id="${p.id}" ${canWrite ? "" : "disabled"}>Editar</button>
+              <button class="btn-mini danger" data-menaje-action="delete" data-id="${p.id}" ${isAdmin() && isActiveUser() ? "" : "disabled"}>Borrar</button>
+            </div>
+          </div>
+        </td>
+      `;
+    } else {
+      tr.innerHTML = `
+        <td>${escapeHtml(p.stock_code || "")}</td>
+        <td><strong>${escapeHtml(p.descripcion)}</strong><br><small class="muted">${escapeHtml(p.presentacion || "")}</small></td>
+        <td>${escapeHtml(p.categorias?.nombre || "Sin categoría")}</td>
+        <td>${escapeHtml(p.unit || "")}</td>
+        <td><span class="tag ${statusClass}">${formatNum(qty)}</span></td>
+        <td>${formatNum(min)}</td>
+        <td>${p.pagina ?? ""}</td>
+        <td>
+          <div class="form-actions">
+            <button class="btn-mini" data-menaje-action="edit" data-id="${p.id}" ${canWrite ? "" : "disabled"}>Editar</button>
+            <button class="btn-mini danger" data-menaje-action="delete" data-id="${p.id}" ${isAdmin() && isActiveUser() ? "" : "disabled"}>Borrar</button>
+          </div>
+        </td>
+      `;
+    }
+
+    els.menajesTable.appendChild(tr);
+  });
+
+  els.menajesTable.querySelectorAll("[data-menaje-action='edit']").forEach(btn => {
+    btn.addEventListener("click", () => openEditProductDialog(btn.dataset.id));
+  });
+
+  els.menajesTable.querySelectorAll("[data-menaje-action='delete']").forEach(btn => {
+    btn.addEventListener("click", () => deleteProduct(btn.dataset.id));
   });
 }
+  
 
 function toggleSidebarMobile() {
   els.appShell?.classList.toggle("sidebar-open");
