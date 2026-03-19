@@ -649,7 +649,7 @@ function renderVarios() {
     const canWrite = canEdit() && isActiveUser();
 
     const tr = document.createElement("tr");
-    tr.innerHTML = `
+    tr.innerHTML = 
       <td>${escapeHtml(p.stock_code || "")}</td>
       <td><strong>${escapeHtml(p.descripcion)}</strong><br><small class="muted">${escapeHtml(p.presentacion || "")}</small></td>
       <td>${escapeHtml(p.categorias?.nombre || "Sin categoría")}</td>
