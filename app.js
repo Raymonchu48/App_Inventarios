@@ -518,15 +518,15 @@ function switchView(view) {
     return;
   }
 
-  const titles = {
-    dashboard: ["Dashboard", "Resumen ejecutivo del inventario."],
-    productos: ["Bebidas", "Gestión centralizada de stock, edición y control por categoría."],
-    menajes: ["Menajes", "Inventario de vajilla, cristalería, cubertería, mantelería y material de servicio."],
-    movimientos: ["Movimientos", "Entradas, salidas y ajustes con trazabilidad."],
-    admin: ["Administración", "Usuarios, roles y activación de accesos."],
-    configuracion: ["Configuración", "Estado de conexión, sesión y despliegue."]
-    varios: ["Varios", "Artículos auxiliares, suministros y otros no clasificados como bebida o menaje."],
-  };
+ const titles = {
+  dashboard: ["Dashboard", "Resumen ejecutivo del inventario."],
+  productos: ["Bebidas", "Gestión centralizada de stock, edición y control por categoría."],
+  menajes: ["Menajes", "Inventario de vajilla, cristalería, cubertería, mantelería y material de servicio."],
+  varios: ["Varios", "Artículos auxiliares, suministros y otros no clasificados como bebida o menaje."],
+  movimientos: ["Movimientos", "Entradas, salidas y ajustes con trazabilidad."],
+  admin: ["Administración", "Usuarios, roles y activación de accesos."],
+  configuracion: ["Configuración", "Estado de conexión, sesión y despliegue."]
+};
 
   document.querySelectorAll(".view").forEach(section => section.classList.remove("active"));
   document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active"));
