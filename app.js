@@ -525,6 +525,7 @@ function switchView(view) {
     movimientos: ["Movimientos", "Entradas, salidas y ajustes con trazabilidad."],
     admin: ["Administración", "Usuarios, roles y activación de accesos."],
     configuracion: ["Configuración", "Estado de conexión, sesión y despliegue."]
+    varios: ["Varios", "Artículos auxiliares, suministros y otros no clasificados como bebida o menaje."],
   };
 
   document.querySelectorAll(".view").forEach(section => section.classList.remove("active"));
@@ -637,7 +638,7 @@ function populateCategoryFilters() {
   if (!els.categoryFilter || !els.pCategoria) return;
 
   const current = els.categoryFilter.value;
-  const beverageCategories = state.categorias.filter(c => !isMenajeCategoryName(c.nombre));
+  const beverageCategories = state.categorias.filter(c => !isMenajeCategoryName(c.nombre) && !isVariosCategoryName(c.nombre));
 
   els.categoryFilter.innerHTML = `<option value="">Todas las categorías</option>`;
   beverageCategories.forEach(c => {
@@ -667,7 +668,14 @@ function populateMenajesFilters() {
   const validCurrent = menajeCats.some(c => c.id === current);
   els.menajesCategoryFilter.value = validCurrent ? current : "";
 }
+function isVariosCategoryName(nombre) {
+  const set = [
+    "otros",
+    "suministros"
+  ];
 
+  return set.includes((nombre || "").trim().toLowerCase());
+}
 function populateProductSelects() {
   if (!els.movementProduct) return;
 
