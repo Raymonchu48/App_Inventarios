@@ -674,7 +674,7 @@ function renderVarios() {
   els.variosTable.querySelectorAll("[data-varios-action='delete']").forEach(btn => {
     btn.addEventListener("click", () => deleteProduct(btn.dataset.id));
   });
-}
+
 
 function getMenajeCategories() {
   return state.categorias.filter(c => isMenajeCategoryName(c.nombre));
