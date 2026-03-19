@@ -613,14 +613,6 @@ async function loadProfiles() {
 }
 
 function isMenajeCategoryName(nombre) {
-  const set = [
-    "menajes",
-    "vajilla",
-    "cuberteria",
-    "cristaleria",
-    "manteleria",
-    "buffet",
-    "buffet y servicio",
     "extras sala"
   ];
 
@@ -674,7 +666,7 @@ function renderVarios() {
   els.variosTable.querySelectorAll("[data-varios-action='delete']").forEach(btn => {
     btn.addEventListener("click", () => deleteProduct(btn.dataset.id));
   });
-
+}
 
 function getMenajeCategories() {
   return state.categorias.filter(c => isMenajeCategoryName(c.nombre));
