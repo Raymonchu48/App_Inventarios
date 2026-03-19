@@ -627,7 +627,53 @@ function isMenajeCategoryName(nombre) {
   return set.includes((nombre || "").trim().toLowerCase());
 }
 
-  return set.includes((nombre || "").trim().toLowerCase());
+  function getFilteredVarios() {
+  return state.productos.filter(p => p.familia === "varios");
+}
+
+function renderVarios() {
+  if (!els.variosTable) return;
+
+  const rows = getFilteredVarios();
+  els.variosTable.innerHTML = "";
+
+  if (!rows.length) {
+    els.variosTable.innerHTML = `<tr><td colspan="8"><div class="empty-state">No hay artículos en Varios.</div></td></tr>`;
+    return;
+  }
+
+  rows.forEach(p => {
+    const qty = Number(p.cantidad || 0);
+    const min = Number(p.min_stock || 0);
+    const statusClass = qty <= 0 ? "danger" : qty <= min ? "warn" : "ok";
+    const canWrite = canEdit() && isActiveUser();
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${escapeHtml(p.stock_code || "")}</td>
+      <td><strong>${escapeHtml(p.descripcion)}</strong><br><small class="muted">${escapeHtml(p.presentacion || "")}</small></td>
+      <td>${escapeHtml(p.categorias?.nombre || "Sin categoría")}</td>
+      <td>${escapeHtml(p.unit || "")}</td>
+      <td><span class="tag ${statusClass}">${formatNum(qty)}</span></td>
+      <td>${formatNum(min)}</td>
+      <td>${p.pagina ?? ""}</td>
+      <td>
+        <div class="form-actions">
+          <button class="btn-mini" data-varios-action="edit" data-id="${p.id}" ${canWrite ? "" : "disabled"}>Editar</button>
+          <button class="btn-mini danger" data-varios-action="delete" data-id="${p.id}" ${isAdmin() && isActiveUser() ? "" : "disabled"}>Borrar</button>
+        </div>
+      </td>
+  
+    els.variosTable.appendChild(tr);
+  });
+
+  els.variosTable.querySelectorAll("[data-varios-action='edit']").forEach(btn => {
+    btn.addEventListener("click", () => openEditProductDialog(btn.dataset.id));
+  });
+
+  els.variosTable.querySelectorAll("[data-varios-action='delete']").forEach(btn => {
+    btn.addEventListener("click", () => deleteProduct(btn.dataset.id));
+  });
 }
 
 function getMenajeCategories() {
