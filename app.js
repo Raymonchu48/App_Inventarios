@@ -619,7 +619,12 @@ function isMenajeCategoryName(nombre) {
     "cristaleria",
     "manteleria",
     "buffet",
+    "buffet y servicio",
+    "extras sala"
   ];
+
+  return set.includes((nombre || "").trim().toLowerCase());
+}
 
   return set.includes((nombre || "").trim().toLowerCase());
 }
