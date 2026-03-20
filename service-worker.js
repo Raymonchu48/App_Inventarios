@@ -3,9 +3,9 @@ const CACHE_NAME = "inventario-pro-v11";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=10",
-  "./app.js?v=10",
-  "./config.js?v=10",
+  "./styles.css?v=11",
+  "./app.js?v=11",
+  "./config.js?v=11",
   "./manifest.json",
   "./logo-banquetes.png",
   "./Banner-Banquetes.png",
