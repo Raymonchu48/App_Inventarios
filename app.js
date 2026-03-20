@@ -615,11 +615,8 @@ function isMenajeCategoryName(nombre) {
   const set = [
     "menajes",
     "vajilla",
-    "cubertería",
     "cuberteria",
-    "cristalería",
     "cristaleria",
-    "mantelería",
     "manteleria",
     "buffet",
     "buffet y servicio",
@@ -631,8 +628,11 @@ function isMenajeCategoryName(nombre) {
 
 function isVariosCategoryName(nombre) {
   const set = [
-    "otros",
+ 
     "suministros"
+    "despensa y condimentos",
+"fruta y verdura",
+"leches y bebidas vegetales"
   ];
 
   return set.includes((nombre || "").trim().toLowerCase());
