@@ -15,11 +15,11 @@
   <link rel="apple-touch-icon" href="icon-192.png" />
   <link rel="icon" type="image/png" href="icon-192.png" />
 
- <link rel="stylesheet" href="styles.css?v=7" />
+ <link rel="stylesheet" href="styles.css?v=10" />
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=9"></script>
-<script defer src="app.js?v=9"></script>
+<script src="config.js?v=10"></script>
+<script defer src="app.js?v=10"></script>
 </head>
 <body>
   <!-- AUTH -->
@@ -501,86 +501,87 @@
   </main>
 
   <!-- MODAL PRODUCTO -->
-  <dialog id="productDialog" class="product-dialog">
-    <form id="productForm" class="dialog-card">
-      <div class="dialog-head">
-        <h3 id="productDialogTitle">Nuevo producto</h3>
-        <button type="button" id="btnCloseDialog" class="btn-icon">✕</button>
+ <dialog id="productDialog" class="product-dialog">
+  <form id="productForm" class="dialog-card">
+    <div class="dialog-head">
+      <h3 id="productDialogTitle">Nuevo producto</h3>
+      <button type="button" id="btnCloseDialog" class="btn-icon">✕</button>
+    </div>
+
+    <input id="productId" type="hidden" />
+
+    <div class="form-grid two-cols">
+      <div class="field">
+        <label for="pStockCode">Código</label>
+        <input id="pStockCode" type="text" />
       </div>
 
-      <input id="productId" type="hidden" />
-
-      <div class="form-grid two-cols">
-        <div class="field">
-          <label for="pStockCode">Código</label>
-          <input id="pStockCode" type="text" />
-        </div>
-
-        <div class="field">
-          <label for="pDescripcion">Descripción</label>
-          <input id="pDescripcion" type="text" />
-        </div>
-
-        <div class="field">
-          <label for="pPresentacion">Presentación</label>
-          <input id="pPresentacion" type="text" />
-        </div>
-
-        <div class="field">
-          <label for="pStDate">Fecha stock</label>
-          <input id="pStDate" type="text" />
-        </div>
-
-        <div class="field">
-          <label for="pUnit">Unidad</label>
-          <input id="pUnit" type="text" />
-        </div>
-
-        <div class="field">
-          <label for="pCantidad">Cantidad</label>
-          <input id="pCantidad" type="number" min="0" step="0.01" />
-        </div>
-
-        <div class="field">
-          <label for="pMinStock">Mínimo</label>
-          <input id="pMinStock" type="number" min="0" step="0.01" />
-        </div>
-
-        <div class="field">
-          <label for="pPagina">Página</label>
-          <input id="pPagina" type="number" min="0" step="1" />
-        </div>
-        <label>
-  Familia
-  <select id="pFamilia">
-    <option value="bebidas">Bebidas</option>
-    <option value="menaje">Menaje</option>
-    <option value="varios">Varios</option>
-  </select>
-</label>
-
-        <div class="field">
-          <label for="pCategoria">Categoría</label>
-          <select id="pCategoria">
-            <option value="">Sin categoría</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="pCantidadOriginal">Cantidad original</label>
-          <input id="pCantidadOriginal" type="text" />
-        </div>
-
-        <div class="field full">
-          <label for="pDetalleCantidad">Detalle cantidad</label>
-          <textarea id="pDetalleCantidad" rows="3"></textarea>
-        </div>
+      <div class="field">
+        <label for="pDescripcion">Descripción</label>
+        <input id="pDescripcion" type="text" />
       </div>
 
-      <div class="form-actions">
-        <button type="submit" class="btn primary full">Guardar producto</button>
+      <div class="field">
+        <label for="pPresentacion">Presentación</label>
+        <input id="pPresentacion" type="text" />
       </div>
-    </form>
-  </dialog>
+
+      <div class="field">
+        <label for="pStDate">Fecha stock</label>
+        <input id="pStDate" type="text" />
+      </div>
+
+      <div class="field">
+        <label for="pUnit">Unidad</label>
+        <input id="pUnit" type="text" />
+      </div>
+
+      <div class="field">
+        <label for="pCantidad">Cantidad</label>
+        <input id="pCantidad" type="number" min="0" step="0.01" />
+      </div>
+
+      <div class="field">
+        <label for="pMinStock">Mínimo</label>
+        <input id="pMinStock" type="number" min="0" step="0.01" />
+      </div>
+
+      <div class="field">
+        <label for="pPagina">Página</label>
+        <input id="pPagina" type="number" min="0" step="1" />
+      </div>
+
+      <div class="field">
+        <label for="pFamilia">Familia</label>
+        <select id="pFamilia">
+          <option value="bebidas">Bebidas</option>
+          <option value="menaje">Menaje</option>
+          <option value="varios">Varios</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="pCategoria">Categoría</label>
+        <select id="pCategoria">
+          <option value="">Sin categoría</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="pCantidadOriginal">Cantidad original</label>
+        <input id="pCantidadOriginal" type="text" />
+      </div>
+
+      <div class="field full">
+        <label for="pDetalleCantidad">Detalle cantidad</label>
+        <textarea id="pDetalleCantidad" rows="3"></textarea>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn primary full">Guardar producto</button>
+    </div>
+  </form>
+</dialog>
 </body>
 </html>
