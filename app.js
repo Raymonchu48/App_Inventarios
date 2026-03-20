@@ -1203,7 +1203,7 @@ async function onSaveProduct(e) {
     categoria_id: els.pCategoria?.value || null,
     cantidad_original: els.pCantidadOriginal?.value.trim() || null,
     detalle_cantidad: els.pDetalleCantidad?.value.trim() || null,
-    familia: els.productDialog?.dataset.familia || "bebidas",
+    familia: els.pFamilia?.value || els.productDialog?.dataset.familia || "bebidas",
   };
 
   console.log("PAYLOAD PRODUCTO:", payload);
