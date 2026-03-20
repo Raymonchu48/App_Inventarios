@@ -629,10 +629,10 @@ function isMenajeCategoryName(nombre) {
 function isVariosCategoryName(nombre) {
   const set = [
  
-    "suministros"
+    "suministros",
     "despensa y condimentos",
-"fruta y verdura",
-"leches y bebidas vegetales"
+    "fruta y verdura",
+    "leches y bebidas vegetales"
   ];
 
   return set.includes((nombre || "").trim().toLowerCase());
