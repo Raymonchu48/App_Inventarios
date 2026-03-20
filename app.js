@@ -611,16 +611,44 @@ async function loadProfiles() {
   if (error) return throwFriendly(error, "No pude cargar perfiles.");
   state.perfiles = data || [];
 }
-
 function isMenajeCategoryName(nombre) {
+  const set = [
+    "menajes",
+    "vajilla",
+    "cubertería",
+    "cuberteria",
+    "cristalería",
+    "cristaleria",
+    "mantelería",
+    "manteleria",
+    "buffet",
+    "buffet y servicio",
     "extras sala"
   ];
 
   return set.includes((nombre || "").trim().toLowerCase());
 }
 
-  function getFilteredVarios() {
-  return state.productos.filter(p => p.familia === "varios");
+function isVariosCategoryName(nombre) {
+  const set = [
+    "otros",
+    "suministros"
+  ];
+
+  return set.includes((nombre || "").trim().toLowerCase());
+}
+
+function getFilteredVarios() {
+  const q = els.variosSearchInput?.value.trim().toLowerCase() || "";
+  const cat = els.variosCategoryFilter?.value || "";
+
+  return state.productos.filter(p => {
+    const isVarios = p.familia === "varios";
+    const matchText = !q || [p.stock_code, p.descripcion, p.presentacion]
+      .some(v => (v || "").toLowerCase().includes(q));
+    const matchCat = !cat || p.categoria_id === cat;
+    return isVarios && matchText && matchCat;
+  });
 }
 
 function renderVarios() {
@@ -641,7 +669,7 @@ function renderVarios() {
     const canWrite = canEdit() && isActiveUser();
 
     const tr = document.createElement("tr");
-    tr.innerHTML = 
+    tr.innerHTML = `
       <td>${escapeHtml(p.stock_code || "")}</td>
       <td><strong>${escapeHtml(p.descripcion)}</strong><br><small class="muted">${escapeHtml(p.presentacion || "")}</small></td>
       <td>${escapeHtml(p.categorias?.nombre || "Sin categoría")}</td>
@@ -655,7 +683,8 @@ function renderVarios() {
           <button class="btn-mini danger" data-varios-action="delete" data-id="${p.id}" ${isAdmin() && isActiveUser() ? "" : "disabled"}>Borrar</button>
         </div>
       </td>
-  
+    `;
+
     els.variosTable.appendChild(tr);
   });
 
@@ -672,20 +701,32 @@ function getMenajeCategories() {
   return state.categorias.filter(c => isMenajeCategoryName(c.nombre));
 }
 
+function getVariosCategories() {
+  return state.categorias.filter(c => isVariosCategoryName(c.nombre));
+}
+
 function populateCategoryFilters() {
   if (!els.categoryFilter || !els.pCategoria) return;
 
   const current = els.categoryFilter.value;
-  const beverageCategories = state.categorias.filter(c => !isMenajeCategoryName(c.nombre) && !isVariosCategoryName(c.nombre));
+  const beverageCategories = state.categorias.filter(
+    c => !isMenajeCategoryName(c.nombre) && !isVariosCategoryName(c.nombre)
+  );
 
   els.categoryFilter.innerHTML = `<option value="">Todas las categorías</option>`;
   beverageCategories.forEach(c => {
-    els.categoryFilter.insertAdjacentHTML("beforeend", `<option value="${c.id}">${escapeHtml(c.nombre)}</option>`);
+    els.categoryFilter.insertAdjacentHTML(
+      "beforeend",
+      `<option value="${c.id}">${escapeHtml(c.nombre)}</option>`
+    );
   });
 
   els.pCategoria.innerHTML = `<option value="">Sin categoría</option>`;
   state.categorias.forEach(c => {
-    els.pCategoria.insertAdjacentHTML("beforeend", `<option value="${c.id}">${escapeHtml(c.nombre)}</option>`);
+    els.pCategoria.insertAdjacentHTML(
+      "beforeend",
+      `<option value="${c.id}">${escapeHtml(c.nombre)}</option>`
+    );
   });
 
   const validCurrent = beverageCategories.some(c => c.id === current);
