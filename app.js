@@ -14,16 +14,38 @@ const state = {
 const els = {};
 let deferredInstallPrompt = null;
 
+async function hardResetClientCaches() {
+  try {
+    if ("serviceWorker" in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      for (const reg of registrations) {
+        await reg.unregister();
+      }
+    }
+
+    if ("caches" in window) {
+      const keys = await caches.keys();
+      for (const key of keys) {
+        await caches.delete(key);
+      }
+    }
+
+    console.log("Service workers y cachés eliminados.");
+  } catch (error) {
+    console.error("No pude limpiar service workers/cachés:", error);
+  }
+}
 window.addEventListener("DOMContentLoaded", init);
 
 async function init() {
+  await hardResetClientCaches();
   captureEls();
   bindUI();
   loadSavedConfigToForms();
- // registerServiceWorker();
-// setupInstallPrompt();
   await initSupabaseFromConfig();
 }
+
+    
 
 function captureEls() {
   [
