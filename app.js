@@ -856,10 +856,47 @@ function renderDashboard() {
   const bajos = state.productos.filter(p => Number(p.cantidad || 0) <= Number(p.min_stock || 0)).length;
   const sin = state.productos.filter(p => Number(p.cantidad || 0) <= 0).length;
 
+  const bebidas = state.productos.filter(p => (p.familia || "bebidas") === "bebidas").length;
+  const menajes = state.productos.filter(p => p.familia === "menaje").length;
+  const varios = state.productos.filter(p => p.familia === "varios").length;
+
+  const recentMovesCount = state.movimientos.slice(0, 8).length;
+  const criticalCount = state.productos.filter(p => Number(p.cantidad || 0) <= Number(p.min_stock || 0)).length;
+
+  let operationalStatus = "Controlado";
+  if (sin > 0) {
+    operationalStatus = "Crítico";
+  } else if (bajos > 0) {
+    operationalStatus = "Seguimiento";
+  }
+
   if (els.kpiProductos) els.kpiProductos.textContent = totalProductos;
   if (els.kpiStock) els.kpiStock.textContent = formatNum(stockTotal);
   if (els.kpiBajoMinimo) els.kpiBajoMinimo.textContent = bajos;
   if (els.kpiSinStock) els.kpiSinStock.textContent = sin;
+
+  if (els.kpiBebidas) els.kpiBebidas.textContent = bebidas;
+  if (els.kpiMenajes) els.kpiMenajes.textContent = menajes;
+  if (els.kpiVarios) els.kpiVarios.textContent = varios;
+  if (els.kpiMovimientosTotal) els.kpiMovimientosTotal.textContent = state.movimientos.length;
+
+  if (els.kpiOperationalStatus) els.kpiOperationalStatus.textContent = operationalStatus;
+  if (els.kpiCriticalCount) els.kpiCriticalCount.textContent = criticalCount;
+  if (els.kpiRecentMoves) els.kpiRecentMoves.textContent = recentMovesCount;
+
+  if (els.familyCountBebidas) els.familyCountBebidas.textContent = bebidas;
+  if (els.familyCountMenajes) els.familyCountMenajes.textContent = menajes;
+  if (els.familyCountVarios) els.familyCountVarios.textContent = varios;
+
+  if (els.executiveSummary) {
+    if (sin > 0) {
+      els.executiveSummary.textContent = `Existen ${sin} artículos sin stock y ${bajos} bajo mínimo. Requiere intervención operativa inmediata.`;
+    } else if (bajos > 0) {
+      els.executiveSummary.textContent = `El inventario está operativo, pero hay ${bajos} artículos bajo mínimo que requieren reposición o seguimiento.`;
+    } else {
+      els.executiveSummary.textContent = `Inventario estable. No se detectan artículos sin stock ni incidencias críticas activas en este momento.`;
+    }
+  }
 
   renderCriticalList();
   renderRecentMoves();
