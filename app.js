@@ -192,12 +192,11 @@ function safeJSON(s) {
 }
 
 function readConfig() {
-  const fromStorage = safeJSON(localStorage.getItem(STORAGE_KEY)) || {};
   const fromWindow = window.APP_CONFIG || {};
 
   return {
-    url: (fromStorage.url || fromWindow.SUPABASE_URL || "").trim(),
-    key: (fromStorage.key || fromWindow.SUPABASE_ANON_KEY || "").trim()
+    url: (fromWindow.SUPABASE_URL || "").trim(),
+    key: (fromWindow.SUPABASE_ANON_KEY || "").trim()
   };
 }
 
