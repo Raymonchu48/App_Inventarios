@@ -905,3 +905,117 @@ textarea{
     line-height:1.35;
   }
 }
+.executive-strip{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin:18px 0 18px;
+}
+
+.executive-chip{
+  background:linear-gradient(135deg,#132235,#1c314c);
+  color:#fff;
+  border-radius:18px;
+  padding:16px 18px;
+  box-shadow:0 12px 28px rgba(16,35,58,.18);
+}
+
+.executive-chip-label{
+  display:block;
+  font-size:12px;
+  opacity:.8;
+  margin-bottom:8px;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.executive-chip strong{
+  font-size:24px;
+  font-weight:800;
+}
+
+.premium-kpi-grid{
+  grid-template-columns:repeat(4,1fr);
+}
+
+.kpi-card.premium{
+  background:linear-gradient(180deg,#ffffff,#f7fbff);
+  border:1px solid #dbe5f0;
+}
+
+.kpi-card.premium.alert{
+  background:linear-gradient(180deg,#fffaf0,#fff4dd);
+}
+
+.kpi-card.premium.danger{
+  background:linear-gradient(180deg,#fff4f4,#ffe9e9);
+}
+
+.kpi-subtext{
+  display:block;
+  margin-top:8px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.dashboard-grid-premium{
+  margin-top:18px;
+}
+
+.family-summary-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+
+.family-summary-card{
+  border-radius:18px;
+  padding:18px;
+  border:1px solid var(--line);
+  background:#fff;
+}
+
+.family-summary-card strong{
+  display:block;
+  font-size:28px;
+  margin:6px 0;
+}
+
+.family-summary-label{
+  display:block;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:var(--muted);
+}
+
+.family-bebidas{
+  background:linear-gradient(180deg,#f3f8ff,#edf5ff);
+}
+
+.family-menaje{
+  background:linear-gradient(180deg,#f7fbf5,#eef8ec);
+}
+
+.family-varios{
+  background:linear-gradient(180deg,#faf7ff,#f3edff);
+}
+
+.executive-summary-box{
+  min-height:120px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,#ffffff,#f7fafc);
+  padding:18px;
+  font-size:15px;
+  line-height:1.5;
+  color:var(--text);
+}
+
+@media (max-width:1080px){
+  .premium-kpi-grid,
+  .executive-strip,
+  .family-summary-grid{
+    grid-template-columns:1fr;
+  }
+}
