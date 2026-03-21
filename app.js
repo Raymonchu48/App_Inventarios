@@ -128,6 +128,11 @@ function bindUI() {
     el?.addEventListener("change", renderVarios);
   });
 
+  [els.movementFilterType, els.movementFilterText].forEach(el => {
+  el?.addEventListener("input", renderMovementHistory);
+  el?.addEventListener("change", renderMovementHistory);
+});
+
   els.btnNewProduct?.addEventListener("click", openNewProductDialog);
   els.btnNewMenaje?.addEventListener("click", openNewMenajeDialog);
   els.btnNewVarios?.addEventListener("click", openNewVariosDialog);
@@ -1241,20 +1246,59 @@ function renderVarios() {
 function renderMovementHistory() {
   if (!els.movementHistory) return;
 
+  const typeFilter = els.movementFilterType?.value || "";
+  const textFilter = els.movementFilterText?.value.trim().toLowerCase() || "";
+
+  const rows = state.movimientos.filter(m => {
+    const matchType = !typeFilter || m.tipo === typeFilter;
+
+    const textBase = [
+      m.productos?.descripcion || "",
+      m.nota || "",
+      m.motivo || "",
+      m.evento_ref || ""
+    ].join(" ").toLowerCase();
+
+    const matchText = !textFilter || textBase.includes(textFilter);
+
+    return matchType && matchText;
+  });
+
   els.movementHistory.innerHTML = "";
 
-  if (!state.movimientos.length) {
-    return renderEmpty(els.movementHistory, "No hay movimientos registrados.");
+  if (!rows.length) {
+    return renderEmpty(els.movementHistory, "No hay movimientos registrados para ese filtro.");
   }
 
-  state.movimientos.forEach(m => {
+  rows.forEach(m => {
     const div = document.createElement("div");
-    div.className = "item";
-    div.innerHTML = `<strong>${escapeHtml(m.productos?.descripcion || "Producto")} · ${escapeHtml(m.tipo)}</strong><small>${formatNum(m.cantidad)} · stock ${formatNum(m.stock_anterior)} → ${formatNum(m.stock_nuevo)} · ${formatDate(m.created_at)}${m.nota ? " · " + escapeHtml(m.nota) : ""}</small>`;
+    div.className = "item movement-item-premium";
+
+    const typeClass =
+      m.tipo === "entrada" ? "ok" :
+      m.tipo === "salida" ? "danger" : "warn";
+
+    const motivo = formatMovementReason(m.motivo);
+    const referencia = m.evento_ref ? ` · ${escapeHtml(m.evento_ref)}` : "";
+    const nota = m.nota ? ` · ${escapeHtml(m.nota)}` : "";
+
+    div.innerHTML = `
+      <strong>
+        ${escapeHtml(m.productos?.descripcion || "Producto")}
+        <span class="tag ${typeClass}">${escapeHtml(m.tipo)}</span>
+      </strong>
+      <small>
+        ${formatNum(m.cantidad)} · stock ${formatNum(m.stock_anterior)} → ${formatNum(m.stock_nuevo)}
+        · ${formatDate(m.created_at)}
+        ${motivo ? " · " + escapeHtml(motivo) : ""}
+        ${referencia}
+        ${nota}
+      </small>
+    `;
+
     els.movementHistory.appendChild(div);
   });
 }
-
 function renderUsersList() {
   if (!els.usersList) return;
 
