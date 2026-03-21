@@ -30,7 +30,7 @@ async function hardResetClientCaches() {
       }
     }
 
-    console.log("Service workers y cachés eliminados.");
+    
   } catch (error) {
     console.error("No pude limpiar service workers/cachés:", error);
   }
