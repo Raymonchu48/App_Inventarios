@@ -1516,7 +1516,9 @@ function registerServiceWorker() {
   return;
 }
 
-
+function setupInstallPrompt() {
+  return;
+}
 async function installApp() {
   return;
 }
