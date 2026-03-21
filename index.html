@@ -467,57 +467,90 @@
     </div>
   </section>
 </section>
-      <!-- MOVIMIENTOS -->
-      <section id="view-movimientos" class="view">
-        <div class="dashboard-grid">
-          <section class="panel">
-            <div class="panel-head">
-              <div>
-                <h3>Registrar movimiento</h3>
-                <p>Entradas, salidas y ajustes con trazabilidad operativa.</p>
-              </div>
-            </div>
-
-            <form id="movementForm" class="form-grid">
-              <div class="field full">
-                <label for="movementProduct">Producto</label>
-                <select id="movementProduct"></select>
-              </div>
-
-              <div class="field">
-                <label for="movementType">Tipo</label>
-                <select id="movementType">
-                  <option value="entrada">Entrada</option>
-                  <option value="salida">Salida</option>
-                  <option value="ajuste">Ajuste</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label for="movementQty">Cantidad</label>
-                <input id="movementQty" type="number" min="0" step="0.01" />
-              </div>
-
-              <div class="field full">
-                <label for="movementNote">Nota</label>
-                <textarea id="movementNote" rows="4" placeholder="Ej. recepción de proveedor, salida interna o ajuste tras conteo"></textarea>
-              </div>
-
-              <button type="submit" class="btn primary full">Guardar movimiento</button>
-            </form>
-          </section>
-
-          <section class="panel">
-            <div class="panel-head">
-              <div>
-                <h3>Historial</h3>
-                <p>Secuencia de movimientos registrados.</p>
-              </div>
-            </div>
-            <div id="movementHistory" class="stack-list"></div>
-          </section>
+     <!-- MOVIMIENTOS -->
+<section id="view-movimientos" class="view">
+  <div class="dashboard-grid movements-grid-premium">
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>Registrar movimiento</h3>
+          <p>Entradas, salidas y ajustes con trazabilidad operativa y motivo asociado.</p>
         </div>
-      </section>
+      </div>
+
+      <form id="movementForm" class="form-grid">
+        <div class="field full">
+          <label for="movementProduct">Producto</label>
+          <select id="movementProduct"></select>
+        </div>
+
+        <div class="field">
+          <label for="movementType">Tipo</label>
+          <select id="movementType">
+            <option value="entrada">Entrada</option>
+            <option value="salida">Salida</option>
+            <option value="ajuste">Ajuste</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="movementQty">Cantidad</label>
+          <input id="movementQty" type="number" min="0" step="0.01" />
+        </div>
+
+        <div class="field">
+          <label for="movementReason">Motivo</label>
+          <select id="movementReason">
+            <option value="">Selecciona un motivo</option>
+            <option value="compra_proveedor">Compra proveedor</option>
+            <option value="reposicion_interna">Reposición interna</option>
+            <option value="salida_evento">Salida a evento</option>
+            <option value="consumo_interno">Consumo interno</option>
+            <option value="rotura">Rotura</option>
+            <option value="merma">Merma</option>
+            <option value="ajuste_inventario">Ajuste inventario</option>
+            <option value="devolucion">Devolución</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="movementEvent">Evento / referencia</label>
+          <input id="movementEvent" type="text" placeholder="Ej. Boda Salón Palma / Coffee Break / Gala Empresa X" />
+        </div>
+
+        <div class="field full">
+          <label for="movementNote">Nota</label>
+          <textarea id="movementNote" rows="4" placeholder="Ej. recepción de proveedor, salida interna o ajuste tras conteo"></textarea>
+        </div>
+
+        <button type="submit" class="btn primary full">Guardar movimiento</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>Historial</h3>
+          <p>Secuencia de movimientos con lectura operativa.</p>
+        </div>
+      </div>
+
+      <div class="toolbar movement-toolbar">
+        <select id="movementFilterType">
+          <option value="">Todos los tipos</option>
+          <option value="entrada">Entradas</option>
+          <option value="salida">Salidas</option>
+          <option value="ajuste">Ajustes</option>
+        </select>
+
+        <input id="movementFilterText" type="text" placeholder="Buscar por producto, nota o referencia" />
+      </div>
+
+      <div id="movementHistory" class="stack-list"></div>
+    </section>
+  </div>
+</section>
 
       <!-- ADMIN -->
       <section id="view-admin" class="view">
