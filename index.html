@@ -340,6 +340,44 @@
         </section>
       </section>
 
+      <section id="view-varios" class="view">
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h3>Varios</h3>
+        <p>Artículos auxiliares, suministros y otros no clasificados como bebida o menaje.</p>
+      </div>
+      <div class="panel-actions">
+        <button id="btnNewVarios" class="btn primary">Nuevo artículo varios</button>
+      </div>
+    </div>
+
+    <div class="toolbar varios-toolbar">
+      <input id="variosSearchInput" type="text" placeholder="Buscar artículo varios por código, descripción o presentación" />
+      <select id="variosCategoryFilter">
+        <option value="">Todas las categorías de varios</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table class="table enterprise-table">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Unidad</th>
+            <th>Stock</th>
+            <th>Mínimo</th>
+            <th>Página</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="variosTable"></tbody>
+      </table>
+    </div>
+  </section>
+</section>
       <!-- MOVIMIENTOS -->
       <section id="view-movimientos" class="view">
         <div class="dashboard-grid">
