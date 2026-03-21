@@ -8,7 +8,7 @@ const state = {
   categorias: [],
   productos: [],
   movimientos: [],
-  perfiles: [],
+  perfiles: []
 };
 
 const els = {};
@@ -29,12 +29,11 @@ async function hardResetClientCaches() {
         await caches.delete(key);
       }
     }
-
-    
   } catch (error) {
     console.error("No pude limpiar service workers/cachés:", error);
   }
 }
+
 window.addEventListener("DOMContentLoaded", init);
 
 async function init() {
@@ -45,28 +44,29 @@ async function init() {
   await initSupabaseFromConfig();
 }
 
-    
-
 function captureEls() {
   [
-    "authShell","appShell","authStatus",
-    "loginForm","registerForm","configAuthForm","configForm",
-    "authSupabaseUrl","authSupabaseKey","supabaseUrl","supabaseKey",
-    "btnAuthTestConnection","btnAuthClearConfig",
-    "btnTestConnection2","btnClearConfig","btnOpenSetup",
-    "btnLogout","btnBootstrapAdmin","btnRefresh","btnSeed","btnImportMenajes",
-    "btnSidebarToggle","sidebar","sidebarOverlay","btnInstallApp",
-    "userName","userEmail","roleBadge","activeBadge","connectionBadge","connectionText",
-    "viewTitle","viewSubtitle","cfgPreviewUrl","cfgPreviewSession","cfgPreviewRole",
-    "cfgPreviewSessionConfig","cfgPreviewRoleConfig",
-    "navAdmin","usersList",
-    "kpiProductos","kpiStock","kpiBajoMinimo","kpiSinStock","criticalList","recentMoves",
-    "searchInput","categoryFilter","stockFilter","btnNewProduct","productsTable",
-    "menajesSearchInput","menajesCategoryFilter","btnNewMenaje","menajesTable",
-    "movementForm","movementProduct","movementType","movementQty","movementNote","movementHistory",
-    "productDialog","productForm","productDialogTitle","btnCloseDialog","productId",
-    "pStockCode","pDescripcion","pPresentacion","pStDate","pUnit","pCantidad",
-    "pMinStock","pPagina","pCategoria","pCantidadOriginal","pDetalleCantidad"
+    "authShell", "appShell", "authStatus",
+    "loginForm", "registerForm", "configAuthForm", "configForm",
+    "authSupabaseUrl", "authSupabaseKey", "supabaseUrl", "supabaseKey",
+    "btnAuthTestConnection", "btnAuthClearConfig",
+    "btnTestConnection2", "btnClearConfig", "btnOpenSetup",
+    "btnLogout", "btnBootstrapAdmin", "btnRefresh", "btnSeed", "btnImportMenajes",
+    "btnSidebarToggle", "sidebar", "sidebarOverlay", "btnInstallApp",
+    "userName", "userEmail", "roleBadge", "activeBadge", "connectionBadge", "connectionText",
+    "viewTitle", "viewSubtitle", "cfgPreviewUrl", "cfgPreviewSession", "cfgPreviewRole",
+    "cfgPreviewSessionConfig", "cfgPreviewRoleConfig",
+    "navAdmin", "usersList",
+    "kpiProductos", "kpiStock", "kpiBajoMinimo", "kpiSinStock", "criticalList", "recentMoves",
+
+    "searchInput", "categoryFilter", "stockFilter", "btnNewProduct", "productsTable",
+    "menajesSearchInput", "menajesCategoryFilter", "btnNewMenaje", "menajesTable",
+    "variosSearchInput", "variosCategoryFilter", "btnNewVarios", "variosTable",
+
+    "movementForm", "movementProduct", "movementType", "movementQty", "movementNote", "movementHistory",
+    "productDialog", "productForm", "productDialogTitle", "btnCloseDialog", "productId",
+    "pStockCode", "pDescripcion", "pPresentacion", "pStDate", "pUnit", "pCantidad",
+    "pMinStock", "pPagina", "pFamilia", "pCategoria", "pCantidadOriginal", "pDetalleCantidad"
   ].forEach(id => {
     els[id] = document.getElementById(id);
   });
@@ -103,7 +103,6 @@ function bindUI() {
   els.btnLogout?.addEventListener("click", onLogout);
   els.btnBootstrapAdmin?.addEventListener("click", onBootstrapAdmin);
   els.btnRefresh?.addEventListener("click", refreshAll);
-
   els.btnSeed?.addEventListener("click", importInitialData);
   els.btnImportMenajes?.addEventListener("click", importMenajesData);
 
@@ -121,29 +120,39 @@ function bindUI() {
     el?.addEventListener("change", renderMenajes);
   });
 
-  els.btnNewProduct?.addEventListener("click", openNewProductDialog);
-  els.btnNewMenaje?.addEventListener("click", openNewMenajeDialog);
-
-  els.btnCloseDialog?.addEventListener("click", () => {
-    try {
-      if (els.productDialog?.open && els.productDialog?.close) {
-        els.productDialog.close();
-      } else {
-        els.productDialog?.removeAttribute("open");
-      }
-    } catch (error) {
-      console.error("Error cerrando modal:", error);
-    }
+  [els.variosSearchInput, els.variosCategoryFilter].forEach(el => {
+    el?.addEventListener("input", renderVarios);
+    el?.addEventListener("change", renderVarios);
   });
 
+  els.btnNewProduct?.addEventListener("click", openNewProductDialog);
+  els.btnNewMenaje?.addEventListener("click", openNewMenajeDialog);
+  els.btnNewVarios?.addEventListener("click", openNewVariosDialog);
+
+  els.btnCloseDialog?.addEventListener("click", closeProductDialog);
   els.productForm?.addEventListener("submit", onSaveProduct);
   els.movementForm?.addEventListener("submit", onSaveMovement);
+
+  els.pFamilia?.addEventListener("change", syncCategoryByFamily);
 
   window.addEventListener("resize", () => {
     if (window.innerWidth > 980) closeSidebarMobile();
     renderProducts();
     renderMenajes();
+    renderVarios();
   });
+}
+
+function closeProductDialog() {
+  try {
+    if (els.productDialog?.open && typeof els.productDialog.close === "function") {
+      els.productDialog.close();
+    } else {
+      els.productDialog?.removeAttribute("open");
+    }
+  } catch (error) {
+    console.error("Error cerrando modal:", error);
+  }
 }
 
 function toggleSidebarMobile() {
@@ -159,30 +168,19 @@ function switchAuthTab(tab) {
     btn.classList.toggle("active", btn.dataset.authTab === tab);
   });
 
-  document.querySelectorAll(".auth-tab").forEach((panel, idx) => {
-    const match =
+  const panels = document.querySelectorAll(".auth-tab");
+  panels.forEach((panel, idx) => {
+    const active =
       (tab === "login" && idx === 0) ||
       (tab === "register" && idx === 1) ||
       (tab === "setup" && idx === 2);
-    panel.classList.toggle("active", match);
+
+    panel.classList.toggle("active", active);
   });
 }
 
 function saveConfig(url, key) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify({ url, key }));
-}
-
-function readConfig() {
-  const fromStorage = safeJSON(localStorage.getItem(STORAGE_KEY)) || {};
-  const fromWindow = window.APP_CONFIG || {};
-
-  console.log("CONFIG STORAGE:", fromStorage);
-  console.log("CONFIG WINDOW:", fromWindow);
-
-  return {
-    url: (fromStorage.url || fromWindow.SUPABASE_URL || "").trim(),
-    key: (fromStorage.key || fromWindow.SUPABASE_ANON_KEY || "").trim(),
-  };
 }
 
 function safeJSON(s) {
@@ -193,15 +191,23 @@ function safeJSON(s) {
   }
 }
 
+function readConfig() {
+  const fromStorage = safeJSON(localStorage.getItem(STORAGE_KEY)) || {};
+  const fromWindow = window.APP_CONFIG || {};
+
+  return {
+    url: (fromStorage.url || fromWindow.SUPABASE_URL || "").trim(),
+    key: (fromStorage.key || fromWindow.SUPABASE_ANON_KEY || "").trim()
+  };
+}
+
 function loadSavedConfigToForms() {
   const cfg = readConfig();
 
   if (els.authSupabaseUrl) els.authSupabaseUrl.value = cfg.url || "";
   if (els.authSupabaseKey) els.authSupabaseKey.value = cfg.key || "";
-
   if (els.supabaseUrl) els.supabaseUrl.value = cfg.url || "";
   if (els.supabaseKey) els.supabaseKey.value = cfg.key || "";
-
   if (els.cfgPreviewUrl) els.cfgPreviewUrl.textContent = cfg.url || "—";
 }
 
@@ -216,8 +222,9 @@ async function initSupabaseFromConfig() {
 
   try {
     await initSupabase(url, key);
-  } catch (e) {
-    showAuth(e.message || "No se pudo iniciar Supabase.", true);
+  } catch (error) {
+    console.error(error);
+    showAuth(error?.message || "No se pudo iniciar Supabase.", true);
     switchAuthTab("setup");
   }
 }
@@ -306,8 +313,12 @@ function renderSessionState() {
   }
 
   document.querySelectorAll(".nav-btn").forEach(btn => {
-    if (btn.dataset.view === "configuracion") btn.classList.toggle("hidden", !isAdmin());
-    if (btn.dataset.view === "admin") btn.classList.toggle("hidden", !isAdmin());
+    if (btn.dataset.view === "configuracion") {
+      btn.classList.toggle("hidden", !isAdmin());
+    }
+    if (btn.dataset.view === "admin") {
+      btn.classList.toggle("hidden", !isAdmin());
+    }
   });
 
   setConnectionState(
@@ -325,11 +336,12 @@ function applyPermissionsUI() {
 
   if (els.btnNewProduct) els.btnNewProduct.disabled = !canWrite || !active;
   if (els.btnNewMenaje) els.btnNewMenaje.disabled = !canWrite || !active;
+  if (els.btnNewVarios) els.btnNewVarios.disabled = !canWrite || !active;
   if (els.btnSeed) els.btnSeed.disabled = !isAdmin() || !active;
   if (els.btnImportMenajes) els.btnImportMenajes.disabled = !isAdmin() || !active;
 
   if (els.movementForm) {
-    els.movementForm.querySelectorAll("input,select,textarea,button").forEach(el => {
+    els.movementForm.querySelectorAll("input, select, textarea, button").forEach(el => {
       el.disabled = !canWrite || !active;
     });
   }
@@ -476,7 +488,7 @@ async function onRegister(e) {
       password,
       options: {
         data: { full_name: fullName || email.split("@")[0] },
-        emailRedirectTo: window.location.origin + window.location.pathname,
+        emailRedirectTo: window.location.origin + window.location.pathname
       }
     });
 
@@ -484,13 +496,17 @@ async function onRegister(e) {
 
     const createdUserId = data?.user?.id;
     if (createdUserId) {
-      await state.client.from("profiles").upsert({
+      const { error: profileError } = await state.client.from("profiles").upsert({
         id: createdUserId,
         email,
         full_name: fullName || email.split("@")[0],
         role: "viewer",
-        is_active: true,
+        is_active: true
       }, { onConflict: "id" });
+
+      if (profileError) {
+        console.warn("No pude crear el perfil automáticamente:", profileError);
+      }
     }
 
     flash("Cuenta creada. Revisa tu email si Supabase pide verificación.");
@@ -540,15 +556,15 @@ function switchView(view) {
     return;
   }
 
- const titles = {
-  dashboard: ["Dashboard", "Resumen ejecutivo del inventario."],
-  productos: ["Bebidas", "Gestión centralizada de stock, edición y control por categoría."],
-  menajes: ["Menajes", "Inventario de vajilla, cristalería, cubertería, mantelería y material de servicio."],
-  varios: ["Varios", "Artículos auxiliares, suministros y otros no clasificados como bebida o menaje."],
-  movimientos: ["Movimientos", "Entradas, salidas y ajustes con trazabilidad."],
-  admin: ["Administración", "Usuarios, roles y activación de accesos."],
-  configuracion: ["Configuración", "Estado de conexión, sesión y despliegue."]
-};
+  const titles = {
+    dashboard: ["Dashboard", "Resumen ejecutivo del inventario."],
+    productos: ["Bebidas", "Gestión centralizada de stock, edición y control por categoría."],
+    menajes: ["Menajes", "Inventario de vajilla, cristalería, cubertería, mantelería y material de servicio."],
+    varios: ["Varios", "Artículos auxiliares, suministros y otros no clasificados como bebida o menaje."],
+    movimientos: ["Movimientos", "Entradas, salidas y ajustes con trazabilidad."],
+    admin: ["Administración", "Usuarios, roles y activación de accesos."],
+    configuracion: ["Configuración", "Estado de conexión, sesión y despliegue."]
+  };
 
   document.querySelectorAll(".view").forEach(section => section.classList.remove("active"));
   document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active"));
@@ -567,6 +583,7 @@ function switchView(view) {
   if (view === "dashboard") renderDashboard();
   if (view === "productos") renderProducts();
   if (view === "menajes") renderMenajes();
+  if (view === "varios") renderVarios();
   if (view === "movimientos") renderMovementHistory();
   if (view === "admin" && isAdmin()) renderUsersList();
 }
@@ -583,11 +600,13 @@ async function refreshAll() {
 
   populateCategoryFilters();
   populateMenajesFilters();
+  populateVariosFilters();
   populateProductSelects();
 
   renderDashboard();
   renderProducts();
   renderMenajes();
+  renderVarios();
   renderMovementHistory();
 
   if (isAdmin()) renderUsersList();
@@ -602,7 +621,11 @@ function ensureReady() {
 }
 
 async function loadCategorias() {
-  const { data, error } = await state.client.from("categorias").select("*").order("nombre");
+  const { data, error } = await state.client
+    .from("categorias")
+    .select("*")
+    .order("nombre");
+
   if (error) return throwFriendly(error, "No pude cargar categorías.");
   state.categorias = data || [];
 }
@@ -629,16 +652,24 @@ async function loadMovimientos() {
 }
 
 async function loadProfiles() {
-  const { data, error } = await state.client.from("profiles").select("*").order("created_at");
+  const { data, error } = await state.client
+    .from("profiles")
+    .select("*")
+    .order("created_at");
+
   if (error) return throwFriendly(error, "No pude cargar perfiles.");
   state.perfiles = data || [];
 }
+
 function isMenajeCategoryName(nombre) {
   const set = [
     "menajes",
     "vajilla",
+    "cubertería",
     "cuberteria",
+    "cristalería",
     "cristaleria",
+    "mantelería",
     "manteleria",
     "buffet",
     "buffet y servicio",
@@ -650,73 +681,14 @@ function isMenajeCategoryName(nombre) {
 
 function isVariosCategoryName(nombre) {
   const set = [
-  "otros",
-  "suministros",
-  "despensa y condimentos",
-  "fruta y verdura",
-  "leches y bebidas vegetales"
-];
+    "otros",
+    "suministros",
+    "despensa y condimentos",
+    "fruta y verdura",
+    "leches y bebidas vegetales"
+  ];
 
   return set.includes((nombre || "").trim().toLowerCase());
-}
-
-function getFilteredVarios() {
-  const q = els.variosSearchInput?.value.trim().toLowerCase() || "";
-  const cat = els.variosCategoryFilter?.value || "";
-
-  return state.productos.filter(p => {
-    const isVarios = p.familia === "varios";
-    const matchText = !q || [p.stock_code, p.descripcion, p.presentacion]
-      .some(v => (v || "").toLowerCase().includes(q));
-    const matchCat = !cat || p.categoria_id === cat;
-    return isVarios && matchText && matchCat;
-  });
-}
-
-function renderVarios() {
-  if (!els.variosTable) return;
-
-  const rows = getFilteredVarios();
-  els.variosTable.innerHTML = "";
-
-  if (!rows.length) {
-    els.variosTable.innerHTML = `<tr><td colspan="8"><div class="empty-state">No hay artículos en Varios.</div></td></tr>`;
-    return;
-  }
-
-  rows.forEach(p => {
-    const qty = Number(p.cantidad || 0);
-    const min = Number(p.min_stock || 0);
-    const statusClass = qty <= 0 ? "danger" : qty <= min ? "warn" : "ok";
-    const canWrite = canEdit() && isActiveUser();
-
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${escapeHtml(p.stock_code || "")}</td>
-      <td><strong>${escapeHtml(p.descripcion)}</strong><br><small class="muted">${escapeHtml(p.presentacion || "")}</small></td>
-      <td>${escapeHtml(p.categorias?.nombre || "Sin categoría")}</td>
-      <td>${escapeHtml(p.unit || "")}</td>
-      <td><span class="tag ${statusClass}">${formatNum(qty)}</span></td>
-      <td>${formatNum(min)}</td>
-      <td>${p.pagina ?? ""}</td>
-      <td>
-        <div class="form-actions">
-          <button class="btn-mini" data-varios-action="edit" data-id="${p.id}" ${canWrite ? "" : "disabled"}>Editar</button>
-          <button class="btn-mini danger" data-varios-action="delete" data-id="${p.id}" ${isAdmin() && isActiveUser() ? "" : "disabled"}>Borrar</button>
-        </div>
-      </td>
-    `;
-
-    els.variosTable.appendChild(tr);
-  });
-
-  els.variosTable.querySelectorAll("[data-varios-action='edit']").forEach(btn => {
-    btn.addEventListener("click", () => openEditProductDialog(btn.dataset.id));
-  });
-
-  els.variosTable.querySelectorAll("[data-varios-action='delete']").forEach(btn => {
-    btn.addEventListener("click", () => deleteProduct(btn.dataset.id));
-  });
 }
 
 function getMenajeCategories() {
@@ -725,6 +697,26 @@ function getMenajeCategories() {
 
 function getVariosCategories() {
   return state.categorias.filter(c => isVariosCategoryName(c.nombre));
+}
+
+function syncCategoryByFamily() {
+  if (!els.pFamilia || !els.pCategoria) return;
+
+  const familia = els.pFamilia.value;
+
+  if (familia === "menaje") {
+    const menajeCat = getMenajeCategories()[0];
+    if (menajeCat) els.pCategoria.value = menajeCat.id;
+  }
+
+  if (familia === "varios") {
+    const variosCat = getVariosCategories()[0];
+    if (variosCat) els.pCategoria.value = variosCat.id;
+  }
+
+  if (els.productDialog) {
+    els.productDialog.dataset.familia = familia;
+  }
 }
 
 function populateCategoryFilters() {
@@ -763,20 +755,34 @@ function populateMenajesFilters() {
 
   els.menajesCategoryFilter.innerHTML = `<option value="">Todas las categorías de menaje</option>`;
   menajeCats.forEach(c => {
-    els.menajesCategoryFilter.insertAdjacentHTML("beforeend", `<option value="${c.id}">${escapeHtml(c.nombre)}</option>`);
+    els.menajesCategoryFilter.insertAdjacentHTML(
+      "beforeend",
+      `<option value="${c.id}">${escapeHtml(c.nombre)}</option>`
+    );
   });
 
   const validCurrent = menajeCats.some(c => c.id === current);
   els.menajesCategoryFilter.value = validCurrent ? current : "";
 }
-function isVariosCategoryName(nombre) {
-  const set = [
-    "otros",
-    "suministros"
-  ];
 
-  return set.includes((nombre || "").trim().toLowerCase());
+function populateVariosFilters() {
+  if (!els.variosCategoryFilter) return;
+
+  const current = els.variosCategoryFilter.value;
+  const variosCats = getVariosCategories();
+
+  els.variosCategoryFilter.innerHTML = `<option value="">Todas las categorías de varios</option>`;
+  variosCats.forEach(c => {
+    els.variosCategoryFilter.insertAdjacentHTML(
+      "beforeend",
+      `<option value="${c.id}">${escapeHtml(c.nombre)}</option>`
+    );
+  });
+
+  const validCurrent = variosCats.some(c => c.id === current);
+  els.variosCategoryFilter.value = validCurrent ? current : "";
 }
+
 function populateProductSelects() {
   if (!els.movementProduct) return;
 
@@ -784,7 +790,10 @@ function populateProductSelects() {
   els.movementProduct.innerHTML = `<option value="">Selecciona un producto</option>`;
 
   state.productos.forEach(p => {
-    els.movementProduct.insertAdjacentHTML("beforeend", `<option value="${p.id}">${escapeHtml(p.descripcion)} · ${formatNum(p.cantidad)}</option>`);
+    els.movementProduct.insertAdjacentHTML(
+      "beforeend",
+      `<option value="${p.id}">${escapeHtml(p.descripcion)} · ${formatNum(p.cantidad)}</option>`
+    );
   });
 
   if (current) els.movementProduct.value = current;
@@ -797,10 +806,12 @@ function getFilteredProducts() {
 
   return state.productos.filter(p => {
     const isBebida = (p.familia || "bebidas") === "bebidas";
-    const matchText = !q || [p.stock_code, p.descripcion, p.presentacion].some(v => (v || "").toLowerCase().includes(q));
+    const matchText = !q || [p.stock_code, p.descripcion, p.presentacion]
+      .some(v => (v || "").toLowerCase().includes(q));
     const matchCat = !cat || p.categoria_id === cat;
     const qty = Number(p.cantidad || 0);
     const min = Number(p.min_stock || 0);
+
     const matchStock =
       !stockMode ||
       (stockMode === "low" && qty <= min) ||
@@ -817,9 +828,23 @@ function getFilteredMenajes() {
 
   return state.productos.filter(p => {
     const isMenaje = p.familia === "menaje";
-    const matchText = !q || [p.stock_code, p.descripcion, p.presentacion].some(v => (v || "").toLowerCase().includes(q));
+    const matchText = !q || [p.stock_code, p.descripcion, p.presentacion]
+      .some(v => (v || "").toLowerCase().includes(q));
     const matchCat = !cat || p.categoria_id === cat;
     return isMenaje && matchText && matchCat;
+  });
+}
+
+function getFilteredVarios() {
+  const q = els.variosSearchInput?.value.trim().toLowerCase() || "";
+  const cat = els.variosCategoryFilter?.value || "";
+
+  return state.productos.filter(p => {
+    const isVarios = p.familia === "varios";
+    const matchText = !q || [p.stock_code, p.descripcion, p.presentacion]
+      .some(v => (v || "").toLowerCase().includes(q));
+    const matchCat = !cat || p.categoria_id === cat;
+    return isVarios && matchText && matchCat;
   });
 }
 
@@ -1074,6 +1099,104 @@ function renderMenajes() {
   });
 }
 
+function renderVarios() {
+  if (!els.variosTable) return;
+
+  const rows = getFilteredVarios();
+  els.variosTable.innerHTML = "";
+
+  if (!rows.length) {
+    els.variosTable.innerHTML = `<tr><td colspan="8"><div class="empty-state">No hay artículos en Varios.</div></td></tr>`;
+    return;
+  }
+
+  const isMobile = window.innerWidth <= 640;
+
+  rows.forEach(p => {
+    const qty = Number(p.cantidad || 0);
+    const min = Number(p.min_stock || 0);
+    const statusClass = qty <= 0 ? "danger" : qty <= min ? "warn" : "ok";
+    const canWrite = canEdit() && isActiveUser();
+
+    const tr = document.createElement("tr");
+
+    if (isMobile) {
+      tr.className = "mobile-product-row";
+      tr.innerHTML = `
+        <td colspan="8">
+          <div class="mobile-product-card">
+            <div class="mobile-product-top">
+              <div>
+                <div class="mobile-label">Código</div>
+                <div class="mobile-code">${escapeHtml(p.stock_code || "")}</div>
+              </div>
+              <div>
+                <span class="tag ${statusClass}">${formatNum(qty)}</span>
+              </div>
+            </div>
+
+            <div class="mobile-product-body">
+              <div class="mobile-label">Descripción</div>
+              <div class="mobile-title">${escapeHtml(p.descripcion)}</div>
+              <div class="mobile-sub">${escapeHtml(p.presentacion || "")}</div>
+            </div>
+
+            <div class="mobile-product-grid">
+              <div>
+                <div class="mobile-label">Categoría</div>
+                <div>${escapeHtml(p.categorias?.nombre || "Sin categoría")}</div>
+              </div>
+              <div>
+                <div class="mobile-label">Unidad</div>
+                <div>${escapeHtml(p.unit || "")}</div>
+              </div>
+              <div>
+                <div class="mobile-label">Stock</div>
+                <div>${formatNum(qty)}</div>
+              </div>
+              <div>
+                <div class="mobile-label">Mínimo</div>
+                <div>${formatNum(min)}</div>
+              </div>
+            </div>
+
+            <div class="mobile-product-actions">
+              <button class="btn-mini" data-varios-action="edit" data-id="${p.id}" ${canWrite ? "" : "disabled"}>Editar</button>
+              <button class="btn-mini danger" data-varios-action="delete" data-id="${p.id}" ${isAdmin() && isActiveUser() ? "" : "disabled"}>Borrar</button>
+            </div>
+          </div>
+        </td>
+      `;
+    } else {
+      tr.innerHTML = `
+        <td>${escapeHtml(p.stock_code || "")}</td>
+        <td><strong>${escapeHtml(p.descripcion)}</strong><br><small class="muted">${escapeHtml(p.presentacion || "")}</small></td>
+        <td>${escapeHtml(p.categorias?.nombre || "Sin categoría")}</td>
+        <td>${escapeHtml(p.unit || "")}</td>
+        <td><span class="tag ${statusClass}">${formatNum(qty)}</span></td>
+        <td>${formatNum(min)}</td>
+        <td>${p.pagina ?? ""}</td>
+        <td>
+          <div class="form-actions">
+            <button class="btn-mini" data-varios-action="edit" data-id="${p.id}" ${canWrite ? "" : "disabled"}>Editar</button>
+            <button class="btn-mini danger" data-varios-action="delete" data-id="${p.id}" ${isAdmin() && isActiveUser() ? "" : "disabled"}>Borrar</button>
+          </div>
+        </td>
+      `;
+    }
+
+    els.variosTable.appendChild(tr);
+  });
+
+  els.variosTable.querySelectorAll("[data-varios-action='edit']").forEach(btn => {
+    btn.addEventListener("click", () => openEditProductDialog(btn.dataset.id));
+  });
+
+  els.variosTable.querySelectorAll("[data-varios-action='delete']").forEach(btn => {
+    btn.addEventListener("click", () => deleteProduct(btn.dataset.id));
+  });
+}
+
 function renderMovementHistory() {
   if (!els.movementHistory) return;
 
@@ -1136,7 +1259,11 @@ async function saveProfilePermissions(id) {
   const role = roleEl.value;
   const is_active = activeEl.value === "true";
 
-  const { error } = await state.client.from("profiles").update({ role, is_active }).eq("id", id);
+  const { error } = await state.client
+    .from("profiles")
+    .update({ role, is_active })
+    .eq("id", id);
+
   if (error) return throwFriendly(error, "No pude actualizar permisos.");
 
   flash("Permisos actualizados.");
@@ -1149,10 +1276,11 @@ function openNewProductDialog() {
   els.productForm?.reset();
   if (els.productId) els.productId.value = "";
   if (els.productDialogTitle) els.productDialogTitle.textContent = "Nueva bebida";
+  if (els.pFamilia) els.pFamilia.value = "bebidas";
   if (els.pCategoria) els.pCategoria.value = "";
   if (els.productDialog) els.productDialog.dataset.familia = "bebidas";
 
-  els.productDialog?.showModal();
+  tryOpenDialog();
 }
 
 function openNewMenajeDialog() {
@@ -1161,20 +1289,46 @@ function openNewMenajeDialog() {
   els.productForm?.reset();
   if (els.productId) els.productId.value = "";
   if (els.productDialogTitle) els.productDialogTitle.textContent = "Nuevo menaje";
+  if (els.pFamilia) els.pFamilia.value = "menaje";
   if (els.productDialog) els.productDialog.dataset.familia = "menaje";
 
   const menajeCat = getMenajeCategories()[0];
   if (els.pCategoria && menajeCat) els.pCategoria.value = menajeCat.id;
 
-  els.productDialog?.showModal();
+  tryOpenDialog();
+}
+
+function openNewVariosDialog() {
+  if (!canEdit()) return flash("Tu rol no puede crear artículos varios.", true);
+
+  els.productForm?.reset();
+  if (els.productId) els.productId.value = "";
+  if (els.productDialogTitle) els.productDialogTitle.textContent = "Nuevo artículo varios";
+  if (els.pFamilia) els.pFamilia.value = "varios";
+  if (els.productDialog) els.productDialog.dataset.familia = "varios";
+
+  const variosCat = getVariosCategories()[0];
+  if (els.pCategoria && variosCat) els.pCategoria.value = variosCat.id;
+
+  tryOpenDialog();
+}
+
+function tryOpenDialog() {
+  try {
+    if (typeof els.productDialog?.showModal === "function") {
+      els.productDialog.showModal();
+    } else {
+      els.productDialog?.setAttribute("open", "open");
+    }
+  } catch (error) {
+    console.error("Error abriendo modal:", error);
+    flash("No pude abrir la ventana de edición.", true);
+  }
 }
 
 function openEditProductDialog(id) {
-  console.log("EDITAR PRODUCTO ID:", id);
-
   const p = state.productos.find(x => String(x.id) === String(id));
   if (!p) {
-    console.error("No encontré el producto con id:", id, state.productos);
     return flash("No pude localizar el artículo para editar.", true);
   }
 
@@ -1188,26 +1342,17 @@ function openEditProductDialog(id) {
   if (els.pCantidad) els.pCantidad.value = p.cantidad ?? 0;
   if (els.pMinStock) els.pMinStock.value = p.min_stock ?? 0;
   if (els.pPagina) els.pPagina.value = p.pagina ?? "";
+  if (els.pFamilia) els.pFamilia.value = p.familia || "bebidas";
   if (els.pCategoria) els.pCategoria.value = p.categoria_id || "";
   if (els.pCantidadOriginal) els.pCantidadOriginal.value = p.cantidad_original || "";
   if (els.pDetalleCantidad) els.pDetalleCantidad.value = p.detalle_cantidad || "";
   if (els.productDialog) els.productDialog.dataset.familia = p.familia || "bebidas";
 
-  try {
-    if (els.productDialog?.showModal) {
-      els.productDialog.showModal();
-    } else {
-      els.productDialog?.setAttribute("open", "open");
-    }
-  } catch (error) {
-    console.error("Error abriendo modal:", error);
-    flash("No pude abrir la ventana de edición.", true);
-  }
+  tryOpenDialog();
 }
 
 async function onSaveProduct(e) {
   e.preventDefault();
-  console.log("INTENTO GUARDAR PRODUCTO");
 
   if (!canEdit() || !isActiveUser()) {
     return flash("No tienes permisos para editar productos.", true);
@@ -1225,18 +1370,16 @@ async function onSaveProduct(e) {
     categoria_id: els.pCategoria?.value || null,
     cantidad_original: els.pCantidadOriginal?.value.trim() || null,
     detalle_cantidad: els.pDetalleCantidad?.value.trim() || null,
-    familia: els.pFamilia?.value || els.productDialog?.dataset.familia || "bebidas",
+    familia: els.pFamilia?.value || els.productDialog?.dataset.familia || "bebidas"
   };
-
-  console.log("PAYLOAD PRODUCTO:", payload);
 
   if (!payload.descripcion) {
     return flash("La descripción es obligatoria.", true);
   }
 
-  let result;
-
   try {
+    let result;
+
     if (els.productId?.value) {
       result = await state.client
         .from("productos")
@@ -1252,32 +1395,19 @@ async function onSaveProduct(e) {
         .single();
     }
 
-    const { data, error } = result;
-    console.log("RESPUESTA GUARDAR PRODUCTO:", data, error);
-
-    if (error) {
-      return throwFriendly(error, "No pude guardar el producto.");
+    if (result.error) {
+      return throwFriendly(result.error, "No pude guardar el producto.");
     }
 
-    if (els.productDialog?.open) {
-      try {
-        els.productDialog.close();
-      } catch {
-        els.productDialog.removeAttribute("open");
-      }
-    }
-
+    closeProductDialog();
     flash("Producto guardado.");
     await refreshAll();
   } catch (error) {
-    console.error("EXCEPCIÓN GUARDAR PRODUCTO:", error);
     throwFriendly(error, "Error inesperado al guardar el producto.");
   }
 }
 
 async function deleteProduct(id) {
-  console.log("INTENTO BORRAR PRODUCTO:", id);
-
   if (!isAdmin() || !isActiveUser()) {
     return flash("Solo admin puede borrar productos.", true);
   }
@@ -1290,8 +1420,6 @@ async function deleteProduct(id) {
       .delete()
       .eq("id", id);
 
-    console.log("ERROR BORRAR PRODUCTO:", error);
-
     if (error) {
       return throwFriendly(error, "No pude borrar el producto.");
     }
@@ -1299,14 +1427,12 @@ async function deleteProduct(id) {
     flash("Producto borrado.");
     await refreshAll();
   } catch (error) {
-    console.error("EXCEPCIÓN BORRAR PRODUCTO:", error);
     throwFriendly(error, "Error inesperado al borrar el producto.");
   }
 }
 
 async function onSaveMovement(e) {
   e.preventDefault();
-  console.log("INTENTO GUARDAR MOVIMIENTO");
 
   if (!canEdit() || !isActiveUser()) {
     return flash("Tu rol no puede registrar movimientos.", true);
@@ -1314,8 +1440,6 @@ async function onSaveMovement(e) {
 
   const productoId = els.movementProduct?.value;
   const producto = state.productos.find(p => String(p.id) === String(productoId));
-
-  console.log("PRODUCTO SELECCIONADO:", productoId, producto);
 
   if (!producto) {
     return flash("Selecciona un producto.", true);
@@ -1339,15 +1463,11 @@ async function onSaveMovement(e) {
     return flash("El stock no puede quedar negativo.", true);
   }
 
-  console.log("MOVIMIENTO:", { tipo, qty, anterior, nuevo, nota });
-
   try {
     const { error: updateError } = await state.client
       .from("productos")
       .update({ cantidad: nuevo })
       .eq("id", producto.id);
-
-    console.log("UPDATE PRODUCTO ERROR:", updateError);
 
     if (updateError) {
       return throwFriendly(updateError, "No pude actualizar el stock.");
@@ -1365,8 +1485,6 @@ async function onSaveMovement(e) {
         created_by: state.user.id
       }]);
 
-    console.log("INSERT MOVIMIENTO ERROR:", moveError);
-
     if (moveError) {
       return throwFriendly(moveError, "No pude guardar el movimiento.");
     }
@@ -1375,12 +1493,15 @@ async function onSaveMovement(e) {
     flash("Movimiento guardado.");
     await refreshAll();
   } catch (error) {
-    console.error("EXCEPCIÓN MOVIMIENTO:", error);
     throwFriendly(error, "Error inesperado al guardar el movimiento.");
   }
 }
+
 async function importInitialData() {
-  if (!isAdmin() || !isActiveUser()) return flash("Solo admin puede importar la carga inicial.", true);
+  if (!isAdmin() || !isActiveUser()) {
+    return flash("Solo admin puede importar la carga inicial.", true);
+  }
+
   if (!confirm("Esto importará o actualizará la carga inicial de bebidas desde data.json. ¿Continuar?")) return;
 
   try {
@@ -1391,6 +1512,7 @@ async function importInitialData() {
       const { error } = await state.client
         .from("categorias")
         .upsert(names.map(nombre => ({ nombre })), { onConflict: "nombre" });
+
       if (error) throw error;
     }
 
@@ -1415,7 +1537,10 @@ async function importInitialData() {
     const chunkSize = 200;
     for (let i = 0; i < productos.length; i += chunkSize) {
       const chunk = productos.slice(i, i + chunkSize);
-      const { error } = await state.client.from("productos").upsert(chunk, { onConflict: "stock_code" });
+      const { error } = await state.client
+        .from("productos")
+        .upsert(chunk, { onConflict: "stock_code" });
+
       if (error) throw error;
     }
 
@@ -1427,8 +1552,11 @@ async function importInitialData() {
 }
 
 async function importMenajesData() {
-  if (!isAdmin() || !isActiveUser()) return flash("Solo admin puede importar menajes.", true);
-  if (!confirm("Esto importará el inventario de menajes desde data_menajes.json. ¿Continuar?")) return;
+  if (!isAdmin() || !isActiveUser()) {
+    return flash("Solo admin puede importar menajes.", true);
+  }
+
+  if (!confirm("Esto importará o actualizará el inventario de menajes desde data_menajes.json. ¿Continuar?")) return;
 
   try {
     const raw = await fetch("data_menajes.json").then(r => r.json());
@@ -1438,6 +1566,7 @@ async function importMenajesData() {
       const { error: catError } = await state.client
         .from("categorias")
         .upsert(names.map(nombre => ({ nombre })), { onConflict: "nombre" });
+
       if (catError) throw catError;
     }
 
@@ -1462,7 +1591,10 @@ async function importMenajesData() {
     const chunkSize = 200;
     for (let i = 0; i < productos.length; i += chunkSize) {
       const chunk = productos.slice(i, i + chunkSize);
-      const { error } = await state.client.from("productos").insert(chunk);
+      const { error } = await state.client
+        .from("productos")
+        .upsert(chunk, { onConflict: "stock_code" });
+
       if (error) throw error;
     }
 
@@ -1534,6 +1666,7 @@ function throwFriendly(error, fallback) {
   console.error(error);
   flash(`${fallback}${error?.message ? " · " + error.message : ""}`, true);
 }
+
 function registerServiceWorker() {
   return;
 }
@@ -1541,6 +1674,7 @@ function registerServiceWorker() {
 function setupInstallPrompt() {
   return;
 }
+
 async function installApp() {
   return;
 }
