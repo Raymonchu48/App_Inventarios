@@ -629,7 +629,7 @@ function isMenajeCategoryName(nombre) {
 function isVariosCategoryName(nombre) {
   const set = [
   "otros",
-  "suministros"
+  "suministros",
   "despensa y condimentos",
   "fruta y verdura",
   "leches y bebidas vegetales"
