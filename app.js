@@ -64,6 +64,8 @@ function captureEls() {
     "menajesSearchInput", "menajesCategoryFilter", "btnNewMenaje", "menajesTable",
     "variosSearchInput", "variosCategoryFilter", "btnNewVarios", "variosTable",
 
+    
+    "movementReason","movementEvent","movementFilterType","movementFilterText",
     "movementForm", "movementProduct", "movementType", "movementQty", "movementNote", "movementHistory",
     "productDialog", "productForm", "productDialogTitle", "btnCloseDialog", "productId",
     "pStockCode", "pDescripcion", "pPresentacion", "pStDate", "pUnit", "pCantidad",
