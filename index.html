@@ -206,54 +206,143 @@
         </div>
       </section>
 
-      <!-- DASHBOARD -->
-      <section id="view-dashboard" class="view active">
-        <div class="hero-banner-card">
-          <img src="Banner-Banquetes.png" alt="Banner Banquete Fácil" class="hero-banner-image">
+     <!-- DASHBOARD -->
+<section id="view-dashboard" class="view active">
+  <div class="hero-banner-card">
+    <img src="Banner-Banquetes.png" alt="Banner Inventario Banquetes Pro" class="hero-banner-image">
+  </div>
+
+  <div class="executive-strip">
+    <div class="executive-chip">
+      <span class="executive-chip-label">Estado operativo</span>
+      <strong id="kpiOperationalStatus">Controlado</strong>
+    </div>
+    <div class="executive-chip">
+      <span class="executive-chip-label">Artículos críticos</span>
+      <strong id="kpiCriticalCount">0</strong>
+    </div>
+    <div class="executive-chip">
+      <span class="executive-chip-label">Movimientos recientes</span>
+      <strong id="kpiRecentMoves">0</strong>
+    </div>
+  </div>
+
+  <div class="kpi-grid premium-kpi-grid">
+    <article class="kpi-card premium">
+      <span class="kpi-label">Total artículos</span>
+      <strong id="kpiProductos">0</strong>
+      <small class="kpi-subtext">Inventario consolidado</small>
+    </article>
+
+    <article class="kpi-card premium">
+      <span class="kpi-label">Stock total</span>
+      <strong id="kpiStock">0</strong>
+      <small class="kpi-subtext">Unidades registradas</small>
+    </article>
+
+    <article class="kpi-card premium">
+      <span class="kpi-label">Bebidas</span>
+      <strong id="kpiBebidas">0</strong>
+      <small class="kpi-subtext">Familia operativa bebidas</small>
+    </article>
+
+    <article class="kpi-card premium">
+      <span class="kpi-label">Menaje</span>
+      <strong id="kpiMenajes">0</strong>
+      <small class="kpi-subtext">Vajilla, cristalería y servicio</small>
+    </article>
+
+    <article class="kpi-card premium">
+      <span class="kpi-label">Varios</span>
+      <strong id="kpiVarios">0</strong>
+      <small class="kpi-subtext">Apoyo operativo y suministros</small>
+    </article>
+
+    <article class="kpi-card premium alert">
+      <span class="kpi-label">Bajo mínimo</span>
+      <strong id="kpiBajoMinimo">0</strong>
+      <small class="kpi-subtext">Requieren seguimiento</small>
+    </article>
+
+    <article class="kpi-card premium danger">
+      <span class="kpi-label">Sin stock</span>
+      <strong id="kpiSinStock">0</strong>
+      <small class="kpi-subtext">Riesgo operativo inmediato</small>
+    </article>
+
+    <article class="kpi-card premium">
+      <span class="kpi-label">Movimientos</span>
+      <strong id="kpiMovimientosTotal">0</strong>
+      <small class="kpi-subtext">Histórico reciente cargado</small>
+    </article>
+  </div>
+
+  <div class="dashboard-grid dashboard-grid-premium">
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>Alertas críticas</h3>
+          <p>Artículos por debajo del umbral mínimo o sin stock.</p>
+        </div>
+      </div>
+      <div id="criticalList" class="stack-list"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>Actividad reciente</h3>
+          <p>Últimos movimientos registrados por el equipo.</p>
+        </div>
+      </div>
+      <div id="recentMoves" class="stack-list"></div>
+    </section>
+  </div>
+
+  <div class="dashboard-grid dashboard-grid-premium second-row">
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>Distribución por familia</h3>
+          <p>Resumen ejecutivo del inventario por área funcional.</p>
+        </div>
+      </div>
+
+      <div class="family-summary-grid">
+        <div class="family-summary-card family-bebidas">
+          <span class="family-summary-label">Bebidas</span>
+          <strong id="familyCountBebidas">0</strong>
+          <small>Control de barra, sala y banquetes</small>
         </div>
 
-        <div class="kpi-grid">
-          <article class="kpi-card">
-            <span class="kpi-label">Total productos</span>
-            <strong id="kpiProductos">0</strong>
-          </article>
-          <article class="kpi-card">
-            <span class="kpi-label">Stock total</span>
-            <strong id="kpiStock">0</strong>
-          </article>
-          <article class="kpi-card">
-            <span class="kpi-label">Bajo mínimo</span>
-            <strong id="kpiBajoMinimo">0</strong>
-          </article>
-          <article class="kpi-card">
-            <span class="kpi-label">Sin stock</span>
-            <strong id="kpiSinStock">0</strong>
-          </article>
+        <div class="family-summary-card family-menaje">
+          <span class="family-summary-label">Menaje</span>
+          <strong id="familyCountMenajes">0</strong>
+          <small>Material de servicio y operación</small>
         </div>
 
-        <div class="dashboard-grid">
-          <section class="panel">
-            <div class="panel-head">
-              <div>
-                <h3>Alertas críticas</h3>
-                <p>Productos por debajo del umbral operativo.</p>
-              </div>
-            </div>
-            <div id="criticalList" class="stack-list"></div>
-          </section>
-
-          <section class="panel">
-            <div class="panel-head">
-              <div>
-                <h3>Actividad reciente</h3>
-                <p>Últimos movimientos registrados en el sistema.</p>
-              </div>
-            </div>
-            <div id="recentMoves" class="stack-list"></div>
-          </section>
+        <div class="family-summary-card family-varios">
+          <span class="family-summary-label">Varios</span>
+          <strong id="familyCountVarios">0</strong>
+          <small>Apoyos, suministros y auxiliares</small>
         </div>
-      </section>
+      </div>
+    </section>
 
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>Lectura ejecutiva</h3>
+          <p>Indicador sintético del estado actual del inventario.</p>
+        </div>
+      </div>
+
+      <div id="executiveSummary" class="executive-summary-box">
+        Inventario operativo cargado correctamente.
+      </div>
+    </section>
+  </div>
+</section>
       <!-- BEBIDAS -->
       <section id="view-productos" class="view">
         <section class="panel">
