@@ -1719,6 +1719,22 @@ function formatDate(v) {
   return v ? new Date(v).toLocaleString("es-ES") : "";
 }
 
+function formatMovementReason(value) {
+  const map = {
+    compra_proveedor: "Compra proveedor",
+    reposicion_interna: "Reposición interna",
+    salida_evento: "Salida a evento",
+    consumo_interno: "Consumo interno",
+    rotura: "Rotura",
+    merma: "Merma",
+    ajuste_inventario: "Ajuste inventario",
+    devolucion: "Devolución",
+    otro: "Otro"
+  };
+
+  return map[value] || value || "";
+}
+
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>'"]/g, ch => ({
     "&": "&amp;",
