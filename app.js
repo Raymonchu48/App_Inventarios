@@ -20,8 +20,8 @@ async function init() {
   captureEls();
   bindUI();
   loadSavedConfigToForms();
-  registerServiceWorker();
-  setupInstallPrompt();
+ // registerServiceWorker();
+// setupInstallPrompt();
   await initSupabaseFromConfig();
 }
 
@@ -1512,32 +1512,11 @@ function throwFriendly(error, fallback) {
   console.error(error);
   flash(`${fallback}${error?.message ? " · " + error.message : ""}`, true);
 }
-
 function registerServiceWorker() {
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./service-worker.js").catch(console.error);
-    });
-  }
+  return;
 }
 
-function setupInstallPrompt() {
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredInstallPrompt = e;
-    els.btnInstallApp?.classList.remove("hidden");
-  });
-
-  window.addEventListener("appinstalled", () => {
-    deferredInstallPrompt = null;
-    els.btnInstallApp?.classList.add("hidden");
-  });
-}
 
 async function installApp() {
-  if (!deferredInstallPrompt) return;
-  deferredInstallPrompt.prompt();
-  await deferredInstallPrompt.userChoice;
-  deferredInstallPrompt = null;
-  els.btnInstallApp?.classList.add("hidden");
+  return;
 }
