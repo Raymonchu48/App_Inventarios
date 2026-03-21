@@ -214,6 +214,8 @@ function loadSavedConfigToForms() {
 async function initSupabaseFromConfig() {
   const { url, key } = readConfig();
 
+  flash(`DEBUG URL:${url ? "OK" : "NO"} · KEY:${key ? "OK" : "NO"}`);
+
   if (!url || !key) {
     showAuth("Falta configurar Supabase.");
     switchAuthTab("setup");
@@ -222,9 +224,9 @@ async function initSupabaseFromConfig() {
 
   try {
     await initSupabase(url, key);
-  } catch (error) {
-    console.error(error);
-    showAuth(error?.message || "No se pudo iniciar Supabase.", true);
+  } catch (e) {
+    console.error("ERROR INIT SUPABASE:", e);
+    showAuth((e && e.message) ? e.message : "No se pudo iniciar Supabase.", true);
     switchAuthTab("setup");
   }
 }
