@@ -37,7 +37,6 @@ async function hardResetClientCaches() {
 window.addEventListener("DOMContentLoaded", init);
 
 async function init() {
-  await hardResetClientCaches();
   captureEls();
   bindUI();
   loadSavedConfigToForms();
