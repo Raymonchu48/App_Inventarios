@@ -57,7 +57,9 @@ function captureEls() {
     "cfgPreviewSessionConfig", "cfgPreviewRoleConfig",
     "navAdmin", "usersList",
     "kpiProductos", "kpiStock", "kpiBajoMinimo", "kpiSinStock", "criticalList", "recentMoves",
-
+    "kpiBebidas","kpiMenajes","kpiVarios",
+    "kpiMovimientosTotal","kpiOperationalStatus","kpiCriticalCount","kpiRecentMoves",
+    "familyCountBebidas","familyCountMenajes","familyCountVarios","executiveSummary",
     "searchInput", "categoryFilter", "stockFilter", "btnNewProduct", "productsTable",
     "menajesSearchInput", "menajesCategoryFilter", "btnNewMenaje", "menajesTable",
     "variosSearchInput", "variosCategoryFilter", "btnNewVarios", "variosTable",
