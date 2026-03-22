@@ -1269,126 +1269,113 @@ textarea{
     justify-items:start;
   }
 }
-/* Banner superior horizontal por sección */
-.section-top-banner{
+/* Banner superior silencioso / premium visible */
+.section-top-banner-silent{
   position: relative;
   width: 100%;
-  height: 70px;
-  min-height: 70px;
-  max-height: 70px;
+  height: 96px;
+  min-height: 96px;
+  max-height: 96px;
   border-radius: 20px;
   overflow: hidden;
   margin: 0 0 16px;
-  background-color: #f4f7fb;
-  box-shadow: 0 10px 24px rgba(16,35,58,.10);
+  background-color: #eef3f8;
+  box-shadow: 0 10px 24px rgba(16,35,58,.08);
   border: 1px solid #d9e4f0;
   background-size: cover;
-  background-position: center;
   background-repeat: no-repeat;
+  background-position: center center;
 }
 
-.section-top-banner::before{
+/* Capa muy suave para mejorar lectura sin matar la imagen */
+.section-top-banner-silent::before{
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(255,255,255,.02);
+  background: linear-gradient(90deg, rgba(10,22,38,.18), rgba(10,22,38,.05));
+  pointer-events: none;
 }
 
-.section-top-banner-overlay{
+/* Texto dentro del banner */
+.section-top-banner-silent::after{
+  content: attr(data-banner-title);
   position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, rgba(9,22,39,.72), rgba(9,22,39,.30));
-  z-index: 1;
-}
-
-.section-top-banner-content{
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2px;
-  max-width: 72%;
-}
-
-.section-top-banner-eyebrow{
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: #dceaf7;
-  line-height: 1;
-}
-
-.section-top-banner-title{
-  margin: 0;
-  font-size: 18px;
-  line-height: 1.05;
-  color: #ffffff;
+  left: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
   font-weight: 800;
-}
-
-.section-top-banner-text{
-  margin: 0;
-  font-size: 12px;
+  color: #ffffff;
+  letter-spacing: .01em;
+  text-shadow: 0 2px 8px rgba(0,0,0,.28);
+  z-index: 2;
+  max-width: 42%;
   line-height: 1.15;
-  color: #eaf3fb;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
 }
 
-/* Clases por sección */
-.section-top-banner.hero-dashboard::before{
+/* Ajuste fino por sección */
+.section-top-banner-silent.hero-dashboard{
   background-image: url("Banner-Banquetes.png");
+  background-position: center center;
 }
 
-.section-top-banner.hero-bebidas::before{
-  background-image: url("banner-bebidas.png");
+.section-top-banner-silent.hero-bebidas{
+  background-image: url("banner-bebidas.jpg");
+  background-position: center center;
 }
 
-.section-top-banner.hero-menajes::before{
-  background-image: url("banner-menajes.png");
+.section-top-banner-silent.hero-menajes{
+  background-image: url("banner-menajes.jpg");
+  background-position: center center;
 }
 
-.section-top-banner.hero-varios::before{
-  background-image: url("banner-varios.png");
+.section-top-banner-silent.hero-varios{
+  background-image: url("banner-varios.jpg");
+  background-position: center center;
 }
 
-.section-top-banner.hero-movimientos::before{
+.section-top-banner-silent.hero-movimientos{
   background-image: url("banner-movimientos.jpg");
+  background-position: center center;
 }
 
-.section-top-banner.hero-admin::before{
+.section-top-banner-silent.hero-admin{
   background-image: url("banner-admin.jpg");
+  background-position: center center;
 }
 
-.section-top-banner.hero-configuracion::before{
+.section-top-banner-silent.hero-configuracion{
   background-image: url("banner-configuracion.jpg");
+  background-position: center center;
+}
+
+@media (max-width: 992px){
+  .section-top-banner-silent{
+    height: 86px;
+    min-height: 86px;
+    max-height: 86px;
+    border-radius: 18px;
+  }
+
+  .section-top-banner-silent::after{
+    left: 20px;
+    font-size: 14px;
+    max-width: 58%;
+  }
 }
 
 @media (max-width: 768px){
-  .section-top-banner{
-    height: 64px;
-    min-height: 64px;
-    max-height: 64px;
+  .section-top-banner-silent{
+    height: 78px;
+    min-height: 78px;
+    max-height: 78px;
     border-radius: 16px;
-    padding: 0 16px;
   }
 
-  .section-top-banner-content{
-    max-width: 84%;
-  }
-
-  .section-top-banner-eyebrow{
-    font-size: 9px;
-  }
-
-  .section-top-banner-title{
-    font-size: 15px;
-  }
-
-  .section-top-banner-text{
-    font-size: 11px;
+  .section-top-banner-silent::after{
+    left: 16px;
+    font-size: 13px;
+    max-width: 62%;
   }
 }
