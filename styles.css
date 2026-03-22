@@ -1296,22 +1296,9 @@ textarea{
   pointer-events: none;
 }
 
-/* Texto dentro del banner */
 .section-top-banner-silent::after{
-  content: attr(data-banner-title);
-  position: absolute;
-  left: 28px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 15px;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: .01em;
-  text-shadow: 0 2px 8px rgba(0,0,0,.28);
-  z-index: 2;
-  max-width: 42%;
-  line-height: 1.15;
-  white-space: normal;
+  content: "";
+  display: none;
 }
 
 /* Ajuste fino por sección */
