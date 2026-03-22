@@ -53,7 +53,7 @@ function captureEls() {
     "btnLogout", "btnBootstrapAdmin", "btnRefresh", "btnSeed", "btnImportMenajes",
     "btnSidebarToggle", "sidebar", "sidebarOverlay", "btnInstallApp",
     "userName", "userEmail", "roleBadge", "activeBadge", "connectionBadge", "connectionText",
-    "viewTitle", "viewSubtitle", "cfgPreviewUrl", "cfgPreviewSession", "cfgPreviewRole",
+    "viewTitle", "viewSubtitle", "globalSearchInput","cfgPreviewUrl", "cfgPreviewSession", "cfgPreviewRole",
     "cfgPreviewSessionConfig", "cfgPreviewRoleConfig",
     "navAdmin", "usersList",
     "kpiProductos", "kpiStock", "kpiBajoMinimo", "kpiSinStock", "criticalList", "recentMoves",
