@@ -1019,3 +1019,24 @@ textarea{
     grid-template-columns:1fr;
   }
 }
+.movements-grid-premium{
+  margin-top:18px;
+}
+
+.movement-toolbar{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.movement-item-premium{
+  background:linear-gradient(180deg,#ffffff,#f8fbff);
+  border:1px solid var(--line);
+}
+
+@media (max-width:1080px){
+  .movement-toolbar{
+    grid-template-columns:1fr;
+  }
+}
