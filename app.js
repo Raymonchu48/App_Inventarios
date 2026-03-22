@@ -63,6 +63,7 @@ function captureEls() {
     "searchInput", "categoryFilter", "stockFilter", "btnNewProduct", "productsTable",
     "menajesSearchInput", "menajesCategoryFilter", "btnNewMenaje", "menajesTable",
     "variosSearchInput", "variosCategoryFilter", "btnNewVarios", "variosTable",
+    "btnPrintFullInventory",
 
     
     "movementReason","movementEvent","movementFilterType","movementFilterText",
