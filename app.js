@@ -70,7 +70,7 @@ function captureEls() {
     "movementForm", "movementProduct", "movementType", "movementQty", "movementNote", "movementHistory",
     "productDialog", "productForm", "productDialogTitle", "btnCloseDialog", "productId",
     "pStockCode", "pDescripcion", "pPresentacion", "pStDate", "pUnit", "pCantidad",
-    "pMinStock", "pPagina", "pFamilia", "pCategoria", "pCantidadOriginal", "pDetalleCantidad"
+    "pMinStock", "pPagina", "pFamilia", "pCategoria", "pCantidadOriginal", "pDetalleCantidad",
     "sectionTopBanner","sectionTopBannerEyebrow","sectionTopBannerTitle","sectionTopBannerText"
   ].forEach(id => {
     els[id] = document.getElementById(id);
