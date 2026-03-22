@@ -63,9 +63,7 @@ function captureEls() {
     "searchInput", "categoryFilter", "stockFilter", "btnNewProduct", "productsTable",
     "menajesSearchInput", "menajesCategoryFilter", "btnNewMenaje", "menajesTable",
     "variosSearchInput", "variosCategoryFilter", "btnNewVarios", "variosTable",
-    "btnPrintFullInventory",
-
-    
+    "btnPrintBebidas","btnPrintMenajes","btnPrintVarios","btnPrintFullInventory",
     "movementReason","movementEvent","movementFilterType","movementFilterText",
     "movementForm", "movementProduct", "movementType", "movementQty", "movementNote", "movementHistory",
     "productDialog", "productForm", "productDialogTitle", "btnCloseDialog", "productId",
@@ -98,6 +96,10 @@ function bindUI() {
   els.btnAuthClearConfig?.addEventListener("click", clearConfig);
   els.btnTestConnection2?.addEventListener("click", onTestConnectionFromPanel);
   els.btnClearConfig?.addEventListener("click", clearConfig);
+  els.btnPrintBebidas?.addEventListener("click", () => printInventorySheet("bebidas"));
+  els.btnPrintMenajes?.addEventListener("click", () => printInventorySheet("menaje"));
+  els.btnPrintVarios?.addEventListener("click", () => printInventorySheet("varios"));
+  els.btnPrintFullInventory?.addEventListener("click", printFullInventoryByFamily);
 
   els.btnOpenSetup?.addEventListener("click", () => {
     showAuth("Editar conexión de Supabase");
