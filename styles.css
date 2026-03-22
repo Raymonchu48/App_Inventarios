@@ -1287,15 +1287,11 @@ textarea{
   border: 1px solid #d9e4f0;
 }
 
-.section-top-banner::before{
+.section-top-banner-silent::before{
   content: "";
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: .32;
-  z-index: 0;
+  background: rgba(255,255,255,.02);
 }
 
 .section-top-banner-overlay{
