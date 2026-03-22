@@ -143,6 +143,7 @@ function bindUI() {
   els.movementForm?.addEventListener("submit", onSaveMovement);
 
   els.pFamilia?.addEventListener("change", syncCategoryByFamily);
+  els.btnPrintFullInventory?.addEventListener("click", printFullInventoryByFamily);
 
   window.addEventListener("resize", () => {
     if (window.innerWidth > 980) closeSidebarMobile();
