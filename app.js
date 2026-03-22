@@ -148,8 +148,16 @@ function bindUI() {
 
   els.pFamilia?.addEventListener("change", syncCategoryByFamily);
   els.btnPrintFullInventory?.addEventListener("click", printFullInventoryByFamily);
-  els.globalSearchInput?.addEventListener("input", onGlobalSearch);
+  els.globalSearchInput?.addEventListener("input", onGlobalSearchInput);
+  els.globalSearchInput?.addEventListener("focus", onGlobalSearchInput);
+  els.globalSearchInput?.addEventListener("keydown", onGlobalSearchKeydown);
 
+document.addEventListener("click", (e) => {
+  const insideSearch = e.target.closest(".search-with-results");
+  if (!insideSearch) {
+    hideGlobalSearchResults();
+  }
+});
   window.addEventListener("resize", () => {
     if (window.innerWidth > 980) closeSidebarMobile();
     renderProducts();
