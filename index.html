@@ -182,11 +182,19 @@
         <div class="topbar-left">
           <button id="btnSidebarToggle" class="btn-icon mobile-only" type="button" aria-label="Abrir menú">☰</button>
 
-         <div class="search-shell">
-  <span class="search-icon">⌕</span>
-  <input id="globalSearchInput" type="text" placeholder="Buscar artículo por código, nombre o categoría" />
-</div>
-        </div>
+         <div class="search-shell premium-global-search search-with-results">
+  <span class="search-icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" class="search-svg">
+      <circle cx="11" cy="11" r="6"></circle>
+      <path d="M20 20l-4.2-4.2"></path>
+    </svg>
+  </span>
+
+  <div class="global-search-box">
+    <input id="globalSearchInput" type="text" placeholder="Buscar artículo por código, nombre o categoría" autocomplete="off" />
+    <div id="globalSearchResults" class="global-search-results hidden"></div>
+  </div>
+ </div>
       </header>
 
       <section class="workspace-headline">
