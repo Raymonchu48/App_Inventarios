@@ -1698,6 +1698,318 @@ async function importMenajesData() {
   }
 }
 
+function printInventorySheet(familia) {
+  let rows = [];
+  let title = "";
+
+  if (familia === "bebidas") {
+    rows = getFilteredProducts();
+    title = "Inventario de Bebidas";
+  }
+
+  if (familia === "menaje") {
+    rows = getFilteredMenajes();
+    title = "Inventario de Menaje";
+  }
+
+  if (familia === "varios") {
+    rows = getFilteredVarios();
+    title = "Inventario de Varios";
+  }
+
+  const today = new Date().toLocaleDateString("es-ES");
+
+  const tableRows = rows.map(p => `
+    <tr>
+      <td>${escapeHtml(p.stock_code || "")}</td>
+      <td>${escapeHtml(p.descripcion || "")}</td>
+      <td>${escapeHtml(p.categorias?.nombre || "Sin categoría")}</td>
+      <td>${escapeHtml(p.unit || "")}</td>
+      <td>${formatNum(p.cantidad || 0)}</td>
+      <td>${formatNum(p.min_stock || 0)}</td>
+      <td></td>
+      <td></td>
+    </tr>
+  `).join("");
+
+  const printWindow = window.open("", "_blank", "width=1200,height=800");
+
+  if (!printWindow) {
+    return flash("El navegador bloqueó la ventana de impresión.", true);
+  }
+
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>${title}</title>
+        <style>
+          body{
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 24px;
+            color: #10233a;
+          }
+          h1{
+            margin: 0 0 6px;
+            font-size: 24px;
+          }
+          .meta{
+            margin-bottom: 18px;
+            color: #4b5f75;
+            font-size: 13px;
+          }
+          table{
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+          }
+          th, td{
+            border: 1px solid #cfd9e3;
+            padding: 8px 10px;
+            text-align: left;
+            vertical-align: top;
+          }
+          th{
+            background: #eef4fb;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: .03em;
+          }
+          .sign-row{
+            margin-top: 28px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+          }
+          .sign-box{
+            margin-top: 40px;
+            border-top: 1px solid #7f8fa3;
+            padding-top: 8px;
+            font-size: 12px;
+          }
+          @media print{
+            body{ margin: 12mm; }
+          }
+        </style>
+      </head>
+      <body>
+        <h1>${title}</h1>
+        <div class="meta">
+          Fecha: ${today} · Total artículos: ${rows.length}
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Descripción</th>
+              <th>Categoría</th>
+              <th>Unidad</th>
+              <th>Stock sistema</th>
+              <th>Mínimo</th>
+              <th>Conteo físico</th>
+              <th>Observaciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRows || `<tr><td colspan="8">No hay artículos para imprimir.</td></tr>`}
+          </tbody>
+        </table>
+
+        <div class="sign-row">
+          <div class="sign-box">Responsable de conteo</div>
+          <div class="sign-box">Supervisor / validación</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            window.print();
+          };
+        </script>
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+}
+
+function printFullInventoryByFamily() {
+  const all = [...state.productos].sort((a, b) =>
+    (a.descripcion || "").localeCompare((b.descripcion || ""), "es", { sensitivity: "base" })
+  );
+
+  const bebidas = all.filter(p => (p.familia || "bebidas") === "bebidas");
+  const menaje = all.filter(p => p.familia === "menaje");
+  const varios = all.filter(p => p.familia === "varios");
+
+  const today = new Date().toLocaleDateString("es-ES");
+
+  const makeRows = rows => {
+    return rows.map(p => `
+      <tr>
+        <td>${escapeHtml(p.stock_code || "")}</td>
+        <td>${escapeHtml(p.descripcion || "")}</td>
+        <td>${escapeHtml(p.categorias?.nombre || "Sin categoría")}</td>
+        <td>${escapeHtml(p.unit || "")}</td>
+        <td>${formatNum(p.cantidad || 0)}</td>
+        <td>${formatNum(p.min_stock || 0)}</td>
+        <td></td>
+        <td></td>
+      </tr>
+    `).join("");
+  };
+
+  const sectionHtml = (title, rows) => `
+    <section class="print-section">
+      <h2>${title}</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Unidad</th>
+            <th>Stock sistema</th>
+            <th>Mínimo</th>
+            <th>Conteo físico</th>
+            <th>Observaciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.length ? makeRows(rows) : `<tr><td colspan="8">No hay artículos en esta familia.</td></tr>`}
+        </tbody>
+      </table>
+    </section>
+  `;
+
+  const printWindow = window.open("", "_blank", "width=1280,height=900");
+
+  if (!printWindow) {
+    return flash("El navegador bloqueó la ventana de impresión.", true);
+  }
+
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Inventario completo por familias</title>
+        <style>
+          body{
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 24px;
+            color: #10233a;
+          }
+          h1{
+            margin: 0 0 6px;
+            font-size: 24px;
+          }
+          h2{
+            margin: 28px 0 10px;
+            font-size: 18px;
+            color: #132235;
+            border-bottom: 2px solid #d8e2ec;
+            padding-bottom: 6px;
+          }
+          .meta{
+            margin-bottom: 18px;
+            color: #4b5f75;
+            font-size: 13px;
+          }
+          .summary{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 18px 0 22px;
+          }
+          .summary-box{
+            border: 1px solid #d6e0ea;
+            border-radius: 10px;
+            padding: 12px 14px;
+            background: #f8fbff;
+          }
+          .summary-box strong{
+            display: block;
+            font-size: 20px;
+            margin-top: 4px;
+          }
+          table{
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin-bottom: 12px;
+          }
+          th, td{
+            border: 1px solid #cfd9e3;
+            padding: 8px 10px;
+            text-align: left;
+            vertical-align: top;
+          }
+          th{
+            background: #eef4fb;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: .03em;
+          }
+          .print-section{
+            margin-bottom: 24px;
+          }
+          .sign-row{
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+          }
+          .sign-box{
+            margin-top: 40px;
+            border-top: 1px solid #7f8fa3;
+            padding-top: 8px;
+            font-size: 12px;
+          }
+          @media print{
+            body{ margin: 10mm; }
+            .print-section{ page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Inventario completo por familias</h1>
+        <div class="meta">
+          Fecha: ${today} · Total artículos: ${all.length}
+        </div>
+
+        <div class="summary">
+          <div class="summary-box">
+            Bebidas
+            <strong>${bebidas.length}</strong>
+          </div>
+          <div class="summary-box">
+            Menaje
+            <strong>${menaje.length}</strong>
+          </div>
+          <div class="summary-box">
+            Varios
+            <strong>${varios.length}</strong>
+          </div>
+        </div>
+
+        ${sectionHtml("Bebidas", bebidas)}
+        ${sectionHtml("Menaje", menaje)}
+        ${sectionHtml("Varios", varios)}
+
+        <div class="sign-row">
+          <div class="sign-box">Responsable de inventario</div>
+          <div class="sign-box">Supervisor / validación</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            window.print();
+          };
+        </script>
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+}
 function roleToBadge(role) {
   return role === "admin" ? "danger" : role === "editor" ? "warning" : "neutral";
 }
@@ -1718,6 +2030,7 @@ function cleanVal(v) {
   const s = (v ?? "").toString().trim();
   return s || null;
 }
+
 
 function formatNum(n) {
   return new Intl.NumberFormat("es-ES", { maximumFractionDigits: 2 }).format(Number(n || 0));
