@@ -1270,7 +1270,7 @@ textarea{
   }
 }
 /* Banner superior horizontal por sección */
-.section-top-banner{
+.section-top-banner-silent{
   position: relative;
   width: 100%;
   height: 70px;
@@ -1279,12 +1279,12 @@ textarea{
   border-radius: 20px;
   overflow: hidden;
   margin: 0 0 16px;
-  display: flex;
-  align-items: center;
-  padding: 0 22px;
-  background: linear-gradient(135deg, #10233a, #1d3a58);
+  background-color: #f4f7fb;
   box-shadow: 0 10px 24px rgba(16,35,58,.10);
   border: 1px solid #d9e4f0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .section-top-banner-silent::before{
