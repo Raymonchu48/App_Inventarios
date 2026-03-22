@@ -638,61 +638,45 @@ async function refreshAll() {
 }
 
 function updateSectionTopBanner(view) {
-  if (!els.sectionTopBanner || !els.sectionTopBannerEyebrow || !els.sectionTopBannerTitle || !els.sectionTopBannerText) return;
+  if (!els.sectionTopBanner) return;
 
-  els.sectionTopBanner.className = "section-top-banner";
+  els.sectionTopBanner.className = "section-top-banner-silent";
 
   const map = {
     dashboard: {
       className: "hero-dashboard",
-      eyebrow: "Inventario Banquetes Pro",
-      title: "Visión ejecutiva del inventario",
-      text: "Control profesional de stock, alertas y trazabilidad operativa."
+      title: "Visión ejecutiva del inventario"
     },
     productos: {
       className: "hero-bebidas",
-      eyebrow: "Módulo bebidas",
-      title: "Control premium de bebidas",
-      text: "Vinos, destilados, refrescos, cava y stock operativo de sala y banquetes."
+      title: "Control premium de bebidas"
     },
     menajes: {
       className: "hero-menajes",
-      eyebrow: "Módulo menaje",
-      title: "Material de servicio y montaje",
-      text: "Vajilla, cristalería, cubertería, buffet y elementos de apoyo operativo."
+      title: "Material de servicio y montaje"
     },
     varios: {
       className: "hero-varios",
-      eyebrow: "Módulo varios",
-      title: "Suministros y auxiliares",
-      text: "Consumibles, despensa, apoyo logístico y artículos complementarios."
+      title: "Suministros y auxiliares"
     },
     movimientos: {
       className: "hero-movimientos",
-      eyebrow: "Trazabilidad operativa",
-      title: "Entradas, salidas y ajustes",
-      text: "Control histórico de movimientos, incidencias y variaciones de stock."
+      title: "Entradas, salidas y ajustes"
     },
     admin: {
       className: "hero-admin",
-      eyebrow: "Gobierno del sistema",
-      title: "Usuarios, permisos y control",
-      text: "Supervisión de accesos, roles y seguridad operativa."
+      title: "Usuarios, permisos y control"
     },
     configuracion: {
       className: "hero-configuracion",
-      eyebrow: "Configuración técnica",
-      title: "Entorno y conexión",
-      text: "Estado del sistema, sesión activa y configuración de plataforma."
+      title: "Configuración y entorno"
     }
   };
 
   const cfg = map[view] || map.dashboard;
 
   els.sectionTopBanner.classList.add(cfg.className);
-  els.sectionTopBannerEyebrow.textContent = cfg.eyebrow;
-  els.sectionTopBannerTitle.textContent = cfg.title;
-  els.sectionTopBannerText.textContent = cfg.text;
+  els.sectionTopBanner.setAttribute("data-banner-title", cfg.title);
 }
 function onGlobalSearchInput() {
   const q = els.globalSearchInput?.value.trim().toLowerCase() || "";
