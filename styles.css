@@ -1348,15 +1348,15 @@ textarea{
 }
 
 .section-top-banner.hero-bebidas::before{
-  background-image: url("banner-bebidas.jpg");
+  background-image: url("banner-bebidas.png");
 }
 
 .section-top-banner.hero-menajes::before{
-  background-image: url("banner-menajes.jpg");
+  background-image: url("banner-menajes.png");
 }
 
 .section-top-banner.hero-varios::before{
-  background-image: url("banner-varios.jpg");
+  background-image: url("banner-varios.png");
 }
 
 .section-top-banner.hero-movimientos::before{
