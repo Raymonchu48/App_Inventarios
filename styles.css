@@ -1269,3 +1269,130 @@ textarea{
     justify-items:start;
   }
 }
+/* Banner superior horizontal por sección */
+.section-top-banner{
+  position: relative;
+  width: 100%;
+  height: 70px;
+  min-height: 70px;
+  max-height: 70px;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  background: linear-gradient(135deg, #10233a, #1d3a58);
+  box-shadow: 0 10px 24px rgba(16,35,58,.10);
+  border: 1px solid #d9e4f0;
+}
+
+.section-top-banner::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: .32;
+  z-index: 0;
+}
+
+.section-top-banner-overlay{
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(9,22,39,.72), rgba(9,22,39,.30));
+  z-index: 1;
+}
+
+.section-top-banner-content{
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  max-width: 72%;
+}
+
+.section-top-banner-eyebrow{
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #dceaf7;
+  line-height: 1;
+}
+
+.section-top-banner-title{
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.05;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.section-top-banner-text{
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.15;
+  color: #eaf3fb;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Clases por sección */
+.section-top-banner.hero-dashboard::before{
+  background-image: url("Banner-Banquetes.png");
+}
+
+.section-top-banner.hero-bebidas::before{
+  background-image: url("banner-bebidas.jpg");
+}
+
+.section-top-banner.hero-menajes::before{
+  background-image: url("banner-menajes.jpg");
+}
+
+.section-top-banner.hero-varios::before{
+  background-image: url("banner-varios.jpg");
+}
+
+.section-top-banner.hero-movimientos::before{
+  background-image: url("banner-movimientos.jpg");
+}
+
+.section-top-banner.hero-admin::before{
+  background-image: url("banner-admin.jpg");
+}
+
+.section-top-banner.hero-configuracion::before{
+  background-image: url("banner-configuracion.jpg");
+}
+
+@media (max-width: 768px){
+  .section-top-banner{
+    height: 64px;
+    min-height: 64px;
+    max-height: 64px;
+    border-radius: 16px;
+    padding: 0 16px;
+  }
+
+  .section-top-banner-content{
+    max-width: 84%;
+  }
+
+  .section-top-banner-eyebrow{
+    font-size: 9px;
+  }
+
+  .section-top-banner-title{
+    font-size: 15px;
+  }
+
+  .section-top-banner-text{
+    font-size: 11px;
+  }
+}
