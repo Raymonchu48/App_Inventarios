@@ -629,7 +629,16 @@ async function refreshAll() {
 function onGlobalSearch() {
   const q = els.globalSearchInput?.value.trim().toLowerCase() || "";
 
-  if (!q) return;
+  if (!q) {
+    if (els.searchInput) els.searchInput.value = "";
+    if (els.menajesSearchInput) els.menajesSearchInput.value = "";
+    if (els.variosSearchInput) els.variosSearchInput.value = "";
+
+    renderProducts();
+    renderMenajes();
+    renderVarios();
+    return;
+  }
 
   const found = state.productos.find(p => {
     const text = [
