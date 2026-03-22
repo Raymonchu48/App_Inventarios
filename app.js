@@ -643,40 +643,17 @@ function updateSectionTopBanner(view) {
   els.sectionTopBanner.className = "section-top-banner-silent";
 
   const map = {
-    dashboard: {
-      className: "hero-dashboard",
-      title: "Visión ejecutiva del inventario"
-    },
-    productos: {
-      className: "hero-bebidas",
-      title: "Control premium de bebidas"
-    },
-    menajes: {
-      className: "hero-menajes",
-      title: "Material de servicio y montaje"
-    },
-    varios: {
-      className: "hero-varios",
-      title: "Suministros y auxiliares"
-    },
-    movimientos: {
-      className: "hero-movimientos",
-      title: "Entradas, salidas y ajustes"
-    },
-    admin: {
-      className: "hero-admin",
-      title: "Usuarios, permisos y control"
-    },
-    configuracion: {
-      className: "hero-configuracion",
-      title: "Configuración y entorno"
-    }
+    dashboard: "hero-dashboard",
+    productos: "hero-bebidas",
+    menajes: "hero-menajes",
+    varios: "hero-varios",
+    movimientos: "hero-movimientos",
+    admin: "hero-admin",
+    configuracion: "hero-configuracion"
   };
 
-  const cfg = map[view] || map.dashboard;
-
-  els.sectionTopBanner.classList.add(cfg.className);
-  els.sectionTopBanner.setAttribute("data-banner-title", cfg.title);
+  els.sectionTopBanner.classList.add(map[view] || "hero-dashboard");
+  els.sectionTopBanner.removeAttribute("data-banner-title");
 }
 function onGlobalSearchInput() {
   const q = els.globalSearchInput?.value.trim().toLowerCase() || "";
