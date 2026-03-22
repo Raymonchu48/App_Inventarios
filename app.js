@@ -1532,6 +1532,8 @@ async function onSaveMovement(e) {
 
   const tipo = els.movementType?.value;
   const qty = Number(els.movementQty?.value || 0);
+  const motivo = els.movementReason?.value || null;
+  const evento_ref = els.movementEvent?.value.trim() || null;
   const nota = els.movementNote?.value.trim() || null;
   const anterior = Number(producto.cantidad || 0);
 
@@ -1566,6 +1568,8 @@ async function onSaveMovement(e) {
         cantidad: qty,
         stock_anterior: anterior,
         stock_nuevo: nuevo,
+        motivo,
+        evento_ref,
         nota,
         created_by: state.user.id
       }]);
