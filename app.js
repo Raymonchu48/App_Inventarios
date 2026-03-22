@@ -604,7 +604,7 @@ function switchView(view) {
     els.viewTitle.textContent = titles[view][0];
     els.viewSubtitle.textContent = titles[view][1];
   }
-
+updateSectionTopBanner(view);
   if (view === "dashboard") renderDashboard();
   if (view === "productos") renderProducts();
   if (view === "menajes") renderMenajes();
