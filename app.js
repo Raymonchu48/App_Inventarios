@@ -636,56 +636,188 @@ async function refreshAll() {
   if (isAdmin()) renderUsersList();
 }
 
-function onGlobalSearch() {
+function onGlobalSearchInput() {
   const q = els.globalSearchInput?.value.trim().toLowerCase() || "";
 
-  if (!q) {
-    if (els.searchInput) els.searchInput.value = "";
-    if (els.menajesSearchInput) els.menajesSearchInput.value = "";
-    if (els.variosSearchInput) els.variosSearchInput.value = "";
+  if (!els.globalSearchResults) return;
 
-    renderProducts();
-    renderMenajes();
-    renderVarios();
+  if (!q) {
+    globalSearchSelectionIndex = -1;
+    globalSearchCurrentResults = [];
+    hideGlobalSearchResults();
     return;
   }
 
-  const found = state.productos.find(p => {
-    const text = [
-      p.stock_code || "",
-      p.descripcion || "",
-      p.presentacion || "",
-      p.categorias?.nombre || ""
-    ].join(" ").toLowerCase();
+  const results = state.productos
+    .filter(p => {
+      const text = [
+        p.stock_code || "",
+        p.descripcion || "",
+        p.presentacion || "",
+        p.categorias?.nombre || "",
+        p.familia || ""
+      ].join(" ").toLowerCase();
 
-    return text.includes(q);
+      return text.includes(q);
+    })
+    .sort((a, b) =>
+      (a.descripcion || "").localeCompare((b.descripcion || ""), "es", { sensitivity: "base" })
+    )
+    .slice(0, 8);
+
+  globalSearchSelectionIndex = -1;
+  globalSearchCurrentResults = results;
+  renderGlobalSearchResults(results, q);
+}
+
+function onGlobalSearchKeydown(e) {
+  if (!globalSearchCurrentResults.length) return;
+
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    globalSearchSelectionIndex = Math.min(globalSearchSelectionIndex + 1, globalSearchCurrentResults.length - 1);
+    updateGlobalSearchSelection();
+  }
+
+  if (e.key === "ArrowUp") {
+    e.preventDefault();
+    globalSearchSelectionIndex = Math.max(globalSearchSelectionIndex - 1, 0);
+    updateGlobalSearchSelection();
+  }
+
+  if (e.key === "Enter") {
+    e.preventDefault();
+    if (globalSearchSelectionIndex >= 0 && globalSearchCurrentResults[globalSearchSelectionIndex]) {
+      goToGlobalSearchResult(globalSearchCurrentResults[globalSearchSelectionIndex], true);
+    }
+  }
+
+  if (e.key === "Escape") {
+    hideGlobalSearchResults();
+  }
+}
+
+function renderGlobalSearchResults(results, q) {
+  if (!els.globalSearchResults) return;
+
+  els.globalSearchResults.innerHTML = "";
+
+  if (!results.length) {
+    els.globalSearchResults.innerHTML = `
+      <div class="global-search-empty">
+        No se encontraron artículos para <strong>${escapeHtml(q)}</strong>
+      </div>
+    `;
+    els.globalSearchResults.classList.remove("hidden");
+    return;
+  }
+
+  results.forEach((p, index) => {
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = "global-search-result-item";
+    item.dataset.index = index;
+
+    const familyLabel =
+      p.familia === "menaje" ? "Menaje" :
+      p.familia === "varios" ? "Varios" : "Bebidas";
+
+    const qty = Number(p.cantidad || 0);
+    const min = Number(p.min_stock || 0);
+    const stockClass = qty <= 0 ? "danger" : qty <= min ? "warn" : "ok";
+
+    item.innerHTML = `
+      <div class="global-search-result-main">
+        <strong>${escapeHtml(p.descripcion || "Sin descripción")}</strong>
+        <small>${escapeHtml(p.presentacion || "")}</small>
+      </div>
+
+      <div class="global-search-result-meta">
+        <span class="global-search-code">${escapeHtml(p.stock_code || "Sin código")}</span>
+        <span class="global-search-family family-${escapeHtml(p.familia || "bebidas")}">${familyLabel}</span>
+        <span class="global-search-stock ${stockClass}">Stock: ${formatNum(qty)}</span>
+      </div>
+    `;
+
+    item.addEventListener("click", () => {
+      goToGlobalSearchResult(p, true);
+    });
+
+    els.globalSearchResults.appendChild(item);
   });
 
-  if (!found) return;
+  els.globalSearchResults.classList.remove("hidden");
+}
 
-  const familia = found.familia || "bebidas";
+function updateGlobalSearchSelection() {
+  if (!els.globalSearchResults) return;
 
-  if (familia === "bebidas") {
+  const items = els.globalSearchResults.querySelectorAll(".global-search-result-item");
+  items.forEach(item => item.classList.remove("selected"));
+
+  const selected = items[globalSearchSelectionIndex];
+  if (selected) {
+    selected.classList.add("selected");
+    selected.scrollIntoView({ block: "nearest" });
+  }
+}
+
+function hideGlobalSearchResults() {
+  if (!els.globalSearchResults) return;
+  els.globalSearchResults.classList.add("hidden");
+  els.globalSearchResults.innerHTML = "";
+  globalSearchSelectionIndex = -1;
+  globalSearchCurrentResults = [];
+}
+
+function goToGlobalSearchResult(product, openModal = false) {
+  if (product.familia === "menaje") {
+    switchView("menajes");
+    if (els.menajesSearchInput) els.menajesSearchInput.value = product.descripcion || product.stock_code || "";
+    renderMenajes();
+  } else if (product.familia === "varios") {
+    switchView("varios");
+    if (els.variosSearchInput) els.variosSearchInput.value = product.descripcion || product.stock_code || "";
+    renderVarios();
+  } else {
     switchView("productos");
     if (els.familyFilter) els.familyFilter.value = "bebidas";
-    if (els.searchInput) els.searchInput.value = q;
     populateCategoryFilters();
+    if (els.searchInput) els.searchInput.value = product.descripcion || product.stock_code || "";
     renderProducts();
-    return;
   }
 
-  if (familia === "menaje") {
-    switchView("menajes");
-    if (els.menajesSearchInput) els.menajesSearchInput.value = q;
-    renderMenajes();
-    return;
+  if (els.globalSearchInput) {
+    els.globalSearchInput.value = product.descripcion || product.stock_code || "";
   }
 
-  if (familia === "varios") {
-    switchView("varios");
-    if (els.variosSearchInput) els.variosSearchInput.value = q;
-    renderVarios();
-  }
+  hideGlobalSearchResults();
+
+  setTimeout(() => {
+    highlightProductRow(product.id);
+
+    if (openModal) {
+      openEditProductDialog(product.id);
+    }
+  }, 150);
+}
+
+function highlightProductRow(productId) {
+  document.querySelectorAll(".row-highlight").forEach(el => {
+    el.classList.remove("row-highlight");
+  });
+
+  const actionButton = document.querySelector(`[data-id="${productId}"]`);
+  const row = actionButton?.closest("tr") || actionButton?.closest(".mobile-product-card");
+
+  if (!row) return;
+
+  row.classList.add("row-highlight");
+  row.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  setTimeout(() => {
+    row.classList.remove("row-highlight");
+  }, 2500);
 }
 function ensureReady() {
   if (!state.user || !state.client) {
