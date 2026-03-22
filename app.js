@@ -146,6 +146,7 @@ function bindUI() {
 
   els.pFamilia?.addEventListener("change", syncCategoryByFamily);
   els.btnPrintFullInventory?.addEventListener("click", printFullInventoryByFamily);
+  els.globalSearchInput?.addEventListener("input", onGlobalSearch);
 
   window.addEventListener("resize", () => {
     if (window.innerWidth > 980) closeSidebarMobile();
@@ -625,6 +626,48 @@ async function refreshAll() {
   if (isAdmin()) renderUsersList();
 }
 
+function onGlobalSearch() {
+  const q = els.globalSearchInput?.value.trim().toLowerCase() || "";
+
+  if (!q) return;
+
+  const found = state.productos.find(p => {
+    const text = [
+      p.stock_code || "",
+      p.descripcion || "",
+      p.presentacion || "",
+      p.categorias?.nombre || ""
+    ].join(" ").toLowerCase();
+
+    return text.includes(q);
+  });
+
+  if (!found) return;
+
+  const familia = found.familia || "bebidas";
+
+  if (familia === "bebidas") {
+    switchView("productos");
+    if (els.familyFilter) els.familyFilter.value = "bebidas";
+    if (els.searchInput) els.searchInput.value = q;
+    populateCategoryFilters();
+    renderProducts();
+    return;
+  }
+
+  if (familia === "menaje") {
+    switchView("menajes");
+    if (els.menajesSearchInput) els.menajesSearchInput.value = q;
+    renderMenajes();
+    return;
+  }
+
+  if (familia === "varios") {
+    switchView("varios");
+    if (els.variosSearchInput) els.variosSearchInput.value = q;
+    renderVarios();
+  }
+}
 function ensureReady() {
   if (!state.user || !state.client) {
     flash("Primero inicia sesión.", true);
