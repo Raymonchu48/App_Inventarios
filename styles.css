@@ -1270,7 +1270,7 @@ textarea{
   }
 }
 /* Banner superior horizontal por sección */
-.section-top-banner-silent{
+.section-top-banner{
   position: relative;
   width: 100%;
   height: 70px;
@@ -1287,7 +1287,7 @@ textarea{
   background-repeat: no-repeat;
 }
 
-.section-top-banner-silent::before{
+.section-top-banner::before{
   content: "";
   position: absolute;
   inset: 0;
