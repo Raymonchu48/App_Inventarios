@@ -13,6 +13,8 @@ const state = {
 
 const els = {};
 let deferredInstallPrompt = null;
+let globalSearchSelectionIndex = -1;
+let globalSearchCurrentResults = [];
 
 async function hardResetClientCaches() {
   try {
