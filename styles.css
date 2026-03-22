@@ -1045,3 +1045,52 @@ textarea{
   justify-content:flex-end;
   margin:16px 0 6px;
 }
+/* Botones imprimir */
+.btn.print-btn,
+#printButton,
+#btnPrintBebidas,
+#btnPrintMenajes,
+#btnPrintVarios,
+#btnPrintFullInventory{
+  background: linear-gradient(180deg, #dff2ff, #c7e9ff);
+  color: #0f4c75;
+  border: 1px solid #9fd0f2;
+  box-shadow: 0 8px 18px rgba(72, 149, 196, 0.18);
+}
+
+.btn.print-btn:hover,
+#printButton:hover,
+#btnPrintBebidas:hover,
+#btnPrintMenajes:hover,
+#btnPrintVarios:hover,
+#btnPrintFullInventory:hover{
+  background: linear-gradient(180deg, #cfeeff, #b7e2ff);
+  border-color: #87c4ec;
+  color: #0b3c5d;
+  transform: translateY(-1px);
+}
+
+.btn.print-btn:active,
+#printButton:active,
+#btnPrintBebidas:active,
+#btnPrintMenajes:active,
+#btnPrintVarios:active,
+#btnPrintFullInventory:active{
+  transform: translateY(0);
+}
+
+.btn.print-btn:disabled,
+#printButton:disabled,
+#btnPrintBebidas:disabled,
+#btnPrintMenajes:disabled,
+#btnPrintVarios:disabled,
+#btnPrintFullInventory:disabled{
+  opacity: .6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* alineación opcional en acciones */
+.panel-actions .btn + .btn{
+  margin-left: 8px;
+}
