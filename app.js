@@ -42,6 +42,8 @@ async function init() {
   captureEls();
   bindUI();
   loadSavedConfigToForms();
+  registerServiceWorker();
+  setupInstallPrompt();
   await initSupabaseFromConfig();
 }
 
@@ -71,6 +73,7 @@ function captureEls() {
     "productDialog", "productForm", "productDialogTitle", "btnCloseDialog", "productId",
     "pStockCode", "pDescripcion", "pPresentacion", "pStDate", "pUnit", "pCantidad",
     "pMinStock", "pPagina", "pFamilia", "pCategoria", "pCantidadOriginal", "pDetalleCantidad",
+    "btnInstallApp",
     "sectionTopBanner","sectionTopBannerEyebrow","sectionTopBannerTitle","sectionTopBannerText"
   ].forEach(id => {
     els[id] = document.getElementById(id);
@@ -2312,4 +2315,79 @@ function setupInstallPrompt() {
 
 async function installApp() {
   return;
+}
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) return;
+
+  window.addEventListener("load", async () => {
+    try {
+      await navigator.serviceWorker.register("/App_Inventarios/service-worker.js");
+      console.log("Service worker registrado correctamente.");
+    } catch (error) {
+      console.error("Error registrando service worker:", error);
+    }
+  });
+}
+
+function setupInstallPrompt() {
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+
+    if (els.btnInstallApp) {
+      els.btnInstallApp.classList.remove("hidden");
+    }
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+
+    if (els.btnInstallApp) {
+      els.btnInstallApp.classList.add("hidden");
+    }
+  });
+}
+
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) return;
+
+  window.addEventListener("load", async () => {
+    try {
+      await navigator.serviceWorker.register("/App_Inventarios/service-worker.js");
+      console.log("Service worker registrado correctamente.");
+    } catch (error) {
+      console.error("Error registrando service worker:", error);
+    }
+  });
+}
+
+function setupInstallPrompt() {
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+
+    if (els.btnInstallApp) {
+      els.btnInstallApp.classList.remove("hidden");
+    }
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+
+    if (els.btnInstallApp) {
+      els.btnInstallApp.classList.add("hidden");
+    }
+  });
+}
+
+async function installApp() {
+  if (!deferredInstallPrompt) return;
+
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+
+  if (els.btnInstallApp) {
+    els.btnInstallApp.classList.add("hidden");
+  }
 }
