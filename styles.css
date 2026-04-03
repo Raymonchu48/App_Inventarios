@@ -1452,3 +1452,6 @@ textarea{
     width: 20px;
   }
 }
+#btnInstallApp{
+  margin-bottom: 10px;
+}
