@@ -1,25 +1,23 @@
 {
-  "name": "Inventario Pro Banquetes",
+  "name": "Inventario Banquetes Pro",
   "short_name": "Inventario Pro",
-  "description": "Control profesional de bebidas, menajes y movimientos para banquetes y eventos.",
-  "start_url": "./index.html?v=4",
-  "scope": "./",
+  "description": "Control profesional de bebidas, menajes, varios y movimientos para banquetes y hotelería.",
+  "start_url": "/App_Inventarios/",
+  "scope": "/App_Inventarios/",
   "display": "standalone",
   "background_color": "#f4f7fb",
   "theme_color": "#18233a",
-  "orientation": "portrait-primary",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "/App_Inventarios/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "/App_Inventarios/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
