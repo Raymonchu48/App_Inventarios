@@ -1,0 +1,34 @@
+<svg width="100%" viewBox="0 0 680 150" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a1209;stop-opacity:1"/>
+      <stop offset="40%" style="stop-color:#2c1f0a;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#1a1209;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1a1209;stop-opacity:1"/>
+      <stop offset="20%" style="stop-color:#c9a84c;stop-opacity:1"/>
+      <stop offset="80%" style="stop-color:#c9a84c;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#1a1209;stop-opacity:1"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="680" height="140" fill="url(#bgGrad)" rx="10" style="stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <rect x="40" y="28" width="600" height="0.8" fill="url(#lineGrad)" style="stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <rect x="40" y="112" width="600" height="0.8" fill="url(#lineGrad)" style="stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <polygon points="340,22 344,30 336,30" fill="#c9a84c" opacity="0.8" style="fill:rgb(201, 168, 76);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.8;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <polygon points="340,118 344,110 336,110" fill="#c9a84c" opacity="0.8" style="fill:rgb(201, 168, 76);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.8;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <circle cx="64" cy="70" r="3" fill="#c9a84c" opacity="0.5" style="fill:rgb(201, 168, 76);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="616" cy="70" r="3" fill="#c9a84c" opacity="0.5" style="fill:rgb(201, 168, 76);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="76" cy="70" r="1.5" fill="#c9a84c" opacity="0.3" style="fill:rgb(201, 168, 76);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.3;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <circle cx="604" cy="70" r="1.5" fill="#c9a84c" opacity="0.3" style="fill:rgb(201, 168, 76);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.3;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <text x="340" y="52" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="10" font-weight="400" letter-spacing="5" fill="#c9a84c" opacity="0.75" style="fill:rgb(201, 168, 76);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.75;font-family:Georgia, &quot;Times New Roman&quot;, serif;font-size:10px;font-weight:400;text-anchor:middle;dominant-baseline:auto">✦ SERVICIO PROFESIONAL ✦</text>
+
+  <text x="340" y="86" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="26" font-weight="700" letter-spacing="1.5" fill="#f0d98a" style="fill:rgb(240, 217, 138);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Georgia, &quot;Times New Roman&quot;, serif;font-size:26px;font-weight:700;text-anchor:middle;dominant-baseline:auto">Gestión Profesional</text>
+
+  <text x="340" y="106" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" font-weight="400" letter-spacing="4" fill="#c9a84c" opacity="0.85" style="fill:rgb(201, 168, 76);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.85;font-family:Georgia, &quot;Times New Roman&quot;, serif;font-size:13px;font-weight:400;text-anchor:middle;dominant-baseline:auto">para Banquetes y Eventos</text>
+</svg>
