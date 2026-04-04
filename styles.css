@@ -1328,12 +1328,12 @@ textarea{
 }
 
 .section-top-banner-silent.hero-admin{
-  background-image: url("banner-Banquetes.png");
+  background-image: url("banner_administracion-app.svg");
   background-position: center center;
 }
 
 .section-top-banner-silent.hero-configuracion{
-  background-image: url("banner-Banquetes.png");
+  background-image: url("banner_configuracion_sistema.svg");
   background-position: center center;
 }
 
