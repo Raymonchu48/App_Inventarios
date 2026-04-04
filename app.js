@@ -585,7 +585,7 @@ function switchView(view) {
   }
 
   const titles = {
-    dashboard: ["Dashboard", "Resumen ejecutivo del inventario."],
+    dashboard: ["Pagina Principal", "Resumen ejecutivo del inventario."],
     productos: ["Bebidas", "Gestión centralizada de stock, edición y control por categoría."],
     menajes: ["Menajes", "Inventario de vajilla, cristalería, cubertería, mantelería y material de servicio."],
     varios: ["Varios", "Artículos auxiliares, suministros y otros no clasificados como bebida o menaje."],
