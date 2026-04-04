@@ -1318,12 +1318,12 @@ textarea{
 }
 
 .section-top-banner-silent.hero-varios{
-  background-image: url("banner-varios.png");
+  background-image: url("banner_varios_productos_v2.svg");
   background-position: center center;
 }
 
 .section-top-banner-silent.hero-movimientos{
-  background-image: url("banner-Banquetes.png");
+  background-image: url("banner_movimientos_articulos.svg");
   background-position: center center;
 }
 
