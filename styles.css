@@ -1344,12 +1344,6 @@ textarea{
     max-height: 86px;
     border-radius: 18px;
   }
-
-  .section-top-banner-silent::after{
-    left: 20px;
-    font-size: 14px;
-    max-width: 58%;
-  }
 }
 
 @media (max-width: 768px){
@@ -1359,13 +1353,8 @@ textarea{
     max-height: 78px;
     border-radius: 16px;
   }
-
-  .section-top-banner-silent::after{
-    left: 16px;
-    font-size: 13px;
-    max-width: 62%;
-  }
 }
+
 /* Botón menú móvil / tablet premium */
 .btn-sidebar-toggle{
   width: 58px;
