@@ -445,13 +445,10 @@ textarea{
 
 .hero-banner-card{
   width:100%;
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:22px;
-  box-shadow:var(--shadow-sm);
+  border-radius:24px;
   overflow:hidden;
-  margin-bottom:18px;
 }
+
 .hero-banner-image{
   display:block;
   width:100%;
