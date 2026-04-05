@@ -1280,7 +1280,7 @@ textarea{
   background-color: #eef3f8;
   box-shadow: 0 10px 24px rgba(16,35,58,.08);
   border: 1px solid #d9e4f0;
-  background-size: cover;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center center;
 }
