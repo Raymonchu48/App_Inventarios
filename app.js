@@ -656,6 +656,7 @@ function updateSectionTopBanner(view) {
   };
 
   els.sectionTopBanner.classList.add(map[view] || "hero-dashboard");
+  els.sectionTopBanner.innerHTML = "";
   els.sectionTopBanner.removeAttribute("data-banner-title");
 }
 function onGlobalSearchInput() {
