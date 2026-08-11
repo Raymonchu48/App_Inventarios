@@ -1,57 +1,45 @@
-<svg width="100%" viewBox="0 0 680 150" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="100%" height="100%"
+     viewBox="0 0 1600 96"
+     preserveAspectRatio="xMidYMid slice">
   <defs>
-    <linearGradient id="bgAdm" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#0a0f18;stop-opacity:1"/>
-      <stop offset="45%" style="stop-color:#0e1520;stop-opacity:1"/>
-      <stop offset="100%" style="stop-color:#0a0f18;stop-opacity:1"/>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#180d12"/>
+      <stop offset="45%" stop-color="#26121a"/>
+      <stop offset="100%" stop-color="#180d12"/>
     </linearGradient>
-    <linearGradient id="lineAdm" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#0a0f18;stop-opacity:1"/>
-      <stop offset="20%" style="stop-color:#5a9fd4;stop-opacity:1"/>
-      <stop offset="80%" style="stop-color:#5a9fd4;stop-opacity:1"/>
-      <stop offset="100%" style="stop-color:#0a0f18;stop-opacity:1"/>
+    <linearGradient id="line" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#180d12"/>
+      <stop offset="20%" stop-color="#d8879a"/>
+      <stop offset="80%" stop-color="#d8879a"/>
+      <stop offset="100%" stop-color="#180d12"/>
     </linearGradient>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2.8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
   </defs>
-
-  <rect width="680" height="140" fill="url(#bgAdm)" rx="10" style="stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-
-  <rect x="40" y="28" width="600" height="0.8" fill="url(#lineAdm)" style="stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-  <rect x="40" y="112" width="600" height="0.8" fill="url(#lineAdm)" style="stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-
-  <polygon points="340,22 344,30 336,30" fill="#5a9fd4" opacity="0.8" style="fill:rgb(90, 159, 212);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.8;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-  <polygon points="340,118 344,110 336,110" fill="#5a9fd4" opacity="0.8" style="fill:rgb(90, 159, 212);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.8;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-
-  <!-- Escudo / shield izquierda -->
-  <g opacity="0.52" transform="translate(94,48)" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.52;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <path d="M0,-22 L18,-12 L18,8 Q18,24 0,30 Q-18,24 -18,8 L-18,-12 Z" fill="none" stroke="#5a9fd4" stroke-width="1.1" style="fill:none;stroke:rgb(90, 159, 212);color:rgb(0, 0, 0);stroke-width:1.1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <!-- check dentro del escudo -->
-    <polyline points="-7,6 -1,13 10,-4" fill="none" stroke="#5a9fd4" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="fill:none;stroke:rgb(90, 159, 212);color:rgb(0, 0, 0);stroke-width:1.4px;stroke-linecap:round;stroke-linejoin:round;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <rect x="0" y="0" width="1600" height="96" rx="20" fill="url(#bg)"/>
+  <rect x="92" y="16" width="1416" height="1.2" rx="1" fill="url(#line)" opacity="0.95"/>
+  <rect x="92" y="80" width="1416" height="1.2" rx="1" fill="url(#line)" opacity="0.95"/>
+  <polygon points="800,11 806,21 794,21" fill="#d8879a" opacity="0.85"/>
+  <polygon points="800,85 806,75 794,75" fill="#d8879a" opacity="0.85"/>
+  <g opacity="0.42" transform="translate(168,22)" stroke="#d8879a" fill="none">
+    <path d="M0 0 l22 8 v14 c0 14-10 23-22 28 c-12-5-22-14-22-28 v-14 z" stroke-width="1.5"/>
+    <path d="M-9 22 l6 6 l12-14" stroke-width="1.8"/>
   </g>
-
-  <!-- Dashboard / monitor derecha -->
-  <g opacity="0.5" transform="translate(562,50)" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
-    <!-- pantalla -->
-    <rect x="-22" y="-16" width="44" height="30" rx="3" fill="none" stroke="#5a9fd4" stroke-width="1.1" style="fill:none;stroke:rgb(90, 159, 212);color:rgb(0, 0, 0);stroke-width:1.1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <!-- pie -->
-    <line x1="0" y1="14" x2="0" y2="24" stroke="#5a9fd4" stroke-width="1" style="fill:rgb(0, 0, 0);stroke:rgb(90, 159, 212);color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <line x1="-10" y1="24" x2="10" y2="24" stroke="#5a9fd4" stroke-width="1" style="fill:rgb(0, 0, 0);stroke:rgb(90, 159, 212);color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <!-- contenido pantalla -->
-    <line x1="-14" y1="-6" x2="-4" y2="-6" stroke="#5a9fd4" stroke-width="0.7" opacity="0.6" style="fill:rgb(0, 0, 0);stroke:rgb(90, 159, 212);color:rgb(0, 0, 0);stroke-width:0.7px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.6;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <line x1="-14" y1="0" x2="2" y2="0" stroke="#5a9fd4" stroke-width="0.7" opacity="0.6" style="fill:rgb(0, 0, 0);stroke:rgb(90, 159, 212);color:rgb(0, 0, 0);stroke-width:0.7px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.6;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <line x1="-14" y1="6" x2="-6" y2="6" stroke="#5a9fd4" stroke-width="0.7" opacity="0.6" style="fill:rgb(0, 0, 0);stroke:rgb(90, 159, 212);color:rgb(0, 0, 0);stroke-width:0.7px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.6;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <!-- indicador derecho -->
-    <rect x="6" y="-8" width="10" height="16" rx="2" fill="none" stroke="#5a9fd4" stroke-width="0.8" style="fill:none;stroke:rgb(90, 159, 212);color:rgb(0, 0, 0);stroke-width:0.8px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-    <rect x="8" y="4" width="6" height="4" rx="1" fill="#5a9fd4" opacity="0.4" style="fill:rgb(90, 159, 212);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.4;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <g opacity="0.40" transform="translate(1432,26)">
+    <rect x="-26" y="2" width="52" height="48" rx="4" fill="none" stroke="#d8879a" stroke-width="1.4"/>
+    <line x1="-14" y1="14" x2="14" y2="14" stroke="#d8879a" stroke-width="1"/>
+    <line x1="-14" y1="24" x2="14" y2="24" stroke="#d8879a" stroke-width="1"/>
+    <line x1="-14" y1="34" x2="8" y2="34" stroke="#d8879a" stroke-width="1"/>
+    <polyline points="11,27 19,32 11,37" fill="none" stroke="#d8879a" stroke-width="1.4"/>
   </g>
-
-  <circle cx="64" cy="70" r="3" fill="#5a9fd4" opacity="0.4" style="fill:rgb(90, 159, 212);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.4;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-  <circle cx="616" cy="70" r="3" fill="#5a9fd4" opacity="0.4" style="fill:rgb(90, 159, 212);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.4;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-  <circle cx="76" cy="70" r="1.5" fill="#5a9fd4" opacity="0.25" style="fill:rgb(90, 159, 212);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.25;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-  <circle cx="604" cy="70" r="1.5" fill="#5a9fd4" opacity="0.25" style="fill:rgb(90, 159, 212);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.25;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
-
-  <text x="340" y="52" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="10" font-weight="400" letter-spacing="5" fill="#5a9fd4" opacity="0.7" style="fill:rgb(90, 159, 212);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.7;font-family:Georgia, &quot;Times New Roman&quot;, serif;font-size:10px;font-weight:400;text-anchor:middle;dominant-baseline:auto">✦ GESTIÓN INTERNA ✦</text>
-
-  <text x="340" y="84" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="26" font-weight="700" letter-spacing="1.5" fill="#b8d8f0" style="fill:rgb(184, 216, 240);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Georgia, &quot;Times New Roman&quot;, serif;font-size:26px;font-weight:700;text-anchor:middle;dominant-baseline:auto">Administración de la App</text>
-
-  <text x="340" y="106" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="400" letter-spacing="4" fill="#5a9fd4" opacity="0.85" style="fill:rgb(90, 159, 212);stroke:none;color:rgb(0, 0, 0);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.85;font-family:Georgia, &quot;Times New Roman&quot;, serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">Usuarios · Roles · Auditoría · Copias de seguridad</text>
+  <circle cx="118" cy="48" r="4" fill="#d8879a" opacity="0.22"/>
+  <circle cx="1482" cy="48" r="4" fill="#d8879a" opacity="0.22"/>
+  <circle cx="132" cy="48" r="2" fill="#d8879a" opacity="0.14"/>
+  <circle cx="1468" cy="48" r="2" fill="#d8879a" opacity="0.14"/>
+  <text x="800" y="34" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="12" font-weight="400" letter-spacing="5" fill="#d8879a" opacity="0.74">✦ GESTIÓN DE SISTEMA ✦</text>
+  <text x="800" y="58" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" letter-spacing="1.2" fill="#f0d1d9" filter="url(#softGlow)">Administración de la App</text>
+  <text x="800" y="73" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="10.5" font-weight="400" letter-spacing="4" fill="#d8879a" opacity="0.88">Usuarios · Roles · Auditoría · Parámetros</text>
 </svg>
