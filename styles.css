@@ -1444,3 +1444,98 @@ textarea{
 #btnInstallApp{
   margin-bottom: 10px;
 }
+
+/* Cabecera limpia: solo banner + botón hamburguesa */
+.workspace > .topbar{
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0 0 18px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.workspace > .topbar .topbar-left{
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: none;
+}
+
+.workspace > .topbar .search-shell.premium-global-search{
+  display: block;
+  width: 100%;
+  max-width: none;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.workspace > .topbar .search-icon{
+  display: none !important;
+}
+
+.workspace > .topbar #sectionTopBanner.section-top-banner-silent{
+  width: 100%;
+  height: 96px;
+  min-height: 96px;
+  max-height: 96px;
+  margin: 0;
+  border: 0;
+  border-radius: 20px;
+  box-shadow: 0 10px 24px rgba(16,35,58,.08);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.workspace > .topbar #sectionTopBanner.section-top-banner-silent::before{
+  display: none;
+}
+
+.workspace > .topbar .btn-sidebar-toggle{
+  position: absolute !important;
+  top: 14px;
+  left: 14px;
+  z-index: 20;
+  display: inline-flex !important;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(215,227,239,.95);
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 8px 20px rgba(16,35,58,.14);
+  backdrop-filter: blur(6px);
+}
+
+.workspace > .topbar .btn-sidebar-toggle span{
+  width: 20px;
+  height: 2px;
+}
+
+@media (max-width: 768px){
+  .workspace > .topbar #sectionTopBanner.section-top-banner-silent{
+    height: 86px;
+    min-height: 86px;
+    max-height: 86px;
+    border-radius: 16px;
+  }
+
+  .workspace > .topbar .btn-sidebar-toggle{
+    top: 12px;
+    left: 12px;
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    min-height: 42px;
+    border-radius: 13px;
+  }
+}
