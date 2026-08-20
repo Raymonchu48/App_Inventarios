@@ -54,7 +54,7 @@ function captureEls() {
     "authSupabaseUrl", "authSupabaseKey", "supabaseUrl", "supabaseKey",
     "btnAuthTestConnection", "btnAuthClearConfig",
     "btnTestConnection2", "btnClearConfig", "btnOpenSetup",
-    "btnLogout", "btnBootstrapAdmin", "btnRefresh", "btnSeed", "btnImportMenajes",
+    "btnLogout", "btnBootstrapAdmin", "btnRefresh", "btnSeed", "btnImportMenajes", "btnImportManteleria",
     "btnSidebarToggle", "sidebar", "sidebarOverlay", "btnInstallApp",
     "userName", "userEmail", "roleBadge", "activeBadge", "connectionBadge", "connectionText",
     "viewTitle", "viewSubtitle", "globalSearchInput", "globalSearchResults","cfgPreviewUrl", "cfgPreviewSession", "cfgPreviewRole",
@@ -63,11 +63,12 @@ function captureEls() {
     "kpiProductos", "kpiStock", "kpiBajoMinimo", "kpiSinStock", "criticalList", "recentMoves",
     "kpiBebidas","kpiMenajes","kpiVarios",
     "kpiMovimientosTotal","kpiOperationalStatus","kpiCriticalCount","kpiRecentMoves",
-    "familyCountBebidas","familyCountMenajes","familyCountVarios","executiveSummary",
+    "familyCountBebidas","familyCountMenajes","familyCountManteleria","familyCountVarios","executiveSummary",
     "searchInput", "categoryFilter", "stockFilter", "btnNewProduct", "productsTable",
     "menajesSearchInput", "menajesCategoryFilter", "btnNewMenaje", "menajesTable",
+    "manteleriaSearchInput", "btnNewManteleria", "manteleriaTable",
     "variosSearchInput", "variosCategoryFilter", "btnNewVarios", "variosTable",
-    "btnPrintBebidas","btnPrintMenajes","btnPrintVarios","btnPrintFullInventory",
+    "btnPrintBebidas","btnPrintMenajes","btnPrintManteleria","btnPrintVarios","btnPrintFullInventory",
     "movementReason","movementEvent","movementFilterType","movementFilterText",
     "movementForm", "movementProduct", "movementType", "movementQty", "movementNote", "movementHistory",
     "productDialog", "productForm", "productDialogTitle", "btnCloseDialog", "productId",
@@ -104,6 +105,7 @@ function bindUI() {
   els.btnClearConfig?.addEventListener("click", clearConfig);
   els.btnPrintBebidas?.addEventListener("click", () => printInventorySheet("bebidas"));
   els.btnPrintMenajes?.addEventListener("click", () => printInventorySheet("menaje"));
+  els.btnPrintManteleria?.addEventListener("click", () => printInventorySheet("manteleria"));
   els.btnPrintVarios?.addEventListener("click", () => printInventorySheet("varios"));
   els.btnPrintFullInventory?.addEventListener("click", printFullInventoryByFamily);
 
@@ -117,6 +119,7 @@ function bindUI() {
   els.btnRefresh?.addEventListener("click", refreshAll);
   els.btnSeed?.addEventListener("click", importInitialData);
   els.btnImportMenajes?.addEventListener("click", importMenajesData);
+  els.btnImportManteleria?.addEventListener("click", importManteleriaData);
 
   els.btnSidebarToggle?.addEventListener("click", toggleSidebarMobile);
   els.sidebarOverlay?.addEventListener("click", closeSidebarMobile);
@@ -132,6 +135,8 @@ function bindUI() {
     el?.addEventListener("change", renderMenajes);
   });
 
+  els.manteleriaSearchInput?.addEventListener("input", renderManteleria);
+
   [els.variosSearchInput, els.variosCategoryFilter].forEach(el => {
     el?.addEventListener("input", renderVarios);
     el?.addEventListener("change", renderVarios);
@@ -144,6 +149,7 @@ function bindUI() {
 
   els.btnNewProduct?.addEventListener("click", openNewProductDialog);
   els.btnNewMenaje?.addEventListener("click", openNewMenajeDialog);
+  els.btnNewManteleria?.addEventListener("click", openNewManteleriaDialog);
   els.btnNewVarios?.addEventListener("click", openNewVariosDialog);
 
   els.btnCloseDialog?.addEventListener("click", closeProductDialog);
@@ -166,6 +172,7 @@ document.addEventListener("click", (e) => {
     if (window.innerWidth > 980) closeSidebarMobile();
     renderProducts();
     renderMenajes();
+    renderManteleria();
     renderVarios();
   });
 }
@@ -367,6 +374,7 @@ function applyPermissionsUI() {
   if (els.btnNewVarios) els.btnNewVarios.disabled = !canWrite || !active;
   if (els.btnSeed) els.btnSeed.disabled = !isAdmin() || !active;
   if (els.btnImportMenajes) els.btnImportMenajes.disabled = !isAdmin() || !active;
+  if (els.btnImportManteleria) els.btnImportManteleria.disabled = !isAdmin() || !active;
 
   if (els.movementForm) {
     els.movementForm.querySelectorAll("input, select, textarea, button").forEach(el => {
@@ -588,6 +596,7 @@ function switchView(view) {
     dashboard: ["Pagina Principal", "Resumen ejecutivo del inventario."],
     productos: ["Bebidas", "Gestión centralizada de stock, edición y control por categoría."],
     menajes: ["Menajes", "Inventario de vajilla, cristalería, cubertería, mantelería y material de servicio."],
+    manteleria: ["Mantelería", "Control de manteles, muletón, fundas y servilletas para eventos."],
     varios: ["Varios", "Artículos auxiliares, suministros y otros no clasificados como bebida o menaje."],
     movimientos: ["Movimientos", "Entradas, salidas y ajustes con trazabilidad."],
     admin: ["Administración", "Usuarios, roles y activación de accesos."],
@@ -611,6 +620,7 @@ updateSectionTopBanner(view);
   if (view === "dashboard") renderDashboard();
   if (view === "productos") renderProducts();
   if (view === "menajes") renderMenajes();
+  if (view === "manteleria") renderManteleria();
   if (view === "varios") renderVarios();
   if (view === "movimientos") renderMovementHistory();
   if (view === "admin" && isAdmin()) renderUsersList();
@@ -634,6 +644,7 @@ async function refreshAll() {
   renderDashboard();
   renderProducts();
   renderMenajes();
+  renderManteleria();
   renderVarios();
   renderMovementHistory();
 
@@ -649,6 +660,7 @@ function updateSectionTopBanner(view) {
     dashboard: "hero-dashboard",
     productos: "hero-bebidas",
     menajes: "hero-menajes",
+    manteleria: "hero-manteleria",
     varios: "hero-varios",
     movimientos: "hero-movimientos",
     admin: "hero-admin",
@@ -743,6 +755,7 @@ function renderGlobalSearchResults(results, q) {
 
     const familyLabel =
       p.familia === "menaje" ? "Menaje" :
+      p.familia === "manteleria" ? "Mantelería" :
       p.familia === "varios" ? "Varios" : "Bebidas";
 
     const qty = Number(p.cantidad || 0);
@@ -798,6 +811,10 @@ function goToGlobalSearchResult(product, openModal = false) {
     switchView("menajes");
     if (els.menajesSearchInput) els.menajesSearchInput.value = product.descripcion || product.stock_code || "";
     renderMenajes();
+  } else if (product.familia === "manteleria") {
+    switchView("manteleria");
+    if (els.manteleriaSearchInput) els.manteleriaSearchInput.value = product.descripcion || product.stock_code || "";
+    renderManteleria();
   } else if (product.familia === "varios") {
     switchView("varios");
     if (els.variosSearchInput) els.variosSearchInput.value = product.descripcion || product.stock_code || "";
@@ -929,6 +946,10 @@ function getVariosCategories() {
   return state.categorias.filter(c => isVariosCategoryName(c.nombre));
 }
 
+function getManteleriaCategory() {
+  return state.categorias.find(c => ["mantelería", "manteleria"].includes((c.nombre || "").trim().toLowerCase()));
+}
+
 function syncCategoryByFamily() {
   if (!els.pFamilia || !els.pCategoria) return;
 
@@ -937,6 +958,11 @@ function syncCategoryByFamily() {
   if (familia === "menaje") {
     const menajeCat = getMenajeCategories()[0];
     if (menajeCat) els.pCategoria.value = menajeCat.id;
+  }
+
+  if (familia === "manteleria") {
+    const manteleriaCat = getManteleriaCategory();
+    if (manteleriaCat) els.pCategoria.value = manteleriaCat.id;
   }
 
   if (familia === "varios") {
@@ -1078,6 +1104,17 @@ function getFilteredVarios() {
   });
 }
 
+function getFilteredManteleria() {
+  const q = els.manteleriaSearchInput?.value.trim().toLowerCase() || "";
+
+  return state.productos.filter(p => {
+    const isManteleria = p.familia === "manteleria";
+    const matchText = !q || [p.stock_code, p.descripcion, p.presentacion]
+      .some(v => (v || "").toLowerCase().includes(q));
+    return isManteleria && matchText;
+  });
+}
+
 function renderDashboard() {
   const totalProductos = state.productos.length;
   const stockTotal = state.productos.reduce((acc, p) => acc + Number(p.cantidad || 0), 0);
@@ -1086,6 +1123,7 @@ function renderDashboard() {
 
   const bebidas = state.productos.filter(p => (p.familia || "bebidas") === "bebidas").length;
   const menajes = state.productos.filter(p => p.familia === "menaje").length;
+  const manteleria = state.productos.filter(p => p.familia === "manteleria").length;
   const varios = state.productos.filter(p => p.familia === "varios").length;
 
   const recentMovesCount = state.movimientos.slice(0, 8).length;
@@ -1114,6 +1152,7 @@ function renderDashboard() {
 
   if (els.familyCountBebidas) els.familyCountBebidas.textContent = bebidas;
   if (els.familyCountMenajes) els.familyCountMenajes.textContent = menajes;
+  if (els.familyCountManteleria) els.familyCountManteleria.textContent = manteleria;
   if (els.familyCountVarios) els.familyCountVarios.textContent = varios;
 
   if (els.executiveSummary) {
@@ -1362,6 +1401,75 @@ function renderMenajes() {
   });
 
   els.menajesTable.querySelectorAll("[data-menaje-action='delete']").forEach(btn => {
+    btn.addEventListener("click", () => deleteProduct(btn.dataset.id));
+  });
+}
+
+function renderManteleria() {
+  if (!els.manteleriaTable) return;
+
+  const rows = getFilteredManteleria();
+  els.manteleriaTable.innerHTML = "";
+
+  if (!rows.length) {
+    els.manteleriaTable.innerHTML = `<tr><td colspan="8"><div class="empty-state">No hay artículos de mantelería para ese filtro.</div></td></tr>`;
+    return;
+  }
+
+  const isMobile = window.innerWidth <= 640;
+  rows.forEach(p => {
+    const qty = Number(p.cantidad || 0);
+    const min = Number(p.min_stock || 0);
+    const statusClass = qty <= 0 ? "danger" : qty <= min ? "warn" : "ok";
+    const canWrite = canEdit() && isActiveUser();
+    const tr = document.createElement("tr");
+
+    if (isMobile) {
+      tr.className = "mobile-product-row";
+      tr.innerHTML = `
+        <td colspan="8">
+          <div class="mobile-product-card">
+            <div class="mobile-product-top">
+              <div><div class="mobile-label">Código</div><div class="mobile-code">${escapeHtml(p.stock_code || "")}</div></div>
+              <span class="tag ${statusClass}">${formatNum(qty)}</span>
+            </div>
+            <div class="mobile-product-body">
+              <div class="mobile-label">Tipo</div>
+              <div class="mobile-title">${escapeHtml(p.descripcion)}</div>
+              <div class="mobile-sub">Medida: ${escapeHtml(p.presentacion || "Sin medida")}</div>
+            </div>
+            <div class="mobile-product-grid">
+              <div><div class="mobile-label">Unidad</div><div>${escapeHtml(p.unit || "ud")}</div></div>
+              <div><div class="mobile-label">Unidades</div><div>${formatNum(qty)}</div></div>
+              <div><div class="mobile-label">Mínimo</div><div>${formatNum(min)}</div></div>
+            </div>
+            <div class="mobile-product-actions">
+              <button class="btn-mini" data-manteleria-action="edit" data-id="${p.id}" ${canWrite ? "" : "disabled"}>Editar</button>
+              <button class="btn-mini danger" data-manteleria-action="delete" data-id="${p.id}" ${isAdmin() && isActiveUser() ? "" : "disabled"}>Borrar</button>
+            </div>
+          </div>
+        </td>`;
+    } else {
+      tr.innerHTML = `
+        <td>${escapeHtml(p.stock_code || "")}</td>
+        <td><strong>${escapeHtml(p.descripcion)}</strong></td>
+        <td>${escapeHtml(p.presentacion || "")}</td>
+        <td>${escapeHtml(p.unit || "ud")}</td>
+        <td><span class="tag ${statusClass}">${formatNum(qty)}</span></td>
+        <td>${formatNum(min)}</td>
+        <td>${p.pagina ?? ""}</td>
+        <td><div class="form-actions">
+          <button class="btn-mini" data-manteleria-action="edit" data-id="${p.id}" ${canWrite ? "" : "disabled"}>Editar</button>
+          <button class="btn-mini danger" data-manteleria-action="delete" data-id="${p.id}" ${isAdmin() && isActiveUser() ? "" : "disabled"}>Borrar</button>
+        </div></td>`;
+    }
+    els.manteleriaTable.appendChild(tr);
+  });
+
+  els.manteleriaTable.querySelectorAll("[data-manteleria-action='edit']").forEach(btn => {
+    btn.addEventListener("click", () => openEditProductDialog(btn.dataset.id));
+  });
+  els.manteleriaTable.querySelectorAll("[data-manteleria-action='delete']").forEach(btn => {
     btn.addEventListener("click", () => deleteProduct(btn.dataset.id));
   });
 }
@@ -1615,6 +1723,22 @@ function openNewVariosDialog() {
 
   const variosCat = getVariosCategories()[0];
   if (els.pCategoria && variosCat) els.pCategoria.value = variosCat.id;
+
+  tryOpenDialog();
+}
+
+function openNewManteleriaDialog() {
+  if (!canEdit()) return flash("Tu rol no puede crear artículos de mantelería.", true);
+
+  els.productForm?.reset();
+  if (els.productId) els.productId.value = "";
+  if (els.productDialogTitle) els.productDialogTitle.textContent = "Nuevo artículo de mantelería";
+  if (els.pFamilia) els.pFamilia.value = "manteleria";
+  if (els.pUnit) els.pUnit.value = "ud";
+  if (els.productDialog) els.productDialog.dataset.familia = "manteleria";
+
+  const manteleriaCat = getManteleriaCategory();
+  if (els.pCategoria && manteleriaCat) els.pCategoria.value = manteleriaCat.id;
 
   tryOpenDialog();
 }
@@ -1915,6 +2039,50 @@ async function importMenajesData() {
   }
 }
 
+async function importManteleriaData() {
+  if (!isAdmin() || !isActiveUser()) {
+    return flash("Solo admin puede importar mantelería.", true);
+  }
+
+  if (!confirm("Esto importará o actualizará los 12 artículos de mantelería. ¿Continuar?")) return;
+
+  try {
+    const raw = await fetch("data_manteleria.json").then(r => r.json());
+    const categoryName = "Mantelería";
+    const { error: catError } = await state.client
+      .from("categorias")
+      .upsert([{ nombre: categoryName }], { onConflict: "nombre" });
+    if (catError) throw catError;
+
+    await loadCategorias();
+    const categoria = getManteleriaCategory();
+    const productos = raw.map(r => ({
+      stock_code: cleanVal(r.stock_code),
+      descripcion: cleanVal(r.descripcion) || "Sin descripción",
+      presentacion: cleanVal(r.presentacion),
+      unit: "ud",
+      cantidad: Number(r.cantidad || 0),
+      cantidad_original: String(r.cantidad ?? 0),
+      detalle_cantidad: cleanVal(r.presentacion) ? `Medida: ${cleanVal(r.presentacion)}` : null,
+      pagina: 29,
+      min_stock: 0,
+      categoria_id: categoria?.id || null,
+      familia: "manteleria"
+    }));
+
+    const { error } = await state.client
+      .from("productos")
+      .upsert(productos, { onConflict: "stock_code" });
+    if (error) throw error;
+
+    flash("Mantelería importada correctamente: 12 artículos.");
+    await refreshAll();
+    switchView("manteleria");
+  } catch (error) {
+    throwFriendly(error, "Falló la importación de mantelería.");
+  }
+}
+
 function printInventorySheet(familia) {
   let rows = [];
   let title = "";
@@ -1929,6 +2097,11 @@ function printInventorySheet(familia) {
     title = "Inventario de Menaje";
   }
 
+  if (familia === "manteleria") {
+    rows = getFilteredManteleria();
+    title = "Inventario de Mantelería";
+  }
+
   if (familia === "varios") {
     rows = getFilteredVarios();
     title = "Inventario de Varios";
@@ -1939,7 +2112,7 @@ function printInventorySheet(familia) {
   const tableRows = rows.map(p => `
     <tr>
       <td>${escapeHtml(p.stock_code || "")}</td>
-      <td>${escapeHtml(p.descripcion || "")}</td>
+      <td>${escapeHtml(p.descripcion || "")}${p.presentacion ? `<br><small>Medida / presentación: ${escapeHtml(p.presentacion)}</small>` : ""}</td>
       <td>${escapeHtml(p.categorias?.nombre || "Sin categoría")}</td>
       <td>${escapeHtml(p.unit || "")}</td>
       <td>${formatNum(p.cantidad || 0)}</td>
@@ -2056,6 +2229,7 @@ function printFullInventoryByFamily() {
 
   const bebidas = all.filter(p => (p.familia || "bebidas") === "bebidas");
   const menaje = all.filter(p => p.familia === "menaje");
+  const manteleria = all.filter(p => p.familia === "manteleria");
   const varios = all.filter(p => p.familia === "varios");
 
   const today = new Date().toLocaleDateString("es-ES");
@@ -2064,7 +2238,7 @@ function printFullInventoryByFamily() {
     return rows.map(p => `
       <tr>
         <td>${escapeHtml(p.stock_code || "")}</td>
-        <td>${escapeHtml(p.descripcion || "")}</td>
+        <td>${escapeHtml(p.descripcion || "")}${p.presentacion ? `<br><small>Medida / presentación: ${escapeHtml(p.presentacion)}</small>` : ""}</td>
         <td>${escapeHtml(p.categorias?.nombre || "Sin categoría")}</td>
         <td>${escapeHtml(p.unit || "")}</td>
         <td>${formatNum(p.cantidad || 0)}</td>
@@ -2132,7 +2306,7 @@ function printFullInventoryByFamily() {
           }
           .summary{
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 12px;
             margin: 18px 0 22px;
           }
@@ -2202,6 +2376,10 @@ function printFullInventoryByFamily() {
             <strong>${menaje.length}</strong>
           </div>
           <div class="summary-box">
+            Mantelería
+            <strong>${manteleria.length}</strong>
+          </div>
+          <div class="summary-box">
             Varios
             <strong>${varios.length}</strong>
           </div>
@@ -2209,6 +2387,7 @@ function printFullInventoryByFamily() {
 
         ${sectionHtml("Bebidas", bebidas)}
         ${sectionHtml("Menaje", menaje)}
+        ${sectionHtml("Mantelería", manteleria)}
         ${sectionHtml("Varios", varios)}
 
         <div class="sign-row">

@@ -1,0 +1,14 @@
+[
+  { "stock_code": "MAN-001", "descripcion": "Mantel cuadrado", "presentacion": "230x230", "cantidad": 2 },
+  { "stock_code": "MAN-002", "descripcion": "Mantel cuadrado", "presentacion": "250x250", "cantidad": 5 },
+  { "stock_code": "MAN-003", "descripcion": "Mantel ovalado", "presentacion": "290", "cantidad": 7 },
+  { "stock_code": "MAN-004", "descripcion": "Mantel ovalado", "presentacion": "250", "cantidad": 7 },
+  { "stock_code": "MAN-005", "descripcion": "Mantel ovalado", "presentacion": "340", "cantidad": 5 },
+  { "stock_code": "MAN-006", "descripcion": "Muletón redondo", "presentacion": null, "cantidad": 48 },
+  { "stock_code": "MAN-007", "descripcion": "Muletón rectangular", "presentacion": null, "cantidad": 14 },
+  { "stock_code": "MAN-008", "descripcion": "Fundas blancas cóctel", "presentacion": null, "cantidad": 20 },
+  { "stock_code": "MAN-009", "descripcion": "Fundas silla blanca", "presentacion": null, "cantidad": 150 },
+  { "stock_code": "MAN-010", "descripcion": "Fundas negras cócteles", "presentacion": null, "cantidad": 14 },
+  { "stock_code": "MAN-011", "descripcion": "Manteles dorados redondos", "presentacion": null, "cantidad": 5 },
+  { "stock_code": "MAN-012", "descripcion": "Servilletas color bronce Voro", "presentacion": null, "cantidad": 96 }
+]
