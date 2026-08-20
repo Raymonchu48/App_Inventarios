@@ -372,6 +372,7 @@ function applyPermissionsUI() {
   if (els.btnNewProduct) els.btnNewProduct.disabled = !canWrite || !active;
   if (els.btnNewMenaje) els.btnNewMenaje.disabled = !canWrite || !active;
   if (els.btnNewVarios) els.btnNewVarios.disabled = !canWrite || !active;
+  if (els.btnNewManteleria) els.btnNewManteleria.disabled = !canWrite || !active;
   if (els.btnSeed) els.btnSeed.disabled = !isAdmin() || !active;
   if (els.btnImportMenajes) els.btnImportMenajes.disabled = !isAdmin() || !active;
   if (els.btnImportManteleria) els.btnImportManteleria.disabled = !isAdmin() || !active;
@@ -754,8 +755,8 @@ function renderGlobalSearchResults(results, q) {
     item.dataset.index = index;
 
     const familyLabel =
+      isManteleriaProduct(p) ? "Mantelería" :
       p.familia === "menaje" ? "Menaje" :
-      p.familia === "manteleria" ? "Mantelería" :
       p.familia === "varios" ? "Varios" : "Bebidas";
 
     const qty = Number(p.cantidad || 0);
@@ -770,7 +771,7 @@ function renderGlobalSearchResults(results, q) {
 
       <div class="global-search-result-meta">
         <span class="global-search-code">${escapeHtml(p.stock_code || "Sin código")}</span>
-        <span class="global-search-family family-${escapeHtml(p.familia || "bebidas")}">${familyLabel}</span>
+        <span class="global-search-family family-${isManteleriaProduct(p) ? "manteleria" : escapeHtml(p.familia || "bebidas")}">${familyLabel}</span>
         <span class="global-search-stock ${stockClass}">Stock: ${formatNum(qty)}</span>
       </div>
     `;
@@ -807,14 +808,14 @@ function hideGlobalSearchResults() {
 }
 
 function goToGlobalSearchResult(product, openModal = false) {
-  if (product.familia === "menaje") {
-    switchView("menajes");
-    if (els.menajesSearchInput) els.menajesSearchInput.value = product.descripcion || product.stock_code || "";
-    renderMenajes();
-  } else if (product.familia === "manteleria") {
+  if (isManteleriaProduct(product)) {
     switchView("manteleria");
     if (els.manteleriaSearchInput) els.manteleriaSearchInput.value = product.descripcion || product.stock_code || "";
     renderManteleria();
+  } else if (product.familia === "menaje") {
+    switchView("menajes");
+    if (els.menajesSearchInput) els.menajesSearchInput.value = product.descripcion || product.stock_code || "";
+    renderMenajes();
   } else if (product.familia === "varios") {
     switchView("varios");
     if (els.variosSearchInput) els.variosSearchInput.value = product.descripcion || product.stock_code || "";
@@ -950,6 +951,11 @@ function getManteleriaCategory() {
   return state.categorias.find(c => ["mantelería", "manteleria"].includes((c.nombre || "").trim().toLowerCase()));
 }
 
+function isManteleriaProduct(product) {
+  const categoryName = (product?.categorias?.nombre || "").trim().toLowerCase();
+  return product?.familia === "manteleria" || ["mantelería", "manteleria"].includes(categoryName);
+}
+
 function syncCategoryByFamily() {
   if (!els.pFamilia || !els.pCategoria) return;
 
@@ -1083,7 +1089,7 @@ function getFilteredMenajes() {
   const cat = els.menajesCategoryFilter?.value || "";
 
   return state.productos.filter(p => {
-    const isMenaje = p.familia === "menaje";
+    const isMenaje = p.familia === "menaje" && !isManteleriaProduct(p);
     const matchText = !q || [p.stock_code, p.descripcion, p.presentacion]
       .some(v => (v || "").toLowerCase().includes(q));
     const matchCat = !cat || p.categoria_id === cat;
@@ -1108,7 +1114,7 @@ function getFilteredManteleria() {
   const q = els.manteleriaSearchInput?.value.trim().toLowerCase() || "";
 
   return state.productos.filter(p => {
-    const isManteleria = p.familia === "manteleria";
+    const isManteleria = isManteleriaProduct(p);
     const matchText = !q || [p.stock_code, p.descripcion, p.presentacion]
       .some(v => (v || "").toLowerCase().includes(q));
     return isManteleria && matchText;
@@ -1122,8 +1128,8 @@ function renderDashboard() {
   const sin = state.productos.filter(p => Number(p.cantidad || 0) <= 0).length;
 
   const bebidas = state.productos.filter(p => (p.familia || "bebidas") === "bebidas").length;
-  const menajes = state.productos.filter(p => p.familia === "menaje").length;
-  const manteleria = state.productos.filter(p => p.familia === "manteleria").length;
+  const menajes = state.productos.filter(p => p.familia === "menaje" && !isManteleriaProduct(p)).length;
+  const manteleria = state.productos.filter(isManteleriaProduct).length;
   const varios = state.productos.filter(p => p.familia === "varios").length;
 
   const recentMovesCount = state.movimientos.slice(0, 8).length;
@@ -1772,11 +1778,11 @@ function openEditProductDialog(id) {
   if (els.pCantidad) els.pCantidad.value = p.cantidad ?? 0;
   if (els.pMinStock) els.pMinStock.value = p.min_stock ?? 0;
   if (els.pPagina) els.pPagina.value = p.pagina ?? "";
-  if (els.pFamilia) els.pFamilia.value = p.familia || "bebidas";
+  if (els.pFamilia) els.pFamilia.value = isManteleriaProduct(p) ? "manteleria" : (p.familia || "bebidas");
   if (els.pCategoria) els.pCategoria.value = p.categoria_id || "";
   if (els.pCantidadOriginal) els.pCantidadOriginal.value = p.cantidad_original || "";
   if (els.pDetalleCantidad) els.pDetalleCantidad.value = p.detalle_cantidad || "";
-  if (els.productDialog) els.productDialog.dataset.familia = p.familia || "bebidas";
+  if (els.productDialog) els.productDialog.dataset.familia = isManteleriaProduct(p) ? "manteleria" : (p.familia || "bebidas");
 
   tryOpenDialog();
 }
@@ -1788,6 +1794,7 @@ async function onSaveProduct(e) {
     return flash("No tienes permisos para editar productos.", true);
   }
 
+  const selectedFamily = els.pFamilia?.value || els.productDialog?.dataset.familia || "bebidas";
   const payload = {
     stock_code: els.pStockCode?.value.trim() || null,
     descripcion: els.pDescripcion?.value.trim() || "",
@@ -1800,7 +1807,7 @@ async function onSaveProduct(e) {
     categoria_id: els.pCategoria?.value || null,
     cantidad_original: els.pCantidadOriginal?.value.trim() || null,
     detalle_cantidad: els.pDetalleCantidad?.value.trim() || null,
-    familia: els.pFamilia?.value || els.productDialog?.dataset.familia || "bebidas"
+    familia: selectedFamily === "manteleria" ? "menaje" : selectedFamily
   };
 
   if (!payload.descripcion) {
@@ -2067,7 +2074,7 @@ async function importManteleriaData() {
       pagina: 29,
       min_stock: 0,
       categoria_id: categoria?.id || null,
-      familia: "manteleria"
+      familia: "menaje"
     }));
 
     const { error } = await state.client
@@ -2228,8 +2235,8 @@ function printFullInventoryByFamily() {
   );
 
   const bebidas = all.filter(p => (p.familia || "bebidas") === "bebidas");
-  const menaje = all.filter(p => p.familia === "menaje");
-  const manteleria = all.filter(p => p.familia === "manteleria");
+  const menaje = all.filter(p => p.familia === "menaje" && !isManteleriaProduct(p));
+  const manteleria = all.filter(isManteleriaProduct);
   const varios = all.filter(p => p.familia === "varios");
 
   const today = new Date().toLocaleDateString("es-ES");
