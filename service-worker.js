@@ -1,4 +1,4 @@
-const CACHE_NAME = "inventario-banquetes-pwa-v4";
+const CACHE_NAME = "inventario-banquetes-pwa-v5";
 
 const APP_SHELL = [
   "/App_Inventarios/",
