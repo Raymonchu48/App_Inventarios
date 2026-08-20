@@ -637,6 +637,8 @@ async function refreshAll() {
     isAdmin() ? loadProfiles() : Promise.resolve()
   ]);
 
+  await loadManteleriaCatalogFallback();
+
   populateCategoryFilters();
   populateMenajesFilters();
   populateVariosFilters();
@@ -951,6 +953,38 @@ function getManteleriaCategory() {
   return state.categorias.find(c => ["mantelería", "manteleria"].includes((c.nombre || "").trim().toLowerCase()));
 }
 
+async function loadManteleriaCatalogFallback() {
+  try {
+    const response = await fetch(`data_manteleria.json?v=3`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const catalog = await response.json();
+    const existingCodes = new Set(state.productos.map(p => p.stock_code).filter(Boolean));
+    const category = getManteleriaCategory();
+
+    catalog.forEach(item => {
+      if (existingCodes.has(item.stock_code)) return;
+      state.productos.push({
+        id: `catalog-${item.stock_code}`,
+        stock_code: item.stock_code,
+        descripcion: item.descripcion,
+        presentacion: item.presentacion,
+        unit: "ud",
+        cantidad: Number(item.cantidad || 0),
+        cantidad_original: String(item.cantidad ?? 0),
+        detalle_cantidad: item.presentacion ? `Medida: ${item.presentacion}` : null,
+        pagina: 29,
+        min_stock: 0,
+        categoria_id: category?.id || null,
+        categorias: { id: category?.id || null, nombre: "Mantelería" },
+        familia: "menaje",
+        _catalogFallback: true
+      });
+    });
+  } catch (error) {
+    console.error("No pude cargar el catálogo base de mantelería:", error);
+  }
+}
+
 function isManteleriaProduct(product) {
   const categoryName = (product?.categorias?.nombre || "").trim().toLowerCase();
   return product?.familia === "manteleria" || ["mantelería", "manteleria"].includes(categoryName);
@@ -1052,6 +1086,7 @@ function populateProductSelects() {
   els.movementProduct.innerHTML = `<option value="">Selecciona un producto</option>`;
 
   state.productos.forEach(p => {
+    if (p._catalogFallback) return;
     els.movementProduct.insertAdjacentHTML(
       "beforeend",
       `<option value="${p.id}">${escapeHtml(p.descripcion)} · ${formatNum(p.cantidad)}</option>`
@@ -1427,7 +1462,8 @@ function renderManteleria() {
     const qty = Number(p.cantidad || 0);
     const min = Number(p.min_stock || 0);
     const statusClass = qty <= 0 ? "danger" : qty <= min ? "warn" : "ok";
-    const canWrite = canEdit() && isActiveUser();
+    const canWrite = canEdit() && isActiveUser() && !p._catalogFallback;
+    const canDelete = isAdmin() && isActiveUser() && !p._catalogFallback;
     const tr = document.createElement("tr");
 
     if (isMobile) {
@@ -1451,7 +1487,7 @@ function renderManteleria() {
             </div>
             <div class="mobile-product-actions">
               <button class="btn-mini" data-manteleria-action="edit" data-id="${p.id}" ${canWrite ? "" : "disabled"}>Editar</button>
-              <button class="btn-mini danger" data-manteleria-action="delete" data-id="${p.id}" ${isAdmin() && isActiveUser() ? "" : "disabled"}>Borrar</button>
+              <button class="btn-mini danger" data-manteleria-action="delete" data-id="${p.id}" ${canDelete ? "" : "disabled"}>Borrar</button>
             </div>
           </div>
         </td>`;
@@ -1466,7 +1502,7 @@ function renderManteleria() {
         <td>${p.pagina ?? ""}</td>
         <td><div class="form-actions">
           <button class="btn-mini" data-manteleria-action="edit" data-id="${p.id}" ${canWrite ? "" : "disabled"}>Editar</button>
-          <button class="btn-mini danger" data-manteleria-action="delete" data-id="${p.id}" ${isAdmin() && isActiveUser() ? "" : "disabled"}>Borrar</button>
+          <button class="btn-mini danger" data-manteleria-action="delete" data-id="${p.id}" ${canDelete ? "" : "disabled"}>Borrar</button>
         </div></td>`;
     }
     els.manteleriaTable.appendChild(tr);
@@ -1766,6 +1802,10 @@ function openEditProductDialog(id) {
   const p = state.productos.find(x => String(x.id) === String(id));
   if (!p) {
     return flash("No pude localizar el artículo para editar.", true);
+  }
+
+  if (p._catalogFallback) {
+    return flash("Este artículo procede del catálogo base. Usa Importar Mantelería para sincronizarlo antes de editar.", true);
   }
 
   if (els.productDialogTitle) els.productDialogTitle.textContent = "Editar producto";
