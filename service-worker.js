@@ -1,4 +1,4 @@
-const CACHE_NAME = "inventario-banquetes-pwa-v3";
+const CACHE_NAME = "inventario-banquetes-pwa-v4";
 
 const APP_SHELL = [
   "/App_Inventarios/",
@@ -7,6 +7,7 @@ const APP_SHELL = [
   "/App_Inventarios/app.js",
   "/App_Inventarios/config.js",
   "/App_Inventarios/manifest.json",
+  "/App_Inventarios/data_manteleria.json",
   "/App_Inventarios/logo-banquetes.png",
   "/App_Inventarios/Banner-Banquetes.png",
   "/App_Inventarios/icon-192.png",

@@ -962,7 +962,7 @@ textarea{
 
 .family-summary-grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(4,1fr);
   gap:14px;
 }
 
@@ -1311,6 +1311,11 @@ textarea{
 }
 
 .section-top-banner-silent.hero-menajes{
+  background-image: url("banner_menaje_inventario.svg");
+  background-position: center center;
+}
+
+.section-top-banner-silent.hero-manteleria{
   background-image: url("banner_menaje_inventario.svg");
   background-position: center center;
 }
